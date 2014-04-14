@@ -149,6 +149,10 @@ class TraCIMobility : public BaseMobility
 			return getManager()->commandAddVehicle(vehicleId, vehicleTypeId, routeId, emitTime_st, emitPosition, emitSpeed, emitLane);
 		}
 
+        Coord commandPositionConversion(Coord position) {
+            return getManager()->commandPositionConversion(position);
+        }
+
 	protected:
 		bool debug; /**< whether to emit debug messages */
 		int accidentCount; /**< number of accidents */

@@ -17,8 +17,11 @@ package org.mixim.modules.application.traci;
 import org.mixim.modules.application.ieee80211p.BaseWaveApplLayer;
 
 simple FloatingContentApp extends BaseWaveApplLayer
-{              
+{    
+    parameters:          
 	@class(FloatingContentApp);
 	@display("i=block/app2");
+	int poiCount = default(0);
+	double poiStart @unit("s") = default(uniform(30s,60s));  // time until first generate poi
 	
 }

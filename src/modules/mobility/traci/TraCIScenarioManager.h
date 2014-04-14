@@ -125,6 +125,7 @@ class TraCIScenarioManager : public cSimpleModule
 		std::list<std::string> commandGetJunctionIds();
 		Coord commandGetJunctionPosition(std::string junctionId);
 		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -DEPART_NOW, double emitPosition = -DEPART_POS_BASE, double emitSpeed = -DEPART_SPEED_MAX, int8_t emitLane = -DEPART_LANE_BEST_FREE);
+		Coord commandPositionConversion(Coord position);
 
 		const std::map<std::string, cModule*>& getManagedHosts() {
 			return hosts;

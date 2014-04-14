@@ -524,6 +524,36 @@ double TraCIScenarioManager::commandDistanceRequest(Coord position1, Coord posit
 	return distance;
 }
 
+Coord TraCIScenarioManager::commandPositionConversion(Coord position) {
+    double x;
+    double y;
+
+
+    uint8_t variable = POSITION_CONVERSION;
+    std::string simId = "sim0";
+    uint8_t variableType = TYPE_COMPOUND;
+    int32_t count = 2;
+    TraCICoord p = omnet2traci(position);
+    uint8_t pType = static_cast<uint8_t>(POSITION_LON_LAT);
+    uint8_t uByte = static_cast<uint8_t>(TYPE_UBYTE);
+
+
+    // query road network boundaries
+    TraCIBuffer buf = queryTraCI(CMD_GET_SIM_VARIABLE, TraCIBuffer() << variable << simId << variableType << count << p << uByte << pType);
+    uint8_t cmdLength_resp; buf >> cmdLength_resp;
+    uint8_t commandId_resp; buf >> commandId_resp; ASSERT(commandId_resp == RESPONSE_GET_SIM_VARIABLE);
+    uint8_t variableId_resp; buf >> variableId_resp; ASSERT(variableId_resp == variable);
+    std::string simId_resp; buf >> simId_resp; ASSERT(simId_resp == simId);
+    uint8_t typeId_resp; buf >> typeId_resp;
+    ASSERT(typeId_resp == pType);
+    buf >> x;
+    buf >> y;
+
+    ASSERT(buf.eof());
+
+    return new Coord(x, y, 0);
+}
+
 void TraCIScenarioManager::commandStopNode(std::string nodeId, std::string roadId, double pos, uint8_t laneid, double radius, double waittime) {
 	uint8_t variableId = CMD_STOP;
 	uint8_t variableType = TYPE_COMPOUND;

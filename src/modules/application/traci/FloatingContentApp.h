@@ -23,6 +23,7 @@
 #include <set>
 #include <utility>
 #include <algorithm>
+#include <FloatingContentMessage_m.h>
 
 class FloatingContentApp: public BaseWaveApplLayer {
 public:
@@ -40,13 +41,21 @@ protected:
     std::vector<int> activePeers;
     cMessage* requestTile;
     std::vector<Coord> tiles;
+    int poiCount;
+    double poiStart;
+    cMessage *startPoiMsg;
+    bool setCircle;
+    Coord circleCoord;
+    char circleDisplayString[50];
 
 protected:
     virtual void onBeacon(WaveShortMessage* wsm);
     virtual void onData(WaveShortMessage* wsm);
-    void sendMessage(char* data, int address);
+    void sendMessage(Storage storage, int address);
     virtual void handlePositionUpdate(cObject* obj);
     virtual void handleSelfMsg(cMessage* msg);
+    //virtual void handleLowerMsg(cMessage* msg);
+    virtual FloatingContentMessage* prepareMessage(std::string name, int dataLengthBits, t_channel channel, int priority, int rcvId, int serial=0);
 
 };
 
