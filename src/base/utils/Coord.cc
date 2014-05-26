@@ -29,3 +29,7 @@ double Coord::sqrTorusDist(const Coord& b, const Coord& size) const {
     double zDist = dist(z, b.z, size.z);
     return xDist * xDist + yDist * yDist + zDist * zDist;
 }
+
+std::pair<double, double> Coord::getPairCoord() {
+    return std::make_pair(x, y);
+}

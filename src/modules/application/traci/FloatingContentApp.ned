@@ -23,5 +23,9 @@ simple FloatingContentApp extends BaseWaveApplLayer
 	@display("i=block/app2");
 	int poiCount = default(0);
 	double poiStart @unit("s") = default(uniform(30s,60s));  // time until first generate poi
+	int poiReplicationRange @unit("m") = default(0); //replication range
+	string poiColor = default("black");
+	int poiTTL @unit("s") = default(0);
+	int refreshInterval @unit("s") = default(0);
 	
 }

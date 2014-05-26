@@ -127,6 +127,11 @@ class TraCIScenarioManager : public cSimpleModule
 		bool commandAddVehicle(std::string vehicleId, std::string vehicleTypeId, std::string routeId, simtime_t emitTime_st = -DEPART_NOW, double emitPosition = -DEPART_POS_BASE, double emitSpeed = -DEPART_SPEED_MAX, int8_t emitLane = -DEPART_LANE_BEST_FREE);
 		Coord commandPositionConversion(Coord position);
 
+		int addPOIReplica(Coord p, AnnotationManager::Annotation* a);
+		int addPOIReplica(Coord p);
+		int removePOIReplica(Coord p);
+		bool getCurrentPOI(Coord p, Coord& anchorPoint);
+
 		const std::map<std::string, cModule*>& getManagedHosts() {
 			return hosts;
 		}
@@ -239,6 +244,10 @@ class TraCIScenarioManager : public cSimpleModule
 				std::string buf;
 				size_t buf_index;
 		};
+
+		std::map<std::pair<double,double>, int> poiNumReplicas;
+		std::map<std::pair<double,double>, AnnotationManager::Annotation*> poi2Ann;
+		std::map<std::pair<double,double>, bool> replicated;
 
 		bool debug; /**< whether to emit debug messages */
 		simtime_t connectAt; /**< when to connect to TraCI server (must be the initial timestep of the server) */

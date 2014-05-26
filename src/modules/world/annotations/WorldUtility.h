@@ -18,12 +18,14 @@
 
 #include <BaseWorldUtility.h>
 #include "world/annotations/AnnotationManager.h"
+#include "mobility/traci/TraCIScenarioManager.h"
 
 class WorldUtility: public BaseWorldUtility {
 
 protected:
     AnnotationManager* annotations;
-    int interval;
+    TraCIScenarioManager* manager;
+    int anchorSize;
 
 public:
     //WorldUtility();

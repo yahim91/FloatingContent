@@ -41,12 +41,21 @@ protected:
     std::vector<int> activePeers;
     cMessage* requestTile;
     std::vector<Coord> tiles;
+
+    // point of interest parameters
     int poiCount;
     double poiStart;
     cMessage *startPoiMsg;
+    cMessage *stopPoiMsg;
+    cMessage *refreshPoi;
     bool setCircle;
     Coord circleCoord;
     char circleDisplayString[50];
+    int poiReplicationRange;
+    std::string poiColor;
+    simtime_t poiTTL;
+    simtime_t refreshInterval;
+    bool stored;
 
 protected:
     virtual void onBeacon(WaveShortMessage* wsm);
@@ -56,6 +65,7 @@ protected:
     virtual void handleSelfMsg(cMessage* msg);
     //virtual void handleLowerMsg(cMessage* msg);
     virtual FloatingContentMessage* prepareMessage(std::string name, int dataLengthBits, t_channel channel, int priority, int rcvId, int serial=0);
+    void refreshLocalStorage();
 
 };
 

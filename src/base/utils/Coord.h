@@ -39,6 +39,7 @@ class MIXIM_API Coord : public cObject
 public:
 	/** @brief Constant with all values set to 0. */
 	static const Coord ZERO;
+	std::pair<double,double> coordPair;
 
 public:
     /** @name x, y and z coordinate of the position. */
@@ -51,19 +52,19 @@ public:
 public:
     /** @brief Default constructor. */
     Coord()
-        : x(0.0), y(0.0), z(0.0) {}
+        : x(0.0), y(0.0), z(0.0), coordPair(std::make_pair(0,0)) {}
 
     /** @brief Initializes a coordinate. */
     Coord(double x, double y, double z = 0.0)
-        : x(x), y(y), z(z) {}
+        : x(x), y(y), z(z), coordPair(std::make_pair(x,y)){}
 
     /** @brief Initializes coordinate from other coordinate.*/
     Coord( const Coord& pos )
-        : cObject(pos), x(pos.x), y(pos.y), z(pos.z) {}
+        : cObject(pos), x(pos.x), y(pos.y), z(pos.z), coordPair(std::make_pair(pos.x,pos.y)) {}
 
     /** @brief Initializes coordinate from other coordinate.*/
     Coord( const Coord* pos )
-        : cObject(*pos), x(pos->x), y(pos->y), z(pos->z) {}
+        : cObject(*pos), x(pos->x), y(pos->y), z(pos->z), coordPair(std::make_pair(pos->x,pos->y)) {}
 
     /** @brief Returns a string with the value of the coordinate.*/
     std::string info() const {
@@ -192,6 +193,7 @@ public:
      * @brief Returns the squared distance on a torus of this to Coord 'b' (omits calling square root).
      */
     double sqrTorusDist(const Coord& b, const Coord& size) const;
+    std::pair<double, double> getPairCoord();
 
     /**
      * @brief Returns the square of the length of this Coords position vector.

@@ -312,6 +312,9 @@ void AnnotationManager::show(const Annotation* annotation) {
 	if (const Point* o = dynamic_cast<const Point*>(annotation)) {
 
 		if (ev.isGUI()) {
+		    std::stringstream circle_string;
+		    circle_string << "p=" << o->pos.x << "," << o->pos.y << ";b=10,10,oval,," << o->color << ";r=500,-," << o->color;
+		    annotation->dummyObjects.push_back(createDummyModule(circle_string.str()));
 			// no corresponding TkEnv representation
 		}
 

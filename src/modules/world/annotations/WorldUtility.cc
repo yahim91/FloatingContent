@@ -21,35 +21,25 @@ void WorldUtility::initialize(int stage) {
     BaseWorldUtility::initialize(stage);
     if (stage == 0) {
         annotations = AnnotationManagerAccess().getIfExists();
+        manager = TraCIScenarioManagerAccess().get();
         ASSERT(annotations);
-        interval = 500;
-    }
-    //draw border
-    annotations->drawLine(new Coord(0, 0, 1.895),
-            new Coord(getPgs()->x, 0, 1.895), "blue");
-    annotations->drawLine(new Coord(0, 0, 1.895),
-            new Coord(0, getPgs()->y, 1.895), "blue");
-    annotations->drawLine(new Coord(0, getPgs()->y, 1.895),
-            new Coord(getPgs()->x, getPgs()->y, 1.895), "blue");
-    annotations->drawLine(new Coord(getPgs()->x, 0, 1.895),
-            new Coord(getPgs()->x, getPgs()->y, 1.895), "blue");
+        ASSERT(manager);
 
-    //draw long
-    for (int i = interval; i < getPgs()->y; i += interval) {
-        annotations->drawLine(new Coord(0, i, 1.895),
-                new Coord(getPgs()->x, i, 1.895), "blue");
+        anchorSize = 500;//par("anchor_size");
     }
 
-    //draw lat
-    for (int i = interval; i < getPgs()->x; i += interval) {
-        annotations->drawLine(new Coord(i, 0, 1.895),
-                new Coord(i, getPgs()->y, 1.895), "blue");
+    for (double i = 0; i < getPgs()->x; i += anchorSize * 2) {
+        for (double j = 0; j < getPgs()->y; j += anchorSize * 2) {
+            AnnotationManager::Annotation* circle = annotations->drawPoint(
+                    Coord(i + anchorSize, j + anchorSize), "blue", "");
+            manager->addPOIReplica(Coord(i + anchorSize, j + anchorSize), circle);
+        }
     }
 
 }
 
 Coord WorldUtility::get_current_tile(Coord pos) {
-    int x = ((int)pos.x / interval) * interval;
-    int y = ((int)pos.y / interval) * interval;
+    int x = ((int) pos.x / anchorSize) * anchorSize;
+    int y = ((int) pos.y / anchorSize) * anchorSize;
     return new Coord(x, y);
 }

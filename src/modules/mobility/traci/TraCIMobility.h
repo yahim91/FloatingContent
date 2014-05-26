@@ -157,6 +157,7 @@ class TraCIMobility : public BaseMobility
 		bool debug; /**< whether to emit debug messages */
 		int accidentCount; /**< number of accidents */
 
+
 		cOutVector currentPosXVec; /**< vector plotting posx */
 		cOutVector currentPosYVec; /**< vector plotting posy */
 		cOutVector currentSpeedVec; /**< vector plotting speed */
