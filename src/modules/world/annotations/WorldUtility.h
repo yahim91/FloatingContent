@@ -26,11 +26,13 @@ protected:
     AnnotationManager* annotations;
     TraCIScenarioManager* manager;
     int anchorSize;
+    int anchorDistance;
 
 public:
     //WorldUtility();
     //virtual ~WorldUtility();
     virtual void initialize(int stage);
+    int getAnchorSize();
     Coord get_current_tile(Coord coord);
 };
 

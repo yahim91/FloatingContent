@@ -27,7 +27,16 @@
 
 class FloatingContentApp: public BaseWaveApplLayer {
 public:
+    class Statistics {
+    public:
+        int contacts;
+
+        void initialize();
+        void watch(cSimpleModule& module);
+        void recordScalars(cSimpleModule& module);
+    };
     virtual void initialize(int stage);
+    virtual void finish();
     typedef std::pair<double, double> Tile;
 
 protected:
@@ -39,8 +48,10 @@ protected:
     Coord currentTile;
     bool sentMessage;
     std::vector<int> activePeers;
-    cMessage* requestTile;
     std::vector<Coord> tiles;
+    cOutVector currentTilesX;
+    cOutVector currentTilesY;
+    Statistics statistics;
 
     // point of interest parameters
     int poiCount;
@@ -64,7 +75,9 @@ protected:
     virtual void handlePositionUpdate(cObject* obj);
     virtual void handleSelfMsg(cMessage* msg);
     //virtual void handleLowerMsg(cMessage* msg);
-    virtual FloatingContentMessage* prepareMessage(std::string name, int dataLengthBits, t_channel channel, int priority, int rcvId, int serial=0);
+    virtual FloatingContentMessage* prepareMessage(std::string name,
+            int dataLengthBits, t_channel channel, int priority, int rcvId,
+            int serial = 0);
     void refreshLocalStorage();
 
 };

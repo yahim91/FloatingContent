@@ -52,7 +52,7 @@ class AnnotationManager : public cSimpleModule
 
 		class Point : public Annotation {
 			public:
-				Point(Coord pos, std::string color, std::string text) : pos(pos), color(color), text(text) {}
+				Point(Coord pos, std::string color, std::string text, int radius) : pos(pos), color(color), text(text), radius(radius) {}
 				virtual ~Point() {}
 
 			protected:
@@ -61,6 +61,7 @@ class AnnotationManager : public cSimpleModule
 				Coord pos;
 				std::string color;
 				std::string text;
+				int radius;
 		};
 
 		class Line : public Annotation {
@@ -108,7 +109,7 @@ class AnnotationManager : public cSimpleModule
 
 		void addFromXml(cXMLElement* xml);
 		Group* createGroup(std::string title = "untitled");
-		Point* drawPoint(Coord p, std::string color, std::string text, Group* group = 0);
+		Point* drawPoint(Coord p, std::string color, std::string text, int radius, Group* group = 0);
 		Line* drawLine(Coord p1, Coord p2, std::string color, Group* group = 0);
 		Polygon* drawPolygon(std::list<Coord> coords, std::string color, Group* group = 0);
 		Polygon* drawPolygon(std::vector<Coord> coords, std::string color, Group* group = 0);

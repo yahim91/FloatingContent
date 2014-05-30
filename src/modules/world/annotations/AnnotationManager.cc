@@ -131,7 +131,7 @@ void AnnotationManager::addFromXml(cXMLElement* xml) {
 			std::vector<double> p1a = cStringTokenizer(points[0].c_str(), ",").asDoubleVector();
 			ASSERT(p1a.size() == 2);
 
-			drawPoint(Coord(p1a[0], p1a[1]), color, text);
+			drawPoint(Coord(p1a[0], p1a[1]), color, text, 0);
 		}
 		else if (tag == "line") {
 			ASSERT(e->getAttribute("color"));
@@ -179,8 +179,8 @@ AnnotationManager::Group* AnnotationManager::createGroup(std::string title) {
 	return group;
 }
 
-AnnotationManager::Point* AnnotationManager::drawPoint(Coord p, std::string color, std::string text, Group* group) {
-	Point* o = new Point(p, color, text);
+AnnotationManager::Point* AnnotationManager::drawPoint(Coord p, std::string color, std::string text, int radius, Group* group) {
+	Point* o = new Point(p, color, text, radius);
 	o->group = group;
 
 	annotations.push_back(o);
@@ -313,16 +313,16 @@ void AnnotationManager::show(const Annotation* annotation) {
 
 		if (ev.isGUI()) {
 		    std::stringstream circle_string;
-		    circle_string << "p=" << o->pos.x << "," << o->pos.y << ";b=10,10,oval,," << o->color << ";r=500,-," << o->color;
+		    circle_string << "p=" << o->pos.x << "," << o->pos.y << ";b=10,10,oval,," << o->color << ";r="<< o->radius <<",-," << o->color;
 		    annotation->dummyObjects.push_back(createDummyModule(circle_string.str()));
 			// no corresponding TkEnv representation
 		}
 
 		TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
 		if (traci && traci->isConnected()) {
-			std::stringstream nameBuilder; nameBuilder << o->text << " " << ev.getUniqueNumber();
-			traci->commandAddPoi(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(o->color), 6, o->pos);
-			annotation->traciPoiIds.push_back(nameBuilder.str());
+			//std::stringstream nameBuilder; nameBuilder << o->text << " " << ev.getUniqueNumber();
+			//traci->commandAddPoi(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(o->color), 6, o->pos);
+			//annotation->traciPoiIds.push_back(nameBuilder.str());
 		}
 	}
 	else if (const Line* l = dynamic_cast<const Line*>(annotation)) {

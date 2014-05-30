@@ -40,8 +40,11 @@ void FloatingContentApp::initialize(int stage) {
         traci = TraCIMobilityAccess().get(getParentModule());
         traciManager = TraCIScenarioManagerAccess().get();
         annotations = AnnotationManagerAccess().getIfExists();
+        statistics.initialize();
 
-        requestTile = new cMessage("requestTile");
+        currentTilesX.setName("currentTilesX");
+        currentTilesY.setName("currentTilesY");
+
         poiCount = par("poiCount");
         refreshInterval = par("refreshInterval");
         poiReplicationRange = par("poiReplicationRange");
@@ -60,7 +63,7 @@ void FloatingContentApp::initialize(int stage) {
             stopPoiMsg = new cMessage("scheduledStopPoi");
             poiColor = par("poiColor").stringValue();
             poiTTL = par("poiTTL");
-            scheduleAt(simTime() + poiStart, startPoiMsg);
+            //scheduleAt(simTime() + poiStart, startPoiMsg);
         }
         if (refreshInterval != 0) {
             scheduleAt(simTime() + refreshInterval, refreshPoi);
@@ -80,13 +83,13 @@ void FloatingContentApp::onBeacon(WaveShortMessage* wsm) {
         storage.writeDouble(tiles[i].y);
     }
     sendMessage(storage, wsm->getSenderAddress());
-
+    statistics.contacts++;
 }
 
 void FloatingContentApp::onData(WaveShortMessage* wsm) {
     //annotations->scheduleErase(1,
-            //annotations->drawLine(wsm->getSenderPos(),
-              //      traci->getPositionAt(simTime()), "blue"));
+    //annotations->drawLine(wsm->getSenderPos(),
+    //      traci->getPositionAt(simTime()), "blue"));
     FloatingContentMessage* msg = dynamic_cast<FloatingContentMessage*>(wsm);
     Storage storage = msg->getStorage();
     storage.resetIter();
@@ -99,14 +102,13 @@ void FloatingContentApp::onData(WaveShortMessage* wsm) {
             tiles.push_back(temp);
             findHost()->getDisplayString().updateWith("r1=16,green");
             traciManager->addPOIReplica(temp);
-            stored = true;
+            currentTilesX.record(temp.x);
+            currentTilesY.record(temp.y);
+            traciManager->incPOIContacts(temp);
+            //statistics.contacts++;
         }
     }
-
-    if (!stored) {
-        //findHost()->getDisplayString().updateWith("r1=16,yellow;");
-    }
-
+    statistics.contacts++;
 }
 
 void FloatingContentApp::sendMessage(Storage storage, int address) {
@@ -115,47 +117,37 @@ void FloatingContentApp::sendMessage(Storage storage, int address) {
             channel, dataPriority, -1, 2);
     new_msg->setRecipientAddress(address);
     new_msg->setStorage(storage);
-
     sendWSM(new_msg);
 }
 
 void FloatingContentApp::handlePositionUpdate(cObject* obj) {
     char s[100];
     BaseWaveApplLayer::handlePositionUpdate(obj);
-    //Coord tile = world->get_current_tile(traci->getCurrentPosition());
     Coord anchorPoint;
-    traciManager->getCurrentPOI(traci->getCurrentPosition(), anchorPoint);
-    tiles.push_back(anchorPoint);
-    findHost()->getDisplayString().updateWith("r1=16,green");
-
+    if (traciManager->getCurrentPOI(traci->getCurrentPosition(), anchorPoint)) {
+        tiles.push_back(anchorPoint);
+        currentTilesX.record(anchorPoint.x);
+        currentTilesY.record(anchorPoint.y);
+        findHost()->getDisplayString().updateWith("r1=16,green");
+    }
 }
 
 void FloatingContentApp::handleSelfMsg(cMessage *msg) {
-    if (msg == requestTile) {
-        cMsgPar x = msg->par("x");
-        cMsgPar y = msg->par("y");
-        Coord newTile = new Coord(x.doubleValue(), y.doubleValue(), 0);
-        if (std::find(tiles.begin(), tiles.end(), newTile) == tiles.end()) {
-            tiles.push_back(newTile);
-        }
-        findHost()->getDisplayString().updateWith("r1=16,green");
-    } else if (msg == startPoiMsg) {
+    if (msg == startPoiMsg) {
         Coord geoCoord;
         setCircle = true;
         circleCoord = traci->getCurrentPosition();
         geoCoord = traci->commandPositionConversion(circleCoord);
-        AnnotationManager::Annotation* circle = annotations->drawPoint(circleCoord, "blue", "");
+        AnnotationManager::Annotation* circle = annotations->drawPoint(
+                circleCoord, "blue", "", world->getAnchorSize());
         traciManager->addPOIReplica(circleCoord, circle);
-        /*sprintf(circleDisplayString, "r2=500,-,%s,,%lf,%lf;r1=16,%s",
-                poiColor.c_str(), circleCoord.x, circleCoord.y, poiColor.c_str());
-        findHost()->getDisplayString().updateWith(circleDisplayString);*/
         tiles.push_back(circleCoord);
         //scheduleAt(simTime() + poiTTL, stopPoiMsg);
     } else if (msg == stopPoiMsg) {
         findHost()->getDisplayString().removeTag("r2");
     } else if (msg == refreshPoi) {
-        scheduleAt(simTime() + refreshInterval, refreshPoi);
         refreshLocalStorage();
+        scheduleAt(simTime() + refreshInterval, refreshPoi);
     } else {
         BaseWaveApplLayer::handleSelfMsg(msg);
     }
@@ -199,14 +191,33 @@ FloatingContentMessage* FloatingContentApp::prepareMessage(std::string name,
 
 void FloatingContentApp::refreshLocalStorage() {
     std::vector<Coord>::iterator tile = tiles.begin();
-    while(tile != tiles.end()) {
+    while (tile != tiles.end()) {
         if (tile->distance(traci->getCurrentPosition()) > poiReplicationRange) {
-            tile = tiles.erase(tile);
             traciManager->removePOIReplica(*tile);
-            stored = false;
             findHost()->getDisplayString().removeTag("r1");
+            tile = tiles.erase(tile);
         } else {
             ++tile;
         }
     }
+}
+
+void FloatingContentApp::finish() {
+    //remove all anchor points
+    std::vector<Coord>::iterator tile = tiles.begin();
+    while (tile != tiles.end()) {
+        traciManager->removePOIReplica(*tile);
+        findHost()->getDisplayString().removeTag("r1");
+        tile = tiles.erase(tile);
+    }
+    statistics.recordScalars(*this);
+    BaseWaveApplLayer::finish();
+}
+
+void FloatingContentApp::Statistics::initialize() {
+    contacts = 0;
+}
+
+void FloatingContentApp::Statistics::recordScalars(cSimpleModule &module) {
+    module.recordScalar("contacts", contacts);
 }

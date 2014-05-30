@@ -53,7 +53,8 @@ void TraCIScenarioManager::initialize(int stage) {
     if (stage != 1) {
         return;
     }
-
+    WATCH(replicas);
+    anchorRadius = par("anchorRadius");
     debug = par("debug");
     connectAt = par("connectAt");
     firstStepAt = par("firstStepAt");
@@ -203,6 +204,7 @@ void TraCIScenarioManager::sendTraCIMessage(std::string buf) {
         TraCIBuffer buf2 = TraCIBuffer();
         buf2 << msgLength;
         uint32_t bytesWritten = 0;
+
         while (bytesWritten < sizeof(uint32_t)) {
             size_t sentBytes = ::send(MYSOCKET,
                     buf2.str().c_str() + bytesWritten,
@@ -475,6 +477,10 @@ void TraCIScenarioManager::finish() {
     while (hosts.begin() != hosts.end()) {
         deleteModule(hosts.begin()->first);
     }
+    for (std::map<std::pair<double, double>, AnchorZone>::iterator it =
+            anchorZones.begin(); it != anchorZones.end(); it++) {
+        it->second.recordScalars();
+    }
 }
 
 void TraCIScenarioManager::handleMessage(cMessage *msg) {
@@ -559,40 +565,40 @@ void TraCIScenarioManager::commandSetVehicleParking(std::string nodeId) {
 
 std::string TraCIScenarioManager::commandGetEdgeId(std::string nodeId) {
     return genericGetString(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_ROAD_ID,
-            RESPONSE_GET_VEHICLE_VARIABLE);
+    RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
 std::string TraCIScenarioManager::commandGetCurrentEdgeOnRoute(
         std::string nodeId) {
     return genericGetString(CMD_GET_VEHICLE_VARIABLE, nodeId, LANE_EDGE_ID,
-            RESPONSE_GET_VEHICLE_VARIABLE);
+    RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
 std::string TraCIScenarioManager::commandGetLaneId(std::string nodeId) {
     return genericGetString(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_LANE_ID,
-            RESPONSE_GET_VEHICLE_VARIABLE);
+    RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
 double TraCIScenarioManager::commandGetLanePosition(std::string nodeId) {
     return genericGetDouble(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_LANEPOSITION,
-            RESPONSE_GET_VEHICLE_VARIABLE);
+    RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
 std::list<std::string> TraCIScenarioManager::commandGetPlannedEdgeIds(
         std::string nodeId) {
     return genericGetStringList(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_EDGES,
-            RESPONSE_GET_VEHICLE_VARIABLE);
+    RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
 std::string TraCIScenarioManager::commandGetRouteId(std::string nodeId) {
     return genericGetString(CMD_GET_VEHICLE_VARIABLE, nodeId, VAR_ROUTE_ID,
-            RESPONSE_GET_VEHICLE_VARIABLE);
+    RESPONSE_GET_VEHICLE_VARIABLE);
 }
 
 std::list<std::string> TraCIScenarioManager::commandGetRouteEdgeIds(
         std::string routeId) {
     return genericGetStringList(CMD_GET_ROUTE_VARIABLE, routeId, VAR_EDGES,
-            RESPONSE_GET_ROUTE_VARIABLE);
+    RESPONSE_GET_ROUTE_VARIABLE);
 }
 
 void TraCIScenarioManager::commandChangeRoute(std::string nodeId,
@@ -746,18 +752,18 @@ void TraCIScenarioManager::commandSetTrafficLightPhaseIndex(
 
 std::list<std::string> TraCIScenarioManager::commandGetPolygonIds() {
     return genericGetStringList(CMD_GET_POLYGON_VARIABLE, "", ID_LIST,
-            RESPONSE_GET_POLYGON_VARIABLE);
+    RESPONSE_GET_POLYGON_VARIABLE);
 }
 
 std::string TraCIScenarioManager::commandGetPolygonTypeId(std::string polyId) {
     return genericGetString(CMD_GET_POLYGON_VARIABLE, polyId, VAR_TYPE,
-            RESPONSE_GET_POLYGON_VARIABLE);
+    RESPONSE_GET_POLYGON_VARIABLE);
 }
 
 std::list<Coord> TraCIScenarioManager::commandGetPolygonShape(
         std::string polyId) {
     return genericGetCoordList(CMD_GET_POLYGON_VARIABLE, polyId, VAR_SHAPE,
-            RESPONSE_GET_POLYGON_VARIABLE);
+    RESPONSE_GET_POLYGON_VARIABLE);
 }
 
 void TraCIScenarioManager::commandSetPolygonShape(std::string polyId,
@@ -826,31 +832,51 @@ void TraCIScenarioManager::commandAddPoi(std::string poiId, std::string poiType,
     TraCIBuffer buf = queryTraCI(CMD_SET_POI_VARIABLE, p);
     ASSERT(buf.eof());
 }
+
 int TraCIScenarioManager::addPOIReplica(Coord p,
         AnnotationManager::Annotation* a) {
-    poi2Ann[p.getPairCoord()] = a;
-    return poiNumReplicas[p.getPairCoord()]++;
+
+    AnchorZone aZone(p, this);
+    aZone.setAnnotation(a);
+    aZone.replicas++;
+    anchorZones[p.getPairCoord()] = aZone;
+    return aZone.replicas;
 }
 int TraCIScenarioManager::addPOIReplica(Coord p) {
-    return poiNumReplicas[p.getPairCoord()]++;
+    anchorZones[p.getPairCoord()].replicas++;
+    return anchorZones[p.getPairCoord()].replicas;
 }
 
 int TraCIScenarioManager::removePOIReplica(Coord p) {
-    if (--poiNumReplicas[p.getPairCoord()] == 0) {
-        AnnotationManager *an = AnnotationManagerAccess().getIfExists();
-        an->erase(poi2Ann[p.getPairCoord()]);
-        poi2Ann.erase(p.getPairCoord());
-        poiNumReplicas.erase(p.getPairCoord());
-        return 0;
+    if (anchorZones.find(p.getPairCoord()) == anchorZones.end()) {
+        return -1;
     }
-    return --poiNumReplicas[p.getPairCoord()];
+    anchorZones[p.getPairCoord()].replicas--;
+
+    if (anchorZones[p.getPairCoord()].replicas == 0) {
+        /*AnnotationManager *an = AnnotationManagerAccess().getIfExists();
+         an->erase(poi2Ann[p.getPairCoord()]);
+         poi2Ann.erase(p.getPairCoord());
+         poiNumReplicas.erase(p.getPairCoord());*/
+    }
+
+    return anchorZones[p.getPairCoord()].replicas;
+}
+
+void TraCIScenarioManager::incPOIContacts(Coord p) {
+    anchorZones[p.getPairCoord()].contacts++;
 }
 
 bool TraCIScenarioManager::getCurrentPOI(Coord p, Coord& anchorPoint) {
-    int x = ((int) p.x / 1000) * 1000 + 500;
-    int y = ((int) p.y / 1000) * 1000 + 500;
-    if (!replicated[Coord(x,y).getPairCoord()]) {
-        replicated[Coord(x,y).getPairCoord()] = true;
+
+    int anchorSize = anchorRadius * 2;
+    int x = ((int) p.x / anchorSize) * anchorSize + anchorRadius;
+    int y = ((int) p.y / anchorSize) * anchorSize + anchorRadius;
+    if (p.distance(Coord(x, y)) > anchorRadius)
+        return false;
+    if (anchorZones.find(std::make_pair(x, y)) != anchorZones.end()
+            && !anchorZones[Coord(x, y).getPairCoord()].replicated) {
+        anchorZones[Coord(x, y).getPairCoord()].replicated = true;
         anchorPoint.x = x;
         anchorPoint.y = y;
     } else {
@@ -871,42 +897,42 @@ void TraCIScenarioManager::commandRemovePoi(std::string poiId, int32_t layer) {
 
 std::list<std::string> TraCIScenarioManager::commandGetLaneIds() {
     return genericGetStringList(CMD_GET_LANE_VARIABLE, "", ID_LIST,
-            RESPONSE_GET_LANE_VARIABLE);
+    RESPONSE_GET_LANE_VARIABLE);
 }
 
 std::list<Coord> TraCIScenarioManager::commandGetLaneShape(std::string laneId) {
     return genericGetCoordList(CMD_GET_LANE_VARIABLE, laneId, VAR_SHAPE,
-            RESPONSE_GET_LANE_VARIABLE);
+    RESPONSE_GET_LANE_VARIABLE);
 }
 
 std::string TraCIScenarioManager::commandGetLaneEdgeId(std::string laneId) {
     return genericGetString(CMD_GET_LANE_VARIABLE, laneId, LANE_EDGE_ID,
-            RESPONSE_GET_LANE_VARIABLE);
+    RESPONSE_GET_LANE_VARIABLE);
 }
 
 double TraCIScenarioManager::commandGetLaneLength(std::string laneId) {
     return genericGetDouble(CMD_GET_LANE_VARIABLE, laneId, VAR_LENGTH,
-            RESPONSE_GET_LANE_VARIABLE);
+    RESPONSE_GET_LANE_VARIABLE);
 }
 
 double TraCIScenarioManager::commandGetLaneMaxSpeed(std::string laneId) {
     return genericGetDouble(CMD_GET_LANE_VARIABLE, laneId, VAR_MAXSPEED,
-            RESPONSE_GET_LANE_VARIABLE);
+    RESPONSE_GET_LANE_VARIABLE);
 }
 
 double TraCIScenarioManager::commandGetLaneMeanSpeed(std::string laneId) {
     return genericGetDouble(CMD_GET_LANE_VARIABLE, laneId, LAST_STEP_MEAN_SPEED,
-            RESPONSE_GET_LANE_VARIABLE);
+    RESPONSE_GET_LANE_VARIABLE);
 }
 
 std::list<std::string> TraCIScenarioManager::commandGetJunctionIds() {
     return genericGetStringList(CMD_GET_JUNCTION_VARIABLE, "", ID_LIST,
-            RESPONSE_GET_JUNCTION_VARIABLE);
+    RESPONSE_GET_JUNCTION_VARIABLE);
 }
 
 Coord TraCIScenarioManager::commandGetJunctionPosition(std::string junctionId) {
     return genericGetCoord(CMD_GET_JUNCTION_VARIABLE, junctionId, VAR_POSITION,
-            RESPONSE_GET_JUNCTION_VARIABLE);
+    RESPONSE_GET_JUNCTION_VARIABLE);
 }
 
 bool TraCIScenarioManager::commandAddVehicle(std::string vehicleId,
@@ -1680,5 +1706,33 @@ template<> TraCIScenarioManager::TraCICoord TraCIScenarioManager::TraCIBuffer::r
     p.y = read<double>();
 
     return p;
+}
+
+int TraCIScenarioManager::AnchorZone::idx;
+
+TraCIScenarioManager::AnchorZone::AnchorZone() {
+}
+
+
+TraCIScenarioManager::AnchorZone::AnchorZone(Coord pos, cModule *module) {
+    this->pos = pos;
+    this->replicas = 0;
+    this->contacts = 0;
+    cModuleType* nodeType = cModuleType::get("org.mixim.examples.FloatingContent.AnchorZone");
+
+    mod = nodeType->create("anchorZone", module, 200, idx++);
+    mod->finalizeParameters();
+}
+
+void TraCIScenarioManager::AnchorZone::setAnnotation(
+        AnnotationManager::Annotation* ann) {
+    this->ann = ann;
+}
+
+void TraCIScenarioManager::AnchorZone::recordScalars() {
+    mod->recordScalar("contacts", this->contacts);
+    mod->recordScalar("replicas", this->replicas);
+    mod->recordScalar("xpos", this->pos.x);
+    mod->recordScalar("ypos", this->pos.y);
 }
 
