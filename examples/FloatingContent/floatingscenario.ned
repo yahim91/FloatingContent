@@ -17,5 +17,5 @@ package org.mixim.examples.FloatingContent;
 
 network Floatingscenario extends FloatingContent
 {
-   //@display("bgb=6000,3000;");
+    //@display("bgb=4300,2200;bgi=background/SanFrancisco6;bgs=0.2,m");
 }

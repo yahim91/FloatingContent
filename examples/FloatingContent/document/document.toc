@@ -1,0 +1,4 @@
+\contentsline {chapter}{Contents}{i}{section*.1}
+\contentsline {chapter}{\numberline {1}Mobile social networking}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Introduction}{1}{section.1.1}
+\contentsline {section}{\numberline {1.2}Mobile social applications}{1}{section.1.2}

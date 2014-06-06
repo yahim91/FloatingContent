@@ -40,7 +40,7 @@ void FloatingContentApp::initialize(int stage) {
         traci = TraCIMobilityAccess().get(getParentModule());
         traciManager = TraCIScenarioManagerAccess().get();
         annotations = AnnotationManagerAccess().getIfExists();
-        statistics.initialize();
+        //statistics.initialize();
 
         currentTilesX.setName("currentTilesX");
         currentTilesY.setName("currentTilesY");
@@ -74,62 +74,76 @@ void FloatingContentApp::initialize(int stage) {
 void FloatingContentApp::onBeacon(WaveShortMessage* wsm) {
     //beacon received - transmitting all stored informations
     Storage storage;
-    if (!tiles.size())
-        return;
+    /*if (!tiles.size())
+     return;
 
-    storage.writeInt(tiles.size());
-    for (unsigned int i = 0; i < tiles.size(); i++) {
-        storage.writeDouble(tiles[i].x);
-        storage.writeDouble(tiles[i].y);
-    }
+     storage.writeInt(tiles.size());
+     for (unsigned int i = 0; i < tiles.size(); i++) {
+     storage.writeDouble(tiles[i].x);
+     storage.writeDouble(tiles[i].y);
+     }*/
     sendMessage(storage, wsm->getSenderAddress());
-    statistics.contacts++;
+    //statistics.contacts++;
 }
 
 void FloatingContentApp::onData(WaveShortMessage* wsm) {
-    //annotations->scheduleErase(1,
-    //annotations->drawLine(wsm->getSenderPos(),
-    //      traci->getPositionAt(simTime()), "blue"));
+    /*annotations->scheduleErase(1,
+     annotations->drawLine(wsm->getSenderPos(),
+     traci->getPositionAt(simTime()), "blue"));*/
+
     FloatingContentMessage* msg = dynamic_cast<FloatingContentMessage*>(wsm);
-    Storage storage = msg->getStorage();
-    storage.resetIter();
-    int poiCount = storage.readInt();
-    Coord temp;
-    for (int i = 0; i < poiCount; i++) {
-        temp = new Coord(storage.readDouble(), storage.readDouble());
-        if (traci->getCurrentPosition().distance(temp) < poiReplicationRange
-                && std::find(tiles.begin(), tiles.end(), temp) == tiles.end()) {
-            tiles.push_back(temp);
-            findHost()->getDisplayString().updateWith("r1=16,green");
-            traciManager->addPOIReplica(temp);
-            currentTilesX.record(temp.x);
-            currentTilesY.record(temp.y);
-            traciManager->incPOIContacts(temp);
-            //statistics.contacts++;
-        }
-    }
-    statistics.contacts++;
+    if (msg->getRecipientAddress() != myId)
+        return;
+    /*Storage storage = msg->getStorage();
+     storage.resetIter();
+     int poiCount = storage.readInt();
+     Coord temp;
+     for (int i = 0; i < poiCount; i++) {
+     temp = new Coord(storage.readDouble(), storage.readDouble());
+     if (traci->getCurrentPosition().distance(temp) < poiReplicationRange
+     && std::find(tiles.begin(), tiles.end(), temp) == tiles.end()) {
+     tiles.push_back(temp);
+     findHost()->getDisplayString().updateWith("r1=16,green");
+     traciManager->addPOIReplica(temp);
+     currentTilesX.record(temp.x);
+     currentTilesY.record(temp.y);
+
+     traciManager->endTransmission(temp, wsm->getSenderAddress(),
+     wsm->getRecipientAddress());
+     //statistics.contacts++;
+     }
+     }*/
+    traciManager->checkSameAnchor(wsm->getSenderPos(),
+            traci->getCurrentPosition(), wsm->getSenderAddress(), myId,
+            world->getMaxX(), world->getMaxY());
+
+    //statistics.contacts++;
+    traciManager->deleteTransmission(wsm->getSenderAddress(),
+            wsm->getRecipientAddress());
 }
 
 void FloatingContentApp::sendMessage(Storage storage, int address) {
     t_channel channel = dataOnSch ? type_SCH : type_CCH;
     FloatingContentMessage* new_msg = prepareMessage("data", dataLengthBits,
-            channel, dataPriority, -1, 2);
-    new_msg->setRecipientAddress(address);
+            channel, dataPriority, address, 2);
+
     new_msg->setStorage(storage);
+    traciManager->startTransmission(myId, address);
     sendWSM(new_msg);
 }
 
 void FloatingContentApp::handlePositionUpdate(cObject* obj) {
-    char s[100];
     BaseWaveApplLayer::handlePositionUpdate(obj);
     Coord anchorPoint;
-    if (traciManager->getCurrentPOI(traci->getCurrentPosition(), anchorPoint)) {
-        tiles.push_back(anchorPoint);
-        currentTilesX.record(anchorPoint.x);
-        currentTilesY.record(anchorPoint.y);
-        findHost()->getDisplayString().updateWith("r1=16,green");
-    }
+    traciManager->checkCurrentAnchors(traci->getCurrentPosition(), myId,
+            world->getMaxX(), world->getMaxY());
+    /*if (traciManager->getCurrentPOI(traci->getCurrentPosition(), anchorPoint,
+     this->getId())) {
+     tiles.push_back(anchorPoint);
+     currentTilesX.record(anchorPoint.x);
+     currentTilesY.record(anchorPoint.y);
+     findHost()->getDisplayString().updateWith("r1=16,green");
+     }*/
 }
 
 void FloatingContentApp::handleSelfMsg(cMessage *msg) {
@@ -210,7 +224,7 @@ void FloatingContentApp::finish() {
         findHost()->getDisplayString().removeTag("r1");
         tile = tiles.erase(tile);
     }
-    statistics.recordScalars(*this);
+    //statistics.recordScalars(*this);
     BaseWaveApplLayer::finish();
 }
 

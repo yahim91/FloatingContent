@@ -34,6 +34,8 @@ public:
     virtual void initialize(int stage);
     int getAnchorSize();
     Coord get_current_tile(Coord coord);
+    int getMaxX();
+    int getMaxY();
 };
 
 class Tile: public std::pair<double, double>

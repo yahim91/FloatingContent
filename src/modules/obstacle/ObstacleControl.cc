@@ -124,7 +124,7 @@ void ObstacleControl::add(Obstacle obstacle) {
 	}
 
 	// visualize using AnnotationManager
-	//if (annotations) o->visualRepresentation = annotations->drawPolygon(o->getShape(), "red", annotationGroup);
+	if (annotations) o->visualRepresentation = annotations->drawPolygon(o->getShape(), "red", annotationGroup);
 
 	cacheEntries.clear();
 }

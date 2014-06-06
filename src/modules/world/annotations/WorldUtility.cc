@@ -29,12 +29,12 @@ void WorldUtility::initialize(int stage) {
         anchorDistance = par("anchorDistance");
     }
 
-    for (double i = 0; i < getPgs()->x; i += anchorDistance) {
-        for (double j = 0; j < getPgs()->y; j += anchorDistance) {
+    for (double i = 0; i <= getPgs()->x; i += anchorDistance) {
+        for (double j = 0; j <= getPgs()->y; j += anchorDistance) {
 
             AnnotationManager::Annotation* circle = annotations->drawPoint(
-                    Coord(i + anchorSize, j + anchorSize), "blue", "", anchorSize);
-            manager->addPOIReplica(Coord(i + anchorSize, j + anchorSize),
+                    Coord(i, j), "blue", "", anchorSize);
+            manager->addPOIReplica(Coord(i, j),
                     circle);
 
         }
@@ -50,4 +50,12 @@ Coord WorldUtility::get_current_tile(Coord pos) {
 
 int WorldUtility::getAnchorSize() {
     return anchorSize;
+}
+
+int WorldUtility::getMaxX() {
+    return getPgs()->x / anchorDistance;
+}
+
+int WorldUtility::getMaxY() {
+    return getPgs()->y / anchorDistance;
 }

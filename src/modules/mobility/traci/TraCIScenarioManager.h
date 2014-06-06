@@ -59,6 +59,30 @@ public:
         void initialize();
     };
 
+    class Node {
+    public:
+        int id;
+        simtime_t inTime;
+        simtime_t outTime;
+        int numContacts;
+
+        Node() {};
+        Node(const Node& node) :
+                id(node.id),
+                inTime(node.inTime),
+                outTime(node.outTime),
+                numContacts(node.numContacts)
+        {
+        }
+        Node& operator=(const Node& node) {
+            this->id = node.id;
+            this->inTime = node.inTime;
+            this->inTime = node.outTime;
+            this->numContacts = node.numContacts;
+            return *this;
+        }
+    };
+
     class AnchorZone {
     public:
         static int idx;
@@ -67,18 +91,18 @@ public:
         AnnotationManager::Annotation* ann;
         bool replicated;
         int contacts;
+        simtime_t timeInContact;
         cModule* mod;
+        std::map<int, Node> nodes;
+        std::map<std::pair<int, int>, int> contactsBetweenNodes;
 
         AnchorZone();
         AnchorZone(Coord, cModule*);
         AnchorZone(const AnchorZone& az) :
-                replicas(az.replicas),
-                contacts(az.contacts),
-                pos(az.pos),
-                replicated(az.replicated),
-                ann(az.ann),
-                mod(az.mod)
-        {
+                replicas(az.replicas), contacts(az.contacts), pos(az.pos), replicated(
+                        az.replicated), timeInContact(az.timeInContact), ann(
+                        az.ann), mod(az.mod), nodes(az.nodes),
+                        contactsBetweenNodes(az.contactsBetweenNodes){
         }
         void setAnnotation(AnnotationManager::Annotation*);
         void recordScalars();
@@ -89,6 +113,9 @@ public:
             replicated = az.replicated;
             ann = az.ann;
             mod = az.mod;
+            nodes = az.nodes;
+            timeInContact = az.timeInContact;
+            contactsBetweenNodes = az.contactsBetweenNodes;
             return *this;
         }
     };
@@ -183,8 +210,14 @@ public:
     int addPOIReplica(Coord p, AnnotationManager::Annotation* a);
     int addPOIReplica(Coord p);
     int removePOIReplica(Coord p);
-    bool getCurrentPOI(Coord p, Coord& anchorPoint);
-    void incPOIContacts(Coord p);
+    bool getCurrentPOI(Coord p, Coord& anchorPoint, int id);
+    void startTransmission(int sndId, int rcvId);
+    void endTransmission(Coord p, int sndId, int rcvId);
+    void deleteTransmission(int sndId, int rcvId);
+    void updateContacts(Coord p, int snd, int rcv);
+    void checkSameAnchor(Coord s, Coord r, int snd, int rcv, int x, int y);
+    bool isInAnchor(Coord p, Coord az);
+    void checkCurrentAnchors(Coord s, int id, int x, int y);
 
     const std::map<std::string, cModule*>& getManagedHosts() {
         return hosts;
@@ -317,7 +350,7 @@ protected:
 
     int replicas;
     int anchorRadius;
-
+    std::map<std::pair<int, int>, simtime_t> contactsInProcess;
     std::map<std::pair<double, double>, AnchorZone> anchorZones;
 
     bool debug; /**< whether to emit debug messages */

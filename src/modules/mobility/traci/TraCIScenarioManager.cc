@@ -842,6 +842,7 @@ int TraCIScenarioManager::addPOIReplica(Coord p,
     anchorZones[p.getPairCoord()] = aZone;
     return aZone.replicas;
 }
+
 int TraCIScenarioManager::addPOIReplica(Coord p) {
     anchorZones[p.getPairCoord()].replicas++;
     return anchorZones[p.getPairCoord()].replicas;
@@ -863,17 +864,127 @@ int TraCIScenarioManager::removePOIReplica(Coord p) {
     return anchorZones[p.getPairCoord()].replicas;
 }
 
-void TraCIScenarioManager::incPOIContacts(Coord p) {
-    anchorZones[p.getPairCoord()].contacts++;
+void TraCIScenarioManager::updateContacts(Coord p, int sndId, int rcvId) {
+    anchorZones[p.getPairCoord()].contactsBetweenNodes[std::make_pair(sndId,
+            rcvId)]++;
+
 }
 
-bool TraCIScenarioManager::getCurrentPOI(Coord p, Coord& anchorPoint) {
+void TraCIScenarioManager::startTransmission(int sndId, int rcvId) {
+    contactsInProcess[std::make_pair(sndId, rcvId)] = simTime();
+}
+
+void TraCIScenarioManager::endTransmission(Coord p, int sndId, int rcvId) {
+    if (contactsInProcess.find(std::make_pair(sndId, rcvId))
+            == contactsInProcess.end()) {
+        return;
+    }
+    simtime_t startTime = contactsInProcess[std::make_pair(sndId, rcvId)];
+    simtime_t elapsedTime = (simTime()
+            - contactsInProcess[std::make_pair(sndId, rcvId)]);
+    int toSec = elapsedTime.inUnit(SIMTIME_S);
+    anchorZones[p.getPairCoord()].timeInContact += (simTime()
+            - contactsInProcess[std::make_pair(sndId, rcvId)]);
+
+    anchorZones[p.getPairCoord()].contacts++;
+    anchorZones[p.getPairCoord()].nodes[rcvId].numContacts++;
+    anchorZones[p.getPairCoord()].nodes[sndId].numContacts++;
+
+}
+
+void TraCIScenarioManager::deleteTransmission(int sndId, int rcvId) {
+    contactsInProcess.erase(std::make_pair(sndId, rcvId));
+}
+
+bool TraCIScenarioManager::isInAnchor(Coord p, Coord az) {
+    if (az.distance(p) <= par("anchorRadius").doubleValue()) {
+        return true;
+    }
+    return false;
+}
+
+void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
+        int maxY) {
+    int anchorDistance = par("anchorDistance");
+    int cellX = ((int) s.x / anchorDistance);
+    int cellY = ((int) s.y / anchorDistance);
+
+    int cellDist = ceil((double) anchorRadius / anchorDistance);
+    for (int i = -cellDist; i <= cellDist; i++) {
+        if (cellX + i < 0 || cellX + i > maxX)
+            continue;
+        for (int j = -cellDist; j <= cellDist; j++) {
+            if (cellY + j < 0 || cellY + j > maxY)
+                continue;
+            Coord az((cellX + i) * anchorDistance,
+                    (cellY + j) * anchorDistance);
+            if (anchorZones.find(az.getPairCoord()) == anchorZones.end()) {
+                continue;
+            }
+
+            if (!isInAnchor(s, az)) {
+                continue;
+            }
+
+
+            if (anchorZones[az.getPairCoord()].nodes.find(id)
+                    == anchorZones[az.getPairCoord()].nodes.end()) {
+                anchorZones[az.getPairCoord()].nodes[id].inTime = simTime();
+            }
+        }
+    }
+}
+
+void TraCIScenarioManager::checkSameAnchor(Coord snd, Coord rcv, int sndId,
+        int rcvId, int maxX, int maxY) {
+    //int anchorSize = anchorRadius * 2;
+    int anchorDistance = par("anchorDistance");
+    int cellX = ((int) rcv.x / anchorDistance);
+    int cellY = ((int) rcv.y / anchorDistance);
+
+    int cellDist = ceil((double) anchorRadius / anchorDistance);
+    for (int i = -cellDist; i <= cellDist; i++) {
+        if (cellX + i < 0 || cellX + i > maxX)
+            continue;
+        for (int j = -cellDist; j <= cellDist; j++) {
+            if (cellY + j < 0 || cellY + j > maxY)
+                continue;
+            Coord az((cellX + i) * anchorDistance,
+                    (cellY + j) * anchorDistance);
+            if (anchorZones.find(az.getPairCoord()) == anchorZones.end()) {
+                continue;
+            }
+
+            if (isInAnchor(snd, az) && isInAnchor(rcv, az)) {
+                anchorZones[az.getPairCoord()].contactsBetweenNodes[std::make_pair(
+                        sndId, rcvId)]++;
+            }
+        }
+    }
+
+    /*int xr = ((int) rcv.x / anchorSize) * anchorSize + anchorRadius;
+     int yr = ((int) rcv.y / anchorSize) * anchorSize + anchorRadius;
+
+     int xs = ((int) snd.x / anchorSize) * anchorSize + anchorRadius;
+     int ys = ((int) snd.y / anchorSize) * anchorSize + anchorRadius;
+     if (xr == xs && ys == yr) {
+     anchorZones[std::make_pair(xr, yr)].contactsBetweenNodes[std::make_pair(
+     sndId, rcvId)]++;
+     }
+
+     return false;*/
+}
+
+bool TraCIScenarioManager::getCurrentPOI(Coord p, Coord& anchorPoint, int id) {
 
     int anchorSize = anchorRadius * 2;
     int x = ((int) p.x / anchorSize) * anchorSize + anchorRadius;
     int y = ((int) p.y / anchorSize) * anchorSize + anchorRadius;
     if (p.distance(Coord(x, y)) > anchorRadius)
         return false;
+
+    //anchorZones[Coord(x, y).getPairCoord()].nodes[id].inTime = simTime();
+
     if (anchorZones.find(std::make_pair(x, y)) != anchorZones.end()
             && !anchorZones[Coord(x, y).getPairCoord()].replicated) {
         anchorZones[Coord(x, y).getPairCoord()].replicated = true;
@@ -1713,12 +1824,12 @@ int TraCIScenarioManager::AnchorZone::idx;
 TraCIScenarioManager::AnchorZone::AnchorZone() {
 }
 
-
 TraCIScenarioManager::AnchorZone::AnchorZone(Coord pos, cModule *module) {
     this->pos = pos;
     this->replicas = 0;
     this->contacts = 0;
-    cModuleType* nodeType = cModuleType::get("org.mixim.examples.FloatingContent.AnchorZone");
+    cModuleType* nodeType = cModuleType::get(
+            "org.mixim.examples.FloatingContent.AnchorZone");
 
     mod = nodeType->create("anchorZone", module, 200, idx++);
     mod->finalizeParameters();
@@ -1730,9 +1841,24 @@ void TraCIScenarioManager::AnchorZone::setAnnotation(
 }
 
 void TraCIScenarioManager::AnchorZone::recordScalars() {
+    double numContacts;
+    typedef std::map<std::pair<int, int>, int>::iterator it_type;
+    double encounters = 0;
+
+    if (contactsBetweenNodes.size()) {
+        for (it_type i = contactsBetweenNodes.begin();
+                i != contactsBetweenNodes.end(); i++) {
+            encounters += i->second;
+        }
+        encounters /= contactsBetweenNodes.size();
+    }
+
+    mod->recordScalar("avgContacts", encounters);
+    mod->recordScalar("contactTime", timeInContact.inUnit(SIMTIME_MS));
     mod->recordScalar("contacts", this->contacts);
     mod->recordScalar("replicas", this->replicas);
     mod->recordScalar("xpos", this->pos.x);
     mod->recordScalar("ypos", this->pos.y);
+    mod->recordScalar("numNodes", this->nodes.size());
 }
 

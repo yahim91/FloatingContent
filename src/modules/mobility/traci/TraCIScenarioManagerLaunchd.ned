@@ -56,5 +56,7 @@ simple TraCIScenarioManagerLaunchd
         string roiRects = default("");  // which rectangles (e.g. "0,0-10,10 20,20-30,30) are considered to consitute the region of interest, if not empty
         double penetrationRate = default(1); //the probability of a vehicle being equipped with Car2X technology
         int anchorRadius @unit("m") = default(1m);
+        int anchorDistance @unit("m") = default(1m);
+        
 }
 
