@@ -904,10 +904,15 @@ bool TraCIScenarioManager::isInAnchor(Coord p, Coord az) {
 }
 
 void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
-        int maxY) {
+        int maxY, std::map<std::pair<double, double>, bool> &anchors) {
     int anchorDistance = par("anchorDistance");
     int cellX = ((int) s.x / anchorDistance);
     int cellY = ((int) s.y / anchorDistance);
+
+    typedef std::map<std::pair<double, double>, bool>::iterator it_type;
+    for (it_type it = anchors.begin(); it != anchors.end(); it++) {
+        it->second = false;
+    }
 
     int cellDist = ceil((double) anchorRadius / anchorDistance);
     for (int i = -cellDist; i <= cellDist; i++) {
@@ -926,11 +931,25 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
                 continue;
             }
 
-
             if (anchorZones[az.getPairCoord()].nodes.find(id)
                     == anchorZones[az.getPairCoord()].nodes.end()) {
                 anchorZones[az.getPairCoord()].nodes[id].inTime = simTime();
             }
+            anchors[az.getPairCoord()] = true;
+        }
+    }
+    it_type it = anchors.begin();
+
+
+    while(it != anchors.end()) {
+        if (it->second == false) {
+            anchorZones[it->first].timeAverage = simTime()
+                    - anchorZones[it->first].nodes[id].inTime;
+            anchorZones[it->first].numTransitNodes++;
+            anchorZones[it->first].nodes.erase(id);
+            anchors.erase(it++);
+        } else {
+            it++;
         }
     }
 }
@@ -1828,6 +1847,7 @@ TraCIScenarioManager::AnchorZone::AnchorZone(Coord pos, cModule *module) {
     this->pos = pos;
     this->replicas = 0;
     this->contacts = 0;
+    this->numTransitNodes = 0;
     cModuleType* nodeType = cModuleType::get(
             "org.mixim.examples.FloatingContent.AnchorZone");
 
@@ -1842,7 +1862,10 @@ void TraCIScenarioManager::AnchorZone::setAnnotation(
 
 void TraCIScenarioManager::AnchorZone::recordScalars() {
     double numContacts;
+    double avgTimeInAnchor;
     typedef std::map<std::pair<int, int>, int>::iterator it_type;
+    typedef std::map<int, Node>::iterator node_type;
+
     double encounters = 0;
 
     if (contactsBetweenNodes.size()) {
@@ -1850,9 +1873,22 @@ void TraCIScenarioManager::AnchorZone::recordScalars() {
                 i != contactsBetweenNodes.end(); i++) {
             encounters += i->second;
         }
-        encounters /= contactsBetweenNodes.size();
+        //encounters /= contactsBetweenNodes.size();
     }
 
+    for (node_type it = nodes.begin(); it != nodes.end(); it++) {
+        timeAverage = simTime() - it->second.inTime;
+        numTransitNodes++;
+    }
+    if (numTransitNodes == 0) {
+        avgTimeInAnchor = 0;
+    } else {
+        avgTimeInAnchor = (double)timeAverage.inUnit(SIMTIME_S)/numTransitNodes;
+        encounters /= numTransitNodes;
+    }
+
+    mod->recordScalar("criticality", numTransitNodes * avgTimeInAnchor * encounters);
+    mod->recordScalar("timeAverage", avgTimeInAnchor);
     mod->recordScalar("avgContacts", encounters);
     mod->recordScalar("contactTime", timeInContact.inUnit(SIMTIME_MS));
     mod->recordScalar("contacts", this->contacts);

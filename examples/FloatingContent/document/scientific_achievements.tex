@@ -31,3 +31,209 @@ purpose is to store data and display the geographic proximity based on the
 position of the user.
 
 \section{Weaknesses of network-based mobile application}
+While social network applications are dependent on the infrastructure services
+in order to overcome distances and to connect people around the world, relying
+on the infrastructure services for location-aware application may introduce
+issues regarding content and location relevance and security
+~\cite{percomfloatingcontent}:
+\begin{itemize}
+\item {\it Location privacy} concerns may arise from the need of the application
+to provide the user with the exact location, especially for the navigation
+services like Google Maps or Waze. It needs determining it with a high level of
+accuracy in order to obtain the right context information.
+\item {\it Content privacy} issues occur because the shared information is
+stored by a private company in a private ``central'' location and can be easily
+subject to censorship.
+\item {\it Connectivity} to the infrastructure services can be a problem,
+especially for traveling users who may have to deal with high roaming charges, 
+unavailability of data services, or no network coverage at all.
+\item {\it Geographic validity} concerns the location characteristics of the
+information. Locally relevant shared content may be of little interest to the
+rest of the world, so storing it in an accessible location may only cause memory
+waste.
+\item {\it Temporal validity} concerns the temporal characteristics of the
+information. Shared content which is stored in a ``central'' location is only
+valid for a limited amount of time and it is rarely associated with an expiry
+information. This practice leads to content never being deleted or never being
+read either,thus wasting databases memory.
+\item {\it User identification} of some kind is used usually in order to limit
+the amount of data being shared which creates some sense of responsibility
+towards the service provider. It can also be a privacy problem because the
+information shared is associated with the owner and nowadays companies like
+Facebook or Google are giving access to the records to security agencies for
+population surveillance (most recent case being PRISM) or for marketing
+purposes.
+\end{itemize}
+
+The solution to all the above problems is a content sharing service which is
+entirely dependent on mobile devices in the vicinity using principles of
+opportunistic networking. Bringing social media and content sharing into ad-hoc
+networks seems it is the next frontier in mobile industry. It can be seen as an
+extension to the Internet infrastructure, by bringing connectivity where the
+infrastructure is not able to.
+
+\chapter{Floating Content}\label{chap2}
+
+This chapter will describe the Floating Content model of the data storage.
+My application is based on this model used to simulate and observe the existence
+behaviour of the content on a real world map. The analysis is presented in
+detail in a further chapter.
+
+\section{Introduction}
+Floating Content network is a particular type of network that uses intermittent
+connectivity also known as delay tolerant networks (DTN). Recently, the new term
+disruption-tolerant networking has gained currency in the United States.
+Disruption may occur because of the limits of wireless radio range, sparsity of
+mobile nodes, energy resources, attack, and noise \cite{wikipedia_dtn}.
+This concept of information sharing matches the needs of context-aware
+applications because it keeps the spatial proximity in a close relation with
+connectivity.
+
+Context awareness is a characteristic of a mobile devices and includes different
+types. The most important are identity, activity, time, and the most important
+for our analysis, location. The application can determine what activities are
+occurring near the entity and what objects or people are near the entity.
+
+A use case scenario of context-aware application could be a tourist guide
+information sharing. When you're visiting an unfamiliar location, having an
+application that provides you with information about the surroundings can be a
+blessing. The content can include information, history about places you are
+visiting, hotel and restaurants and their service quality, directions you have
+to follow to reach a desired place and much more.
+
+\section{Applications for Floating Content}
+
+The features of floating content give the user useful opportunities but can also
+offer some important difficulties. The most useful opportunity enables
+localized information sharing without using infrastructure services and without
+a central data records. Since there is no remote access, it gives the user some
+degree of privacy, as you must be present in order to ``see'' something which is
+a usual concept in the daily life. The major challenge is that the
+communications service makes no guarantees that the data will stay around until
+its lifetime expires. For example, during the night the content is expected
+to disappear. We can make intuitive deductions, which are assisted by the
+simulations which will be later discussed. If the service is used in an
+overcrowded place like a market square or a heavy traffic road, there is a big
+probability that the content will float for some time, even if not all other
+people are using context-aware mobile devices. In the end, the best-effort
+communication it is better than no communication at all.
+
+Density fluctuations over the day may be a problem for the residing information
+in a certain place and it is expected to remain available for no more than a few
+hours. Making predictions that there will be enough people in that location is
+very limited for now. However, a limited amount of time, let's say one hour of
+``floating'' may be enough for the application to do its job. As a solution, a
+user can be a permanent seed staying around and reissue updated content.
+
+Multiple use cases can emerge from the floating content concept. One of them can
+use infrastructure-less local data availability for advertising or selling
+goods. This type of market has a dynamic catalog of available merchandise, being
+able to operate updates on the fly. The information is by the nature ephemeral
+and of local relevance.
+
+Another one is information sharing between tourists and visitors about the local
+attractions or notifications about good services a certain hotel is offering.
+Spreading news and keeping it localized, time-bounded and most important
+anonymous can be another use case of floating content for which best-effort
+operation perfectly suits the needs.
+
+Overall, floating content can be used in many ways or types, taking into
+consideration two important aspects of it: floating information is localized by
+design so the developers should consider multiple data-oriented architecture.
+The second aspect is that the concept is inherently best effort, a problem which
+the Internet infrastructure solves with repair mechanisms that can recover lost
+packets. In our case, data that {\it sunk} is irrecoverable in an area. Taking
+these into account for future application will produce more interesting uses.
+
+\section{Service model}
+
+This section describes the floating content design and the environment
+constraints that the architecture needs in order to work.
+We assume users to be mobile nodes who are interested in the content generated
+by all other nodes. We assume that they are using mobile devices with unlimited
+data memory in order to handle the amount of data exchanged during their
+participation in ad-hoc network. Also, there is no supporting infrastructure for
+the system.
+
+We assume that nodes are uniformly distributed and travel independently, with a
+constant speed. In \cite{uniform_distribution} it is shown that this mobility
+model preserve the spatial node distribution at all time points.
+
+The devices are equipped with wireless interfaces (Bluetooth or WLAN) to enhance
+network communication. Analysis of performance for 802.11p standard displayed in
+\cite {performance802.11} have shown that using a bitrate of 6Mbps and a
+payload of 500 bytes yields a delivery rate of up to 80\%. This indicates the acceptable
+reliability and performance of IEEE 802.11p and confirms the viability of
+floating up to several megabytes of data (from text messages to photos). This
+standard is used also in our simulation which will be discussed in a further
+chapter. Making intuitive judgements, we can determine that contacts cannot last
+more than several tens of seconds, in vehicle case even less due to their high
+speeds. Thus there will be no need for the mobile devices to reserve a
+considerable amount of storage for the floating content.
+
+The devices also need to be equipped with accurate systems which determine their
+position, e.g. using GPS tracking, cellular base stations, cell tower
+triangulations using WLAN access points or Wi-fi tracking which is a very
+popular technology. Each of these methodologies has its own advantages which
+will make them more appropriate in different domains regarding the facts like
+accuracy percentage needed, battery consumption etc. but in order to provide the
+best location based service, you need to acquire the most accurate location
+coordinates. Finally, nodes need to synchronize their clock time to tag the
+floating information; it can be done with the help of GPS or cellular networks.
+
+When producing information, the application must tag the information with its
+geographic origin, validity range and and time-to-live (TTL).
+Other nodes decide if they store the information and will replicate it further
+if they are in the associated anchor zone to others. The information is
+explicitly allowed to disappear providing no guarantees about its availability.
+If the lifetime of the content expires, it will be deleted by the application.
+In consequence an item may disappear if there are no nodes (or to few) to
+replicate it in its associated anchor zone, unless the creator is there to
+re-issue it again.
+
+\section{System operation}
+
+As \cite{percomfloatingcontent} presents, a node generates information I which
+has a size of s(I) and a defined lifetime (TTL). The information is tagged with
+the anchor zone also which is defined by its geo-located center P and two radii:
+{\it r} identifies the {\it replication range} and inside which nodes replicate
+the information to other nodes they encounter and {\it a} defines the
+{\it availability range} inside which the information is still stored with
+limited probability. As shown in the ~\ref{fig:anchor_zone} outside the
+availability zone there exist no copy of the item in nodes data storage.
+
+\begin{figure}[bt]
+ \centering
+ \includegraphics[width=0.35\textwidth]{img/upb}
+ \caption{The city is decomposed into several traffic zones. A car updates its route based on information obtained from a local Traffic Zone server.}
+ \label{fig:anchor_zone}
+\end{figure}
+
+The idea of the concept is that if two nodes meet in the anchor zone of some
+information, and one of them doesn't have it stored in the data storage then the
+other node will immediately send it so both nodes can be able to access it. As a
+result, every node inside the anchor zone should have a copy of the item while
+nodes which are leaving the anchor can delete it at their own discretion.
+
+Let's consider two nodes A and B which encounter at some point in time. Node A
+does have an item I tagged with an anchor zone centered in point P and radii
+{\it a} and {\it r}. Let {\it h} be the distance of node A from the center P.
+When node A meets node B, item I gets replicated to B with the probability
+$p_r(h)$:
+
+$$p_r(h) = \begin{cases}
+	1 & \text{if } h \leq r \\
+	R\left(h\right) & \text{if } r < h \leq a \\
+	0 & \text{otherwise} \\
+\end{cases}$$
+
+$R(h)$ is a decreasing function which determines the probability of replication
+between the outer replication border and the availability border of the anchor
+zone.
+The deletion probability $p_d(h)$ is defined as with $D(h)$ in $[0, 1]$ :
+
+$$p_d(h) = \begin{cases}
+	0 & \text{if } h \leq r \\
+	D\left(h\right) & \text{if } r < h \leq a \\
+	1 & \text{otherwise} \\
+\end{cases}$$

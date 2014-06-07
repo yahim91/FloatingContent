@@ -136,7 +136,7 @@ void FloatingContentApp::handlePositionUpdate(cObject* obj) {
     BaseWaveApplLayer::handlePositionUpdate(obj);
     Coord anchorPoint;
     traciManager->checkCurrentAnchors(traci->getCurrentPosition(), myId,
-            world->getMaxX(), world->getMaxY());
+            world->getMaxX(), world->getMaxY(), currentAnchors);
     /*if (traciManager->getCurrentPOI(traci->getCurrentPosition(), anchorPoint,
      this->getId())) {
      tiles.push_back(anchorPoint);

@@ -66,13 +66,12 @@ public:
         simtime_t outTime;
         int numContacts;
 
-        Node() {};
+        Node() {
+        }
+        ;
         Node(const Node& node) :
-                id(node.id),
-                inTime(node.inTime),
-                outTime(node.outTime),
-                numContacts(node.numContacts)
-        {
+                id(node.id), inTime(node.inTime), outTime(node.outTime), numContacts(
+                        node.numContacts) {
         }
         Node& operator=(const Node& node) {
             this->id = node.id;
@@ -95,14 +94,17 @@ public:
         cModule* mod;
         std::map<int, Node> nodes;
         std::map<std::pair<int, int>, int> contactsBetweenNodes;
+        simtime_t timeAverage;
+        int numTransitNodes;
 
         AnchorZone();
         AnchorZone(Coord, cModule*);
         AnchorZone(const AnchorZone& az) :
                 replicas(az.replicas), contacts(az.contacts), pos(az.pos), replicated(
                         az.replicated), timeInContact(az.timeInContact), ann(
-                        az.ann), mod(az.mod), nodes(az.nodes),
-                        contactsBetweenNodes(az.contactsBetweenNodes){
+                        az.ann), mod(az.mod), nodes(az.nodes), contactsBetweenNodes(
+                        az.contactsBetweenNodes),
+                        numTransitNodes(az.numTransitNodes) {
         }
         void setAnnotation(AnnotationManager::Annotation*);
         void recordScalars();
@@ -116,6 +118,7 @@ public:
             nodes = az.nodes;
             timeInContact = az.timeInContact;
             contactsBetweenNodes = az.contactsBetweenNodes;
+            numTransitNodes = az.numTransitNodes;
             return *this;
         }
     };
@@ -217,7 +220,8 @@ public:
     void updateContacts(Coord p, int snd, int rcv);
     void checkSameAnchor(Coord s, Coord r, int snd, int rcv, int x, int y);
     bool isInAnchor(Coord p, Coord az);
-    void checkCurrentAnchors(Coord s, int id, int x, int y);
+    void checkCurrentAnchors(Coord s, int id, int x, int y,
+            std::map<std::pair<double, double>, bool> &anchors);
 
     const std::map<std::string, cModule*>& getManagedHosts() {
         return hosts;

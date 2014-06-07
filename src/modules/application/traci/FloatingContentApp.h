@@ -48,6 +48,7 @@ protected:
     Coord currentTile;
     bool sentMessage;
     std::vector<int> activePeers;
+    std::map<std::pair<double, double>, bool> currentAnchors;
     std::vector<Coord> tiles;
     cOutVector currentTilesX;
     cOutVector currentTilesY;
