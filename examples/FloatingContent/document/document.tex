@@ -144,5 +144,16 @@
 %\newpage
 %\thispagestyle{plain}
 
+% ==== BIBLIOGRAPHY ============================================================
+\addcontentsline{toc}{chapter}{Bibliography}
+% ---- use AMS reference format (use file ametsoc.bst included in ...
+%      ... http://www.ametsoc.org/pubs/journals/AMS_Latex_V3.0.tar.gz):s
+\bibliographystyle{ametsoc}   % ametsoc.bst in local directory
+% ---- use BibTeX database file:
+\bibliography{bibfile}
+
+\newpage
+\thispagestyle{plain}
+
 \end{document}
 % ==== END OF BODY =============================================================
