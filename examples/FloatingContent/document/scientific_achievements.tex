@@ -237,3 +237,96 @@ $$p_d(h) = \begin{cases}
 	D\left(h\right) & \text{if } r < h \leq a \\
 	1 & \text{otherwise} \\
 \end{cases}$$
+
+The node preserves the free space due to the deletion function. It follows the
+first in, first out (FIFO) principle, deleting the oldest items first if there
+is a need for free space.
+
+The area between {\it replication range} and {\it availability range} acts as a
+buffer zone, that prevents immediate deletion of items. It is beneficial
+for nodes that leave the {\it replication range} for a short period of time,
+preventing them performing deletion operation. Thus, after returning inside
+{\it replication range}, they have the associated items preserved. Outside the
+anchor zone, a node could delete specific items when meeting with other nodes,
+or at a predefined timeout, checking if items are outside their zones or their
+lifetime expired.
+
+As \cite{percomfloatingcontent} did, for simplicity and more trackability, in
+our evaluation there is no buffer zone, i.e. {\it r = a}, deletion and replication
+function becoming useless in this case.
+
+\section{Communication Protocol}
+
+As described in \cite{percomfloatingcontent}, the floating content protocol,
+also used in our evaluations, is an efficient and simple method to exchange
+items between nodes. A message is identified by a message id $Id$, the anchor point
+with the attributes described earlier $(P, r, a)$, and the lifetime $T$. The
+header of the message is filled with these characteristics, and the message body
+of size $s(I)$ is filled with the desired payload.
+
+Below is the protocol which has 4 phases:
+
+\begin{enumerate}[1.]
+  \item Nodes keep sending neighbor discovery beacons to discover peers.
+  \item When receiving a discovery beacon, the peer decides to send in return,
+  its list of items that verifies the condition $p_r(h) > 0$, thus valid for
+  replication. In this phase the list contains only the attributes of the items,
+  keeping this message as compact as possible: $Id$, $s(I)$, $(P, r, a)$ and
+  lifetime $T$. If the list doesn't fit into a single message, it will be spread
+  across multiple summary messages in a round-robin fashion.
+  \item When receiving the list of items from a discovered peer, the node
+  request those items for which $p_r(h)$ suggests that they should be replicated.
+  \item In the last phase, requested items are exchanged until transfer
+  completion or nodes lose contact. Upon this step, the protocol should remove
+  uncompleted messages and return to phase 2.
+\end{enumerate}
+
+It is assumed that nodes can exchange messages fully bidirectional during any
+step. Moreover, they can exchange messages simultaneously to multiple nodes
+(even though technology may not be able). The beaconing process can take place
+while in middle of message exchange in order to keep the discovering process
+running. Since message exchanging is done in an incremental way, nodes can
+append the new coming messages to the list, while they are still in transfer.
+
+Deletion of item I occurs immediately the node moves outside of $a$. In
+\cite{percomfloatingcontent} is is suggested that a second possibility could be
+deletion $upon-encounter$ which discards a message when meeting a new node.
+stating that this policy is more sensible due to its asynchronous
+characteristic triggered by an external event. Naturally, deletion takes place
+before the list of items is sent to other peers.
+
+\section {Analytical model}
+
+Floating content model has been a subject of analysis in
+\cite{whendoesdatafloats} . The most important objective of this work has been
+finding a pattern to guarantee that a specific information remains in its anchor
+zone until the expiry of its lifetime with a high probability. It is called the
+$criticality condition$ and it depends on many aspects like mobility pattern and
+the replication policy of the nodes inside the anchor zone. 
+
+\subsection{Criticality Condition}
+
+As before, we assume each information is being tagged with an anchor zone in
+which nodes keep entering, spend some time and finally exit. Also, we assume
+that the nodes spend a relatively long time inside the anchor and follow a
+random mobility pattern. The population is assumed to be large and ``well
+mixed'' in order to preserve the proportion between its size and the nodes
+having the information. Further the criticality condition at the
+fluid limit is explained.
+
+While moving inside the anchor zone, a node encounters randomly other nodes.
+We assume there are only two nodes moving permanently inside the zone. Let
+$\upsilon$ be the frequency at which they come in contact with each other. Now,
+assuming the population of nodes in anchor is N, then the total number of pairs
+is $\frac{1}{2}N(N-1) \approx \frac{1}{2}N^2$ and the total rate of encounters
+is $\frac{1}{2}N^2\upsilon$. A part of these encounters, more exactly $2p(1-p)$,
+replicate an item to nodes that doesn't have it yet in the data storage, thus
+the total rate of such events is $p(1-p)N^2\upsilon$. At this rate, the size of
+the population of nodes which have the item I tends to increase. Let
+$\frac{1}{\mu}$ be the time spent by a node in the anchor zone. It results that
+the total exit rate of nodes is $N\mu$ and the exit rate of tagged nodes is
+$Np\mu$. The growth rate is determined by the formula:
+
+\begin{equation}
+N\frac{d}{dt}p = N^2p(1-p)\upsilon - Np\mu
+\end{equation}
