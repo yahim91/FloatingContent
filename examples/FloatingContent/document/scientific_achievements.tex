@@ -191,7 +191,7 @@ In consequence an item may disappear if there are no nodes (or to few) to
 replicate it in its associated anchor zone, unless the creator is there to
 re-issue it again.
 
-\section{System operation}
+\subsection{System operation}
 
 As \cite{percomfloatingcontent} presents, a node generates information I which
 has a size of s(I) and a defined lifetime (TTL). The information is tagged with
@@ -204,8 +204,12 @@ availability zone there exist no copy of the item in nodes data storage.
 
 \begin{figure}[bt]
  \centering
- \includegraphics[width=0.35\textwidth]{img/upb}
- \caption{The city is decomposed into several traffic zones. A car updates its route based on information obtained from a local Traffic Zone server.}
+ \includegraphics[width=0.6\textwidth]{img/anchor_zone}
+ \caption{Moving nodes inside across an anchor zone. Black nodes are
+ information-carrying nodes, white nodes will eventually get the information
+ from the black ones. The probability of a node carrying an item tends to 1
+ inside the replication zone, and decreases until reaching an availability a
+ after which no more copies are found. }
  \label{fig:anchor_zone}
 \end{figure}
 
@@ -255,7 +259,7 @@ As \cite{percomfloatingcontent} did, for simplicity and more trackability, in
 our evaluation there is no buffer zone, i.e. {\it r = a}, deletion and replication
 function becoming useless in this case.
 
-\section{Communication Protocol}
+\subsection{Communication Protocol}
 
 As described in \cite{percomfloatingcontent}, the floating content protocol,
 also used in our evaluations, is an efficient and simple method to exchange
@@ -295,6 +299,38 @@ stating that this policy is more sensible due to its asynchronous
 characteristic triggered by an external event. Naturally, deletion takes place
 before the list of items is sent to other peers.
 
+\subsection{Security issues and resource management}
+
+The presented protocol does not restrict the user in any way, regarding content
+generation and its context parameters. The single requirement is that the owner
+must be in the anchor zone at the time of creation. In consequence, this may
+represent a flaw in the protocol, users being able to insert items in network
+with an infinite anchor zone. Flooding items represent a threat for the network,
+because they exhaust the system resources very quickly, especially channel and
+buffer capacity.
+
+Reputation mechanisms like \cite{reputation} or accounting could represent
+solutions to the above spamming issues. But it would be very difficult to
+implement them without having an central infrastructure to enhance
+authentication of identities. Also being a best-effort service is another nail
+in the coffin for the rewarding system. Some simple mechanisms could be added to
+implementation like prioritizing items taking into consideration their expected
+storage consumption and the distance from the anchor. Thus, deleting the
+farthest or the most largest item may discourage unlimited content distribution.
+
+As shown in \cite{percomfloatingcontent}, the application can smartly manage its
+resources by giving preference to items with smallest anchor range. Items with
+very large anchor zones would have low availability due to the poor coverage it
+may have. Of course a spammer could move around on a large area to create items
+with small anchor zones and simulate an large anchor zone. There is no
+prevention mechanism for this, but it is considered that the spammer should put
+a lot of effort to achieve its goal. Also, the anchor zone needs to be
+periodically revisited due to the ephemerality characteristic of the
+information.
+This security mechanism doesn't require infrastructure service or any degree of
+mutual trust which is an advantage.
+
+
 \section {Analytical model}
 
 Floating content model has been a subject of analysis in
@@ -328,5 +364,55 @@ the total exit rate of nodes is $N\mu$ and the exit rate of tagged nodes is
 $Np\mu$. The growth rate is determined by the formula:
 
 \begin{equation}
-N\frac{d}{dt}p = N^2p(1-p)\upsilon - Np\mu
+N\frac{d}{dt}p = N^2p(1-p)\upsilon - Np\mu \label{eq:derivative}
 \end{equation}
+
+The two terms on the right hand side are equal in equilibrium leading to the
+stationary value $p^* = 1 - \mu / (\upsilon N)$. In order to have a positive
+solution, $p^* > 0$, it requires that,
+
+\begin{equation}
+N\frac{\upsilon}{\mu} > 1. \label{eq:criticality}
+\end{equation}
+
+Equation \eqref{eq:criticality} is called {\it criticality condition}. The left
+hand side value represents the average number of collisions a randomly chosen
+node has during its sojourn time. Taking into consideration the sign of
+the equation \eqref{eq:derivative} it can be seen that the solution is stable.
+If $p > 1 - \mu / (\upsilon N)$ it tends to increase, else if $p < 1 - \mu /
+(\upsilon N)$ it tends to decrease. The information disappears (even in the
+fluid model) when the derivative is everywhere negative leading the solution to
+p = 0. Moreover, since we need to prevent accidental disappearance of the
+information carrying population by stochastic fluctuations, $Np = N - \mu /
+\upsilon$ must be large.
+
+\subsection{Model applicability}
+
+It can be seen that the black non-spatial model for content exchange is highly
+abstract, only capturing the essential elements. The most important assumptions
+on which the model relies on are the fluid limit approximation and a well-mixed
+mobility pattern. In this case the criticality condition shows that the
+information ``floats'' due to the large number of nodes in the anchor zone
+assumed by the fluid limit approximation. In a real case situation the number of
+nodes carrying the information may be small, thus having a big probability of
+information disappearance due to stochastic fluctuations in the system. The well
+mixed characteristic of the population leads to the fact that all the nodes
+inside an anchor zone, are equally likely to encounter each other at some point
+of time, past encounters having no influence on it.
+
+In my simulation, which will be discussed later in the document, the spatial
+aspects of information exchange is ignored. So the probability of a node
+carrying information is the same on the entire simulation network (of course
+without taking in consideration water zones). In addition, the criticality
+condition doesn't take into consideration some important parameters. On of the
+would be the transmission range which affects directly the encounter rate
+$\upsilon$.
+
+The non-spatial model is applied in the simulation performed, because it
+captures the fundamental elements of the system, and defines the criticality
+condition which is an indicator whether an information item may float or not. As
+in \cite{percomfloatingcontent} we compute three key elements and then observe
+how the criticality condition correlates with the road network and the final
+information life time. The simulation results happened to be very similar,
+confirming the applicability of the abstract model in complex mobility
+scenarios.

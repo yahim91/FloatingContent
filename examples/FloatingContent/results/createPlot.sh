@@ -1,7 +1,22 @@
-#!/bin/sh
+#!/bin/bash
+
+if [[ -z "$1" ]]; then
+    echo "Usage: createPlot.sh [option] infile  outfile"
+    exit
+fi
+
+if [[ -z "$2" ]]; then
+    echo "Usage: createPlot.sh [option] infile  outfile"
+    exit
+fi
+
+if [[ -z "$3" ]]; then
+    echo "Usage: createPlot.sh [option] infile  outfile"
+    exit
+fi
 
 scavetool scalar -p "module(*.anchorZone[*]) AND name($1) OR name(xpos) OR name(ypos)" \
-    -g 'name' -O output.csv  nodebug-0.sca
+    -g 'name' -O output.csv  $2
 tr ',' ' ' < output.csv > output_temp.csv
 mv output_temp.csv output.csv
 
@@ -14,7 +29,7 @@ cbrange=$(cut -d ' ' -f 4 output.csv | sort -nr | head -n1)
 
 gnuplot << EOF
 set terminal pngcairo  transparent enhanced font "arial,10" fontscale 1.0 size 800, 500
-set output 'Criticality.png'
+set output '$3.png'
 unset key
 set view map
 set xtics border in scale 0,0 mirror norotate  offset character 0, 0, 0 autojustify

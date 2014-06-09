@@ -908,6 +908,10 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
     int anchorDistance = par("anchorDistance");
     int cellX = ((int) s.x / anchorDistance);
     int cellY = ((int) s.y / anchorDistance);
+    std::map<std::pair<int, int>, int> contacts;
+    std::map<std::pair<int, int>, int>::iterator contactsIt;
+    simtime_t endTime, totalTime;
+    int contactsNum, peers;
 
     typedef std::map<std::pair<double, double>, bool>::iterator it_type;
     for (it_type it = anchors.begin(); it != anchors.end(); it++) {
@@ -940,12 +944,29 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
     }
     it_type it = anchors.begin();
 
-
-    while(it != anchors.end()) {
+    while (it != anchors.end()) {
+        peers = 0;
+        contactsNum = 0;
         if (it->second == false) {
-            anchorZones[it->first].timeAverage = simTime()
-                    - anchorZones[it->first].nodes[id].inTime;
+            endTime = simTime();
+            totalTime = endTime - anchorZones[it->first].nodes[id].inTime;
+            anchorZones[it->first].timeAverage += totalTime;
             anchorZones[it->first].numTransitNodes++;
+            contacts = anchorZones[it->first].contactsBetweenNodes;
+            for (contactsIt = contacts.begin(); contactsIt != contacts.end();
+                    contactsIt++) {
+                if (contactsIt->first.first == id
+                        || contactsIt->first.second == id) {
+                    contactsNum += contactsIt->second;
+                    peers++;
+
+                }
+            }
+            if (peers != 0) {
+                anchorZones[it->first].avgContactsInSJNTime +=
+                        ((double) contactsNum / peers)
+                                / totalTime.inUnit(SIMTIME_S);
+            }
             anchorZones[it->first].nodes.erase(id);
             anchors.erase(it++);
         } else {
@@ -956,7 +977,7 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
 
 void TraCIScenarioManager::checkSameAnchor(Coord snd, Coord rcv, int sndId,
         int rcvId, int maxX, int maxY) {
-    //int anchorSize = anchorRadius * 2;
+//int anchorSize = anchorRadius * 2;
     int anchorDistance = par("anchorDistance");
     int cellX = ((int) rcv.x / anchorDistance);
     int cellY = ((int) rcv.y / anchorDistance);
@@ -975,8 +996,16 @@ void TraCIScenarioManager::checkSameAnchor(Coord snd, Coord rcv, int sndId,
             }
 
             if (isInAnchor(snd, az) && isInAnchor(rcv, az)) {
-                anchorZones[az.getPairCoord()].contactsBetweenNodes[std::make_pair(
-                        sndId, rcvId)]++;
+                std::map<std::pair<int, int>, int>::iterator end =
+                        anchorZones[az.getPairCoord()].contactsBetweenNodes.end();
+                if (anchorZones[az.getPairCoord()].contactsBetweenNodes.find(
+                        std::make_pair(rcvId, sndId)) != end) {
+                    anchorZones[az.getPairCoord()].contactsBetweenNodes[std::make_pair(
+                            rcvId, sndId)]++;
+                } else {
+                    anchorZones[az.getPairCoord()].contactsBetweenNodes[std::make_pair(
+                            sndId, rcvId)]++;
+                }
             }
         }
     }
@@ -1002,7 +1031,7 @@ bool TraCIScenarioManager::getCurrentPOI(Coord p, Coord& anchorPoint, int id) {
     if (p.distance(Coord(x, y)) > anchorRadius)
         return false;
 
-    //anchorZones[Coord(x, y).getPairCoord()].nodes[id].inTime = simTime();
+//anchorZones[Coord(x, y).getPairCoord()].nodes[id].inTime = simTime();
 
     if (anchorZones.find(std::make_pair(x, y)) != anchorZones.end()
             && !anchorZones[Coord(x, y).getPairCoord()].replicated) {
@@ -1115,7 +1144,7 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type,
     if (!nodeType)
         error("Module Type \"%s\" not found", type.c_str());
 
-    //TODO: this trashes the vectsize member of the cModule, although nobody seems to use it
+//TODO: this trashes the vectsize member of the cModule, although nobody seems to use it
     cModule* mod = nodeType->create(name.c_str(), parentmod, nodeVectorIndex,
             nodeVectorIndex);
     mod->finalizeParameters();
@@ -1123,7 +1152,7 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type,
     mod->buildInside();
     mod->scheduleStart(simTime() + updateInterval);
 
-    // pre-initialize TraCIMobility
+// pre-initialize TraCIMobility
     for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
         cModule* submod = iter();
         TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
@@ -1135,7 +1164,7 @@ void TraCIScenarioManager::addModule(std::string nodeId, std::string type,
     mod->callInitialize();
     hosts[nodeId] = mod;
 
-    // post-initialize TraCIMobility
+// post-initialize TraCIMobility
     for (cModule::SubmoduleIterator iter(mod); !iter.end(); iter++) {
         cModule* submod = iter();
         TraCIMobility* mm = dynamic_cast<TraCIMobility*>(submod);
@@ -1420,13 +1449,13 @@ TraCIScenarioManager::TraCICoord TraCIScenarioManager::omnet2traci(
 
 double TraCIScenarioManager::traci2omnetAngle(double angle) const {
 
-    // rotate angle so 0 is east (in TraCI's angle interpretation 0 is south)
+// rotate angle so 0 is east (in TraCI's angle interpretation 0 is south)
     angle = angle - 90;
 
-    // convert to rad
+// convert to rad
     angle = angle * M_PI / 180.0;
 
-    // normalize angle to -M_PI <= angle < M_PI
+// normalize angle to -M_PI <= angle < M_PI
     while (angle < -M_PI)
         angle += 2 * M_PI;
     while (angle >= M_PI)
@@ -1437,13 +1466,13 @@ double TraCIScenarioManager::traci2omnetAngle(double angle) const {
 
 double TraCIScenarioManager::omnet2traciAngle(double angle) const {
 
-    // convert to degrees
+// convert to degrees
     angle = angle * 180 / M_PI;
 
-    // rotate angle so 0 is south (in OMNeT++'s angle interpretation 0 is east)
+// rotate angle so 0 is south (in OMNeT++'s angle interpretation 0 is east)
     angle = angle + 90;
 
-    // normalize angle to -180 <= angle < 180
+// normalize angle to -180 <= angle < 180
     while (angle < -180)
         angle += 360;
     while (angle >= 180)
@@ -1453,7 +1482,7 @@ double TraCIScenarioManager::omnet2traciAngle(double angle) const {
 }
 
 void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId) {
-    // subscribe to some attributes of the vehicle
+// subscribe to some attributes of the vehicle
     uint32_t beginTime = 0;
     uint32_t endTime = 0x7FFFFFFF;
     std::string objectId = vehicleId;
@@ -1474,7 +1503,7 @@ void TraCIScenarioManager::subscribeToVehicleVariables(std::string vehicleId) {
 
 void TraCIScenarioManager::unsubscribeFromVehicleVariables(
         std::string vehicleId) {
-    // subscribe to some attributes of the vehicle
+// subscribe to some attributes of the vehicle
     uint32_t beginTime = 0;
     uint32_t endTime = 0x7FFFFFFF;
     std::string objectId = vehicleId;
@@ -1725,11 +1754,11 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId,
         }
     }
 
-    // bail out if we didn't want to receive these subscription results
+// bail out if we didn't want to receive these subscription results
     if (!isSubscribed)
         return;
 
-    // make sure we got updates for all attributes
+// make sure we got updates for all attributes
     if (numRead != 5)
         return;
 
@@ -1743,7 +1772,7 @@ void TraCIScenarioManager::processVehicleSubscription(std::string objectId,
 
     cModule* mod = getManagedModule(objectId);
 
-    // is it in the ROI?
+// is it in the ROI?
     bool inRoi = isInRegionOfInterest(TraCICoord(px, py), edge, speed, angle);
     if (!inRoi) {
         if (mod) {
@@ -1848,6 +1877,7 @@ TraCIScenarioManager::AnchorZone::AnchorZone(Coord pos, cModule *module) {
     this->replicas = 0;
     this->contacts = 0;
     this->numTransitNodes = 0;
+    this->avgContactsInSJNTime = 0;
     cModuleType* nodeType = cModuleType::get(
             "org.mixim.examples.FloatingContent.AnchorZone");
 
@@ -1865,6 +1895,9 @@ void TraCIScenarioManager::AnchorZone::recordScalars() {
     double avgTimeInAnchor;
     typedef std::map<std::pair<int, int>, int>::iterator it_type;
     typedef std::map<int, Node>::iterator node_type;
+    std::map<std::pair<int, int>, int>::iterator contactsIt;
+    int peers, contactsNum;
+    simtime_t endTime, totalTime;
 
     double encounters = 0;
 
@@ -1877,17 +1910,40 @@ void TraCIScenarioManager::AnchorZone::recordScalars() {
     }
 
     for (node_type it = nodes.begin(); it != nodes.end(); it++) {
-        timeAverage = simTime() - it->second.inTime;
+        endTime = simTime();
+        totalTime = endTime - it->second.inTime;
+        timeAverage += totalTime;
         numTransitNodes++;
+        peers = 0;
+        contactsNum = 0;
+        for (contactsIt = contactsBetweenNodes.begin();
+                contactsIt != contactsBetweenNodes.end(); contactsIt++) {
+            if (contactsIt->first.first == it->first
+                    || contactsIt->first.second == it->first) {
+                contactsNum += contactsIt->second;
+                peers++;
+
+            }
+        }
+        if (peers != 0) {
+            avgContactsInSJNTime += ((double) contactsNum / peers)
+                    / totalTime.inUnit(SIMTIME_S);
+        }
     }
     if (numTransitNodes == 0) {
         avgTimeInAnchor = 0;
     } else {
-        avgTimeInAnchor = (double)timeAverage.inUnit(SIMTIME_S)/numTransitNodes;
+        avgTimeInAnchor = (double) timeAverage.inUnit(SIMTIME_S)
+                / numTransitNodes;
         encounters /= numTransitNodes;
+        avgContactsInSJNTime /= numTransitNodes;
     }
 
-    mod->recordScalar("criticality", numTransitNodes * avgTimeInAnchor * encounters);
+    mod->recordScalar("criticality",
+            numTransitNodes * encounters);
+    mod->recordScalar("criticality2", numTransitNodes * avgContactsInSJNTime * avgTimeInAnchor);
+    mod->recordScalar("transit", numTransitNodes);
+    mod->recordScalar("contactsPerSecond", avgContactsInSJNTime);
     mod->recordScalar("timeAverage", avgTimeInAnchor);
     mod->recordScalar("avgContacts", encounters);
     mod->recordScalar("contactTime", timeInContact.inUnit(SIMTIME_MS));

@@ -66,6 +66,7 @@ public:
         simtime_t outTime;
         int numContacts;
 
+
         Node() {
         }
         ;
@@ -92,6 +93,7 @@ public:
         int contacts;
         simtime_t timeInContact;
         cModule* mod;
+        double avgContactsInSJNTime;
         std::map<int, Node> nodes;
         std::map<std::pair<int, int>, int> contactsBetweenNodes;
         simtime_t timeAverage;
@@ -104,7 +106,8 @@ public:
                         az.replicated), timeInContact(az.timeInContact), ann(
                         az.ann), mod(az.mod), nodes(az.nodes), contactsBetweenNodes(
                         az.contactsBetweenNodes),
-                        numTransitNodes(az.numTransitNodes) {
+                        numTransitNodes(az.numTransitNodes),
+                        avgContactsInSJNTime(az.avgContactsInSJNTime){
         }
         void setAnnotation(AnnotationManager::Annotation*);
         void recordScalars();
@@ -119,6 +122,7 @@ public:
             timeInContact = az.timeInContact;
             contactsBetweenNodes = az.contactsBetweenNodes;
             numTransitNodes = az.numTransitNodes;
+            avgContactsInSJNTime = az.avgContactsInSJNTime;
             return *this;
         }
     };
