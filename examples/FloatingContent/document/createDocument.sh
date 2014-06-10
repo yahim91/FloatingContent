@@ -1,4 +1,7 @@
 #!/bin/bash
 
-latex document.tex
+latex document
+bibtex document
+latex document
+latex document
 dvipdfm document.dvi

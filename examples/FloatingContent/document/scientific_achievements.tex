@@ -1,5 +1,5 @@
 \chapter{Mobile social networking}\label{chap1}
-\thispagestyle{plain}
+
 
 % ====SECTION 1 ================================================================
 \section{Introduction}
@@ -29,6 +29,36 @@ and the latest feature of Nearby Friends notifies the user whether a friend is
 in the nearby location. The best examples are Google Maps and Google Earth whose
 purpose is to store data and display the geographic proximity based on the
 position of the user.
+
+\section{Inter-Vehicle Communication}
+
+Vehicle-to-vehicle wireless communication have emerged from the desire to
+provide more safety, entertainment and comfortable driving to a huge number of
+individuals that use vehicles on the roads every day.
+
+It is a known fact that many car manufacturers have already introduced wireless
+communication equipment in their cars. Volvo implementation is called ``Volvo on
+Call'' \citep{volvo} and BMW implementation is called ``BMW Assist''
+\cite{bmw_assist}. Their purpose is to help drivers in case of accidents or
+collisions. Their current implementation use ``central'' infrastructure based
+services based on cell phone technology, existing base stations, long range and
+centralised servers. Naturally, the next step would be to modify the equipment
+in order to provide Inter-Vehicle Communication \cite{IVC}.
+
+Inter-vehicle Communication is a type of ad-hoc network which mainly uses
+broadcast as a method of information distribution. The only limitations vehicles
+may have are the available transmission capacity which depends on the rate and
+the size of the information broadcasted.
+
+As we mentioned, communication between vehicles means adding some benefits to
+driving experience. Some of relevant information for sharing might be: accident
+warnings, driving conditions, weather, announcements and even advertisements
+with audio/video content. They provide useful information related to a limited
+geographical area, for a limited amount of time. For example, an accident
+happened a day ago would not be of much interest for the drivers, so the need of
+limiting the life of information is obvious. The biggest challenge is making
+the information ``float'', thus we try to analyze and test a communication
+protocol further in this thesis.
 
 \section{Weaknesses of network-based mobile application}
 While social network applications are dependent on the infrastructure services
@@ -72,7 +102,10 @@ networks seems it is the next frontier in mobile industry. It can be seen as an
 extension to the Internet infrastructure, by bringing connectivity where the
 infrastructure is not able to.
 
-\chapter{Floating Content}\label{chap2}
+% ==== Floating Content (CHAPTER 2) ================================================
+
+\chapter{Floating Content} \label{chap2}
+
 
 This chapter will describe the Floating Content model of the data storage.
 My application is based on this model used to simulate and observe the existence

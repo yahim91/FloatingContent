@@ -124,32 +124,27 @@
 \newpage
 \addcontentsline{toc}{chapter}{Contents}
 \tableofcontents
-\thispagestyle{empty}
 
 % ==== START MAIN MATTER (use ARABIC numerals) =================================
 \mainmatter
 
 % ---- include tex-file:
 %\include{summary} 
-%\setcounter{page}{1}
+\setcounter{page}{1}
 
-% ==== INTRODUCTION (CHAPTER 1) ================================================
-% ==== Scientific Achievements =====================
 % ---- set some counters to zero:
 \setcounter{equation}{0}
 \setcounter{table}{0}
 \setcounter{figure}{0}
 % ---- include tex-file:
 \include{scientific_achievements}
-%\newpage
-%\thispagestyle{plain}
 
 % ==== BIBLIOGRAPHY ============================================================
 \addcontentsline{toc}{chapter}{Bibliography}
 % ---- use AMS reference format (use file ametsoc.bst included in ...
 %      ... http://www.ametsoc.org/pubs/journals/AMS_Latex_V3.0.tar.gz):s
-\bibliographystyle{ametsoc}   % ametsoc.bst in local directory
-% ---- use BibTeX database file:
+\bibliographystyle{ACM-Reference-Format-Journals}   % ametsoc.bst in local
+% directory ---- use BibTeX database file:
 \bibliography{bibfile}
 
 \newpage
