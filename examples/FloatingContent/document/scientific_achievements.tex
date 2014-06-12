@@ -43,7 +43,7 @@ Call'' \citep{volvo} and BMW implementation is called ``BMW Assist''
 collisions. Their current implementation use ``central'' infrastructure based
 services based on cell phone technology, existing base stations, long range and
 centralised servers. Naturally, the next step would be to modify the equipment
-in order to provide Inter-Vehicle Communication \cite{IVC}.
+in order to provide Inter-Vehicle Communication.
 
 Inter-vehicle Communication is a type of ad-hoc network which mainly uses
 broadcast as a method of information distribution. The only limitations vehicles
@@ -449,3 +449,168 @@ how the criticality condition correlates with the road network and the final
 information life time. The simulation results happened to be very similar,
 confirming the applicability of the abstract model in complex mobility
 scenarios.
+
+\chapter{Floating Content Implementation} \label{chap3}
+
+In the previous chapters we presented the theoretical protocol of a data storage
+service using geo-located information and its advantages over the classic
+infrastructure based network. We also discussed the criticality condition which
+is an indicator regarding the probability of item floating which takes into
+consideration the number of the population, its sojourn time and the exchange
+frequency. In this chapter we present our implementation of the service using a
+network simulator and a mobility simulator using vehicles as nodes.
+
+\section{Omnet++ and Simulation of Urban MObility}
+
+Omnet++ is an extensible, modular, component-based, discrete C++ simulation
+library primarily for building network simulators. In this definition, ``network''
+has a broader sense that includes wired and wireless communication networks,
+on-chip networks, queueing networks, and many more. It comes with model
+frameworks, developed as independent projects, which provide support for sensor
+networks, wireless ad-hoc networks (used by us), Internet protocols, etc.
+
+Omnet++ offers an Eclipse based IDE, a graphical runtime environment, and host
+of other tools. There are extensions for real-time simulation, network
+emulation, alternative programming languages such as Java and C\#, database
+integration and several other functions \cite{omnetpp}. The fundamental
+ingredient of its infrastructure is the component architecture for simulation
+models. Models are assembled from reusable components termed {\it modules}, and
+can be combined in various ways like LEGO blocks.
+
+As we mentioned earlier, the Omnet++ model consists of multiple modules that
+communicate with message passing. Simple modules, which are written in C++ using
+the simulation class library, can be combined to form compound modules. Compound
+modules can be also combined having no limitation on the number of hierarchy
+levels.
+
+Messages may contain any sort of data, in addition to usual attributes such as
+timestamp. They are sent via gates, the in and out interfaces of modules.
+Connections are created within a single level of module hierarchy, they are not
+possible across multiple modules as they would obstruct model reuse. Because the
+hierarchical structure of the model, messages typically travel through a chain
+of connections.
+
+Given the type of network we need in our implementation, we use an
+open-source framework for running vehicular network simulations called Veins \cite{veins}.
+It uses Simulation of Urban Mobility (SUMO) along with Omnet++, connected
+through TCP sockets, to perform Inter-Vehicular Communication evaluations.
+
+Simulation of Urban Mobility (SUMO) is a microscopic road traffic simulation
+package designed to handle large road network \cite{sumo}. Thus, we can perform
+bidirectionally-coupled simulation of road traffic and network traffic. Movement
+of nodes in Omnet++ simulation is determined by movement of vehicles in road
+traffic simulator SUMO. Nodes can then interact with the running road traffic
+simulation.
+
+\subsection{Network Description in Omnet++}
+
+The user must describe the structure of the simulation model in a language
+called NED. NED stands for Network Description and allows the user to declare
+simple modules, and connect and assemble them into compound modules. It has
+several features which let it scale well to large projects.
+
+\begin{itemize}
+  \item Hierarchical. Any module which would be to complex, can be broken down
+  into smaller modules, and used as a compound module.
+  \item Component-Based. It provides module reusability, which reduces code
+  copying, and more importantly allows component libraries like Veins to exist.
+  \item Interfaces are used as a placeholder where normally a module or channel
+  type would be used. The concrete module or channel type is determined at
+  network setup time by a parameter. Concrete modules types must implement the
+  interface they can substitute. For example, a compound module type named
+  MobileHost contains a mobility submodule of the type IMobility (an interface),
+  the actual type of mobility may be chosen from the module types that
+  implemented IMobility (RandomWalkMobility, TurtleMobility, etc.)
+  \item Inheritance. Modules and channels can be subclassed like C++ classes.
+  Derived class could add new parameters, gates, new submodules or connections.
+  They may set existing parameters to a specific value, and also set the gate
+  size of gate vector.
+  \item Packages. The NED language features a Java-like package structure, to
+  reduce the risk of name conflicting between different models. It has a similar
+  ``CLASSPATH'' called NEDPATH introduced to make it easier to specify
+  dependencies among simulation modules.
+  \item 
+\end{itemize}
+
+\section{Architecture}
+Every simulation in Omnet++ is defined by a configuration file, usually called
+{\it omnetpp.ini}. It contains settings that control how the simulation is
+executed, values for model parameters, etc.
+
+\subsection{Network}
+The most important parameter which has to be defined in the configuration file
+is the network module type (if it is not defined in the configuration file it
+will be asked for at runtime). Our network is called simply FloatingScenario and
+extends a simple module called FloatingContent. Networks usually consist
+of two main important section: first include the nodes that form the network,
+and second include how the nodes are to be connected. In our particular case the
+nodes are vehicles which are moving across a map, so they are not static and its
+defined based on multiple files (we will talk about it later in the document).
+The module which handles this information is TraCIScenarioManagerLaunchd.
+
+It contains the next submodules:
+
+\begin{itemize}
+  \item ObstacleControl model uses obstacles from poly file resulted from the
+  map export in order to block the radio transmission as in real world. The
+  obstacles refer mainly to buildings which exist on the map, and may block
+  radio propagation of signals between vehicles.
+  \item AnnotationManager manages annotations in Omnet++ canvas. It displays
+  module graphical representation (as icon) or additional representation
+  strings.
+  \item ConnectionManager handles all connection related stuff. It will be
+  discussed in detail later in the document.
+  \item WorldUtility extends basic module BaseWorldUtility which provide utility
+  methods and information used by the whole network as well as simulation wide
+  black board functionality. It collects global parameters like the dimensions
+  of the network (playground), whether is 2D or 3D, anchor range and distance
+  between them.
+  \item TraCIScenarioManagerLaunchd extends TraCIScenarioManager and handles
+  nodes from the network details.
+\end{itemize}
+
+
+\subsection{Traffic Control Interface}
+
+Traffic simulation in {\it Veins} is done with the help of microscopic road
+traffic simulation package SUMO. It can perform simulations both running with
+and without GUI and it is able to import city maps from a variety of file
+formats including OpenStreetMap types.
+
+SUMO deals with high-performance simulations of huge networks with roads
+consisting of multiple lanes. Vehicles can move accordingly to a configured
+timetable, dynamically generated routes, or statically assigned routes
+\cite{bidirectionally_sumo}.
+
+The connection between SUMO and Omnet++ is done with the help of TraCI: Traffic
+Control Interface. Is an architecture that couples two simulators: a road
+traffic and network simulator. It is important to know that mobility patterns
+are not pre-defined as fixed trace files. The traffic and network simulators are
+connected in real time, enabling the control of mobility attributes of each
+simulated vehicle. The reason there are no predefined routes is the fact that
+the mobility of each car can be influenced by the network simulator, based on
+the information it receives (for example a bad weather warning).
+
+We denote {\it TraCI-Server} the road simulator and the {\it TraCI-Client} the
+network simulator. They are connected over a TCP connection for exchanging
+messages. So when the connection is established, the network controls the
+traffic simulator via the data exchange protocol, enhancing the control of the
+movement for each vehicle. Data exchanges are controlled by the client that
+send commands as requests to the traffic simulator. The traffic simulator
+may respond to each command once or multiple times.
+
+Time synchronization between both simulators is performed by the client which
+sends periodically, at each simulation step, e.g. 1[s], a message to the road
+traffic simulator that contains the current simulation time plus one simulation
+step. The road traffic simulator computes the next step and sends the data to
+the network simulator. The vehicle positions are converted into linear movements
+by the network simulator, in order to allow all vehicles to reach their
+positions at the time specified by traffic simulator. The execution of the
+atomic mobility commands is delayed by one simulation step, because the road
+traffic simulator is always one simulation step ahead. This may represent a
+drawback of the method, but considering the very short simulation time step -
+for traffic efficiency applications approximately 1[s] and for safety
+applications - 0.1[s], the drawback is negligible. 
+
+
+
