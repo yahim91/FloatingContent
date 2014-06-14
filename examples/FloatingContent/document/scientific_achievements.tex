@@ -570,7 +570,7 @@ It contains the next submodules:
 \end{itemize}
 
 
-\subsection{Traffic Control Interface}
+\subsection{Traffic Simulation}
 
 Traffic simulation in {\it Veins} is done with the help of microscopic road
 traffic simulation package SUMO. It can perform simulations both running with
@@ -610,7 +610,74 @@ atomic mobility commands is delayed by one simulation step, because the road
 traffic simulator is always one simulation step ahead. This may represent a
 drawback of the method, but considering the very short simulation time step -
 for traffic efficiency applications approximately 1[s] and for safety
-applications - 0.1[s], the drawback is negligible. 
+applications - 0.1[s], the drawback is negligible. When the network simulator or
+road traffic simulator ends, it closes the TCP connection, and causes the other
+simulator to stop immediately \cite{traci_interface}.
 
+TraCIScenarioManagerLaunchd is the manager module which handles the Traffic
+Control Interface. Parameters $host$ and $port$ indicate Omnet++ the address and
+the port on which SUMO listens for connections. We can specify the time interval
+of host's position updates by setting $updateInterval$. Parameter $moduleType$
+specifies the module type to be used in the simulation for each managed vehicle.
 
+\begin{figure}[bt]
+ \centering
+ \begin{subfigure}[b]{5cm}
+ 	\includegraphics[width=5cm]{img/CarNode}
+ 	\caption{Car module}
+ 	\label{fig:car}
+ \end{subfigure}
+ \begin{subfigure}[b]{5cm}
+ 	\includegraphics[width=3cm]{img/Nic80211p}
+ 	\caption{Nic module}%
+ 	\label{fig:nic}
+ \end{subfigure}
+ \caption{Car and Nic modules}
+ \label{fig:car_nic}
+\end{figure}
 
+\section{Car modules}
+Nodes in Omnet++ network are entities desiring to communicate with each other.
+The Car node module, we are using in our simulation, can be seen in
+~\ref{fig:car}. In the left side appears the standard layer according to WAVE
+protocol, the application layer (appl), the MAC layer and the physical
+layer (phy). The physical layer takes care of the reception and collision
+handling. Layers are modules connected by two pairs of Omnet++ ``gates''. The
+first one is used for transferring data up and down as in the real world
+protocol stacks, the second one is for exchanging messages between the layers
+and support the control communication, e.g. a request from the MAC layer for PHY
+layer to perform carrier sensing, or notification of PHY layer that the
+transmission of data is over.
+
+The MAC and physical layer are grouped into a module called Network Interface
+Card (NIC) in Figure ~\ref{fig:nic}, because they their design is usually
+tightly coupled and specific for different communication techniques like
+bluetooth or GSM. A node can have multiple different NICs.
+
+The mobility module performs movement of a node or object. It will be discussed
+in a further section. The arp module runs the Address Resolution Protocol which
+translates the network address into a MAC address. The application module is the
+top layer and uses the network interface card to send messages. It is the
+application equivalent in the IP stack.
+
+\subsection{Car mobility}
+
+In our simulation, we use TraCIMobility module which extends BaseMobility and
+relies on TraCIScenarioManager for state updates. Basically, the
+TraCIScenarioManager holds a list of nodes updated continuously from the road
+traffic simulation through the TCP connection. Every simulation step, determined
+by the $updateInterval$, the module iterates over the entire node list, reads
+the next node position on the road and updates the fields accordingly.
+
+The BaseMobility class takes care of the graphical representation of the module.
+So every change of the position is reflected into the on the graphical
+representation. It publishes the new position so that other modules get
+informed, e.g the physical layer must update the position with the
+ConnectionManager. It also takes care of exiting the border.
+
+TraCIMobility contains a field called $statistics$ which records generated data
+during the simulation. Recorded information are: $startTime$, $stopTime$,
+$totalTime$, $totalDistance$, $minSpeed$, $maxSpeed$ and much more could be
+added.
+
+\subsection{Network Interface Card}

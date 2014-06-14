@@ -35,22 +35,21 @@
 
 
 % ---- caption package:
-\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[font=small,labelfont=bf]{caption, subcaption}
 
 % ---- subfigure package:
-\usepackage[tight,nooneline,FIGTOPCAP,bf]{subfigure}
+%\usepackage[tight,nooneline,FIGTOPCAP,bf]{subfigure}
 % \setlength{\subfigcaptopadj}{-6pt}  % vertical position of subfigure labels
-\renewcommand{\thesubfigure}{\alph{subfigure}}
-\makeatletter
-    \renewcommand{\@thesubfigure}{(\thesubfigure)}  % subfigure labels:     (a)
-    \renewcommand{\@@thesubfigure}{\thesubfigure}   % produced by \subref:   a
-    \renewcommand{\p@subfigure}{\thefigure}         % produced by \ref:   3.1a
-\makeatother
+%\renewcommand{\thesubfigure}{\alph{subfigure}}
+%\makeatletter
+ %   \renewcommand{\@thesubfigure}{(\thesubfigure)}  % subfigure labels:     (a)
+  %  \renewcommand{\@@thesubfigure}{\thesubfigure}   % produced by \subref:   a
+   % \renewcommand{\p@subfigure}{\thefigure}         % produced by \ref:   3.1a
+%\makeatother
 
 
 % ---- fancyhdr package:
 \usepackage{fancyhdr}
-
 \usepackage{combelow}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
