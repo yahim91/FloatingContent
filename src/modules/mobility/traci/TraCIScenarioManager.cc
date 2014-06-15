@@ -911,7 +911,7 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
     std::map<std::pair<int, int>, int> contacts;
     std::map<std::pair<int, int>, int>::iterator contactsIt;
     simtime_t endTime, totalTime;
-    int contactsNum, peers;
+    int contactsNum, peers, currentNumNodes, currentMaxNodes;
 
     typedef std::map<std::pair<double, double>, bool>::iterator it_type;
     for (it_type it = anchors.begin(); it != anchors.end(); it++) {
@@ -938,6 +938,11 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
             if (anchorZones[az.getPairCoord()].nodes.find(id)
                     == anchorZones[az.getPairCoord()].nodes.end()) {
                 anchorZones[az.getPairCoord()].nodes[id].inTime = simTime();
+                currentNumNodes = anchorZones[az.getPairCoord()].nodes.size();
+                currentMaxNodes = anchorZones[az.getPairCoord()].maxTransitNodes;
+                if (currentNumNodes > currentMaxNodes) {
+                    anchorZones[az.getPairCoord()].maxTransitNodes = currentNumNodes;
+                }
             }
             anchors[az.getPairCoord()] = true;
         }
@@ -1878,6 +1883,7 @@ TraCIScenarioManager::AnchorZone::AnchorZone(Coord pos, cModule *module) {
     this->contacts = 0;
     this->numTransitNodes = 0;
     this->avgContactsInSJNTime = 0;
+    this->maxTransitNodes = 0;
     cModuleType* nodeType = cModuleType::get(
             "org.mixim.examples.FloatingContent.AnchorZone");
 
@@ -1942,6 +1948,7 @@ void TraCIScenarioManager::AnchorZone::recordScalars() {
     mod->recordScalar("criticality",
             numTransitNodes * encounters);
     mod->recordScalar("criticality2", numTransitNodes * avgContactsInSJNTime * avgTimeInAnchor);
+    mod->recordScalar("criticality3", maxTransitNodes * avgContactsInSJNTime * avgTimeInAnchor);
     mod->recordScalar("transit", numTransitNodes);
     mod->recordScalar("contactsPerSecond", avgContactsInSJNTime);
     mod->recordScalar("timeAverage", avgTimeInAnchor);

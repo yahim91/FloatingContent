@@ -102,6 +102,9 @@ networks seems it is the next frontier in mobile industry. It can be seen as an
 extension to the Internet infrastructure, by bringing connectivity where the
 infrastructure is not able to.
 
+
+
+
 % ==== Floating Content (CHAPTER 2) ================================================
 
 \chapter{Floating Content} \label{chap2}
@@ -450,6 +453,11 @@ information life time. The simulation results happened to be very similar,
 confirming the applicability of the abstract model in complex mobility
 scenarios.
 
+
+
+
+% ==== Floating Content Implementation (CHAPTER 3) ================================================
+
 \chapter{Floating Content Implementation} \label{chap3}
 
 In the previous chapters we presented the theoretical protocol of a data storage
@@ -680,4 +688,94 @@ during the simulation. Recorded information are: $startTime$, $stopTime$,
 $totalTime$, $totalDistance$, $minSpeed$, $maxSpeed$ and much more could be
 added.
 
-\subsection{Network Interface Card}
+\subsection{WAVE: Wireless Access in Vehicular Environment}
+
+WAVE is system architecture built by IEEE and its main objective is to
+facilitate communication between vehicles and road side infrastructure. The
+reason why other existing standards aren't used is because they don't work
+efficiently with authentication and update of routing tables with the continuous
+changing network topology and short amount of time available for connection and
+communication.
+
+Our NIC module implements an 802.11p interface card, with the physical and
+medium access control layers based on the IEEE standard, because it is a widely
+known standard with many manufacturers guaranteeing interoperability. Some
+features of 802.11p standard are \cite{phule2012public}:
+ 
+\begin{itemize}
+  \item {\it Fast connection setup} is a necessary behaviour when running in a
+  highly dynamic network topology, because the time spent in the communication
+  range of other node is very short. For example the case of two vehicles
+  travelling in opposite directions, on a high speed highway.
+  \item {\it Random MAC address} ensure the anonymity of the vehicles make them
+  untraceable. It makes it difficult to associate data, collected over the
+  ad-hoc network, with a specific node and track it using this data.
+  \item {\it Priority Control} helps achieve Quality of Service (QoS) in the
+  applications running over the ad-hoc network. It prioritizes data from
+  different applications and provides critical data access to the channel.
+  \item{\it Power Control} enables the applications to specify the transmit
+  power used to pass each packet over the channel. Customizing this from the
+  application is useful, because one can modify it according to the surrounding
+  topographical characteristics.
+\end{itemize}
+
+As \cite{Kopke} presents, the physical layer is the core of the wireless node in
+MIXIM framework. It provides message sending and receiving, collision detection
+and bit error calculation.
+
+The MIXIM physical layer has three components described in details: the
+BasePhyLayer which provides the interfaces to the MAC layer, the AnalogueModel
+which is responsible for simulating the attenuation of received signal and the
+Decider responsible for evaluation and demodulation of the received messages.
+The analogue and decider modules are pure C++ classes.
+
+The signal strength is influenced by the environment it travels in order to
+reach the destination node. It can be modeled with attenuation factors caused by
+path loss, shadowing and fading, and can be sent with multiple frequencies.
+Thus, a message can have varying sending power, attenuation, and bit-rate in
+time, space and frequency. MIXIM attaches to every message a signal object
+representing sending power, attenuation, and bit-rate in three dimensions time,
+frequency and space. The receiving node adds the attenuation.
+
+When the physical layer receives a message, it passes the message to the
+analogue model to compute the attenuation part of the signal. It is
+also responsible for simulating the propagation and transmission delay of the
+message. The message is passed at least twice to the decider, at the beginning
+and the end of it transmission. The decider can request the message any time
+in-between. After the decider calculates the bit errors, the message reaches the
+MAC layer. The BasePhyLayer acts as an interface between physical layer
+messages(AirFrame) and the AnalogueModel and the Decider. The physical layer
+stores all messages in the ChannelInfo class which can compute the AirFrames
+intersecting with a given time interval. This is useful for the decider that
+calculates the signal-to-noise ratio (SNR) of a given message.
+
+MIXIM simulates path loss, shadowing and fading, because Omnet++ doesn't have
+attenuation. The physical layer supports multiple analogue models, each one
+representing basically a filter class for signals. Summing up the attenuation
+from all analogue models, gives the attenuation part of the signal, calculated
+at the beginning and at the end of the message reception. The decider can
+calculate then, together with the sending power of the received message, the SNR
+and the bit errors.
+
+The Decider is responsible with performing three main tasks: must classify
+incoming messages into noise or valid messages, must calculate the bit errors
+for a valid message when its reception is over and must provide information
+about the current state of the channel.
+
+When the physical layer receives a message, it is sent to the decider which can
+either decide immediately whether the message is noise or not, or it can force
+the physical layer to resubmit the packet after a certain amount of time. This
+enable the decider to revise its decision, if a second stronger message arrives
+in the mean time.
+
+The decider can request the message from the physical layer latestly at the end
+of message reception process. This moment is also the time for the decider to
+compute the bit errors for the message. It uses all the intersecting messages
+from the ChannelInfo in order to calculate the SNR. Then it can calculate bit
+errors and positions depending on the complexity of the particular decider
+model.
+
+In the end, the decider must provide information about the channel state, needed
+at the MAC layer for Carrier Sense Multiple Access (CSMA) protocols. The MAC
+layer can request the decider to check the channel and return if it is currently
+idle or busy.

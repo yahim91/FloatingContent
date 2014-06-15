@@ -98,6 +98,7 @@ public:
         std::map<std::pair<int, int>, int> contactsBetweenNodes;
         simtime_t timeAverage;
         int numTransitNodes;
+        int maxTransitNodes;
 
         AnchorZone();
         AnchorZone(Coord, cModule*);
@@ -107,7 +108,8 @@ public:
                         az.ann), mod(az.mod), nodes(az.nodes), contactsBetweenNodes(
                         az.contactsBetweenNodes),
                         numTransitNodes(az.numTransitNodes),
-                        avgContactsInSJNTime(az.avgContactsInSJNTime){
+                        avgContactsInSJNTime(az.avgContactsInSJNTime),
+                        maxTransitNodes(az.maxTransitNodes){
         }
         void setAnnotation(AnnotationManager::Annotation*);
         void recordScalars();
@@ -123,6 +125,7 @@ public:
             contactsBetweenNodes = az.contactsBetweenNodes;
             numTransitNodes = az.numTransitNodes;
             avgContactsInSJNTime = az.avgContactsInSJNTime;
+            maxTransitNodes = az.maxTransitNodes;
             return *this;
         }
     };
