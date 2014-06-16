@@ -510,7 +510,7 @@ of nodes in Omnet++ simulation is determined by movement of vehicles in road
 traffic simulator SUMO. Nodes can then interact with the running road traffic
 simulation.
 
-\subsection{Network Description in Omnet++}
+\section{Network Description in Omnet++}
 
 The user must describe the structure of the simulation model in a language
 called NED. NED stands for Network Description and allows the user to declare
@@ -537,7 +537,6 @@ several features which let it scale well to large projects.
   reduce the risk of name conflicting between different models. It has a similar
   ``CLASSPATH'' called NEDPATH introduced to make it easier to specify
   dependencies among simulation modules.
-  \item 
 \end{itemize}
 
 \section{Architecture}
@@ -627,6 +626,38 @@ Control Interface. Parameters $host$ and $port$ indicate Omnet++ the address and
 the port on which SUMO listens for connections. We can specify the time interval
 of host's position updates by setting $updateInterval$. Parameter $moduleType$
 specifies the module type to be used in the simulation for each managed vehicle.
+
+\subsection{Connection modeling}
+
+Connectivity modelling is a more difficult to be designed in wireless networks
+than in the wired one. In the latter case, connectivity is achieved with wires
+which in Omnet++ are easily modelled with $connections$. The channel between two
+nodes in a wireless network is basically the air and cannot be represented just
+by one connection, because is a broadcast medium.
+
+In theory, signals sent out by a node may affect all other node in the
+simulation. Adding attenuation makes the power of the signal very low for the
+nodes which are far away from the origin, and thus making it negligible.
+
+As presented in \cite{Kopke}, the $maximal interference distance$ is a
+conservative bound on the maximal distance at which a node can still disturb the
+communication of a neighbour. In order to reduce the computational complexity,
+MIXIM connects nodes only if they are within the maximal interference distance.
+
+The objects present in the propagation environment influence the $maximal
+interference distance$ by reducing it due to the additional attenuation they
+imply. It may cause disconnection between two nodes, leading to the hidden node
+problem.
+
+It is important for safety applications to perform IVC simulations as realistic
+and correct as possible. Thus, a model for modeling buildings and their
+properties must be used, to accurately simulate the signal propagation. One
+type of building generated attenuation is shadowing, defined as the fluctuations
+in received signal power. In ~\cite{sommer2011computationally} is presented a
+realistic and computationally inexpensive simulation model for IEEE 802.11p
+radio shadowing in urban environments. It is validated using real world
+measurements in a city scenario for different types of obstacles. The obstacle
+model is integrated in the Veins making it suitable for our simulation needs.
 
 \begin{figure}[bt]
  \centering
@@ -719,6 +750,9 @@ features of 802.11p standard are \cite{phule2012public}:
   topographical characteristics.
 \end{itemize}
 
+
+\subsection{Physical layer}
+
 As \cite{Kopke} presents, the physical layer is the core of the wireless node in
 MIXIM framework. It provides message sending and receiving, collision detection
 and bit error calculation.
@@ -768,14 +802,42 @@ the physical layer to resubmit the packet after a certain amount of time. This
 enable the decider to revise its decision, if a second stronger message arrives
 in the mean time.
 
-The decider can request the message from the physical layer latestly at the end
-of message reception process. This moment is also the time for the decider to
-compute the bit errors for the message. It uses all the intersecting messages
-from the ChannelInfo in order to calculate the SNR. Then it can calculate bit
-errors and positions depending on the complexity of the particular decider
-model.
+The decider can request the message from the physical layer the latest at the
+end of message reception process. This moment is also the time for the decider
+to compute the bit errors for the message. It uses all the intersecting
+messages from the ChannelInfo in order to calculate the SNR. Then it can
+calculate bit errors and positions depending on the complexity of the particular
+decider model.
 
 In the end, the decider must provide information about the channel state, needed
 at the MAC layer for Carrier Sense Multiple Access (CSMA) protocols. The MAC
 layer can request the decider to check the channel and return if it is currently
 idle or busy.
+
+\subsection{MAC layer}
+
+The Medium Access Control (MAC) protocol has the purpose to handle the medium
+for communication between nodes in the system. Since we use a wireless system
+the air represents the shared medium. Thus, the protocol needs to decide the
+moment when a node should emit signals in order to transmit a message, to avoid
+interference with signals from other nodes.
+
+The IEEE 1609.4 standard is used which support the following features as shown
+in \cite{phule2012public}:
+
+\begin{itemize}
+  \item {\it Control Channel Monitoring} : nodes have to monitor the channel at
+  a predefined interval.
+  \item {\it Synchronized Switching}: devices with a single channel cannot
+  monitor the Control Channel and the Service Channel at the same time. Thus,
+  they must synchronize to monitor the Control Channel at the same time, to be
+  able to communicate.
+  \item {\it Channel Routing} passes the data from the higher layers to the
+  right channel. It also passes the data from the low layer to the correct
+  networking protocol.
+\end{itemize}
+
+The model is discussed in detail in \cite{eckhoff2012multi} and the
+implementation is available free and open source for Omnet++ simulator included
+in Veins framework for IVC simulation.
+
