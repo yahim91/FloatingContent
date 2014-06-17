@@ -4,16 +4,35 @@
 % ====SECTION 1 ================================================================
 \section{Introduction}
 
-Nowadays mobile devices have become a staple of our society, with everyone of
-us owning at least one. They make our lives easier by giving us a wide range of
-features from the most usual like texting a friend, to the most recent ones like
-watching a live video of a friend. We are now able to be in contact with
-everyone no matter where we are. It eliminated distances between us and
-freed us from the constraints of space giving us the opportunity to communicate
-with each other regardless of the location.
-At the heart of mobile devices are mobile apps on which we are increasingly
-relying on them for various activities. They enable us to create, share and
-exchange information and ideas in virtual networks and communities.
+Mobile devices have become a staple of our society, with everyone of
+us owning at least one. They are everywhere and play increasingly greater roles
+in the lives of most everyone. Their availability is rapidly spreading
+throughout the world and making significant improvements in many lifes. Mobile
+technology is making our lives better than ever before. We are now able to be in
+touch with those we need to reach no matter where we are.
+
+We are able to send important documents almost anywhere in the world in seconds
+so business is addressed when it becomes critical. We are able to collaborate
+with co-workers in real-time no matter what is their position on globe. Mobile
+technology has changed the way we do business for the better.
+
+Communication is wonderfully impacting our ability to stay close to our family
+and friends. It eliminates distances between us and gives us the freedom from
+the constraints of space giving us the opportunity to communicate with each
+other regardless of our location. We can have video chats to not only stay in
+touch, but to reach out and to touch with a nearly physical presence.
+
+The daily uses of mobile technology have transformed us into a society tightly
+connected to each other. We have friends through such connections, even though
+we may have never met them in persons. Media became subject of discussion, never
+possible before making the resultant friendships as strong as those in real
+life.
+
+We have more information in our hand than ever before. It has become easy and
+natural for someone to quickly look up helpful resources for whatever activity
+we need to do. Mobile application can even anticipate what information we need
+and present it to us when it is most useful.
+
 
 \section{Social mobile applications}
 
@@ -197,7 +216,7 @@ model preserve the spatial node distribution at all time points.
 
 The devices are equipped with wireless interfaces (Bluetooth or WLAN) to enhance
 network communication. Analysis of performance for 802.11p standard displayed in
-\cite {performance802.11} have shown that using a bitrate of 6Mbps and a
+\cite {performance80211} have shown that using a bitrate of 6Mbps and a
 payload of 500 bytes yields a delivery rate of up to 80\%. This indicates the acceptable
 reliability and performance of IEEE 802.11p and confirms the viability of
 floating up to several megabytes of data (from text messages to photos). This
@@ -436,7 +455,7 @@ mixed characteristic of the population leads to the fact that all the nodes
 inside an anchor zone, are equally likely to encounter each other at some point
 of time, past encounters having no influence on it.
 
-In my simulation, which will be discussed later in the document, the spatial
+In our simulation, which will be discussed later in the document, the spatial
 aspects of information exchange is ignored. So the probability of a node
 carrying information is the same on the entire simulation network (of course
 without taking in consideration water zones). In addition, the criticality
@@ -490,6 +509,11 @@ communicate with message passing. Simple modules, which are written in C++ using
 the simulation class library, can be combined to form compound modules. Compound
 modules can be also combined having no limitation on the number of hierarchy
 levels.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.6\textwidth]{img/bidirectional_com}
+\end{figure}
 
 Messages may contain any sort of data, in addition to usual attributes such as
 timestamp. They are sent via gates, the in and out interfaces of modules.
@@ -587,7 +611,7 @@ formats including OpenStreetMap types.
 SUMO deals with high-performance simulations of huge networks with roads
 consisting of multiple lanes. Vehicles can move accordingly to a configured
 timetable, dynamically generated routes, or statically assigned routes
-\cite{bidirectionally_sumo}.
+\cite{veins}.
 
 The connection between SUMO and Omnet++ is done with the help of TraCI: Traffic
 Control Interface. Is an architecture that couples two simulators: a road
@@ -629,11 +653,12 @@ specifies the module type to be used in the simulation for each managed vehicle.
 
 \subsection{Connection modeling}
 
-Connectivity modelling is a more difficult to be designed in wireless networks
-than in the wired one. In the latter case, connectivity is achieved with wires
+Connectivity modelling is a more difficult task to be designed in wireless
+networks than in the wired one. In the latter case, connectivity is achieved with wires
 which in Omnet++ are easily modelled with $connections$. The channel between two
 nodes in a wireless network is basically the air and cannot be represented just
-by one connection, because is a broadcast medium.
+by one connection, because is a broadcast medium. $ConnectionManager$ module
+manages the connectivity in our simulation.
 
 In theory, signals sent out by a node may affect all other node in the
 simulation. Adding attenuation makes the power of the signal very low for the
@@ -658,6 +683,24 @@ realistic and computationally inexpensive simulation model for IEEE 802.11p
 radio shadowing in urban environments. It is validated using real world
 measurements in a city scenario for different types of obstacles. The obstacle
 model is integrated in the Veins making it suitable for our simulation needs.
+
+In Omnet++ gates are the connection points of modules. There are three types of
+gates: $input$, $output$, $inout$, the latter having the behaviour of the first
+ones. Gates can only be connected to other gates via $connections$. These
+$connections$ are found in the network description files (NED) of the modules.
+
+Every node module registers its network interface card (nic) to the
+$ConnectionManager$ along with its position. Every time the node position
+changes, the manager is notified, and after the calculations taking into
+consideration the new value and the attenuation, it updates the list of
+neighbours which the node can establish connections with.
+
+$Nic$s have an $input$ $connection$ called $radioIn$ which expects messages from
+other modules. So whenever a node sends out a message, the $ConnectionManager$
+passes it to the list of neighbours computed as we mentioned above, using
+$sendDirect()$ function. The function receives the module and the gate id as
+parameters. The neighbours pass the received message further to the upper
+layers.
 
 \begin{figure}[bt]
  \centering
@@ -751,6 +794,7 @@ features of 802.11p standard are \cite{phule2012public}:
 \end{itemize}
 
 
+
 \subsection{Physical layer}
 
 As \cite{Kopke} presents, the physical layer is the core of the wireless node in
@@ -840,4 +884,72 @@ in \cite{phule2012public}:
 The model is discussed in detail in \cite{eckhoff2012multi} and the
 implementation is available free and open source for Omnet++ simulator included
 in Veins framework for IVC simulation.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\textwidth]{img/nic80211p_connections}
+	\caption{Connections between physical and MAC layers}
+	\label{fig:nic80211p_connections}
+\end{figure}
+ 
+Figure \ref{fig:nic80211p_connections} displays the $connections$ between
+the physical module and the MAC module. This section states that all messages
+from the physical module are passed through the $upperLayerOut$ gate and they
+are received at the $lowerLayerIn$ gate of MAC layer. Analogue connections exist
+when messages come from the upper layers. The $radioIn$ ensures all messages
+received are sent to the physical module to simulate the their reception. In
+fact messages come from $ConnectionManager$ as we stated above.
+
+\subsection{Application layer}
+
+The application layer runs the algorithm which handles the exchange of the
+messages between the nodes and is the top layer in the IEEE802.11p standard. Our
+application module is called FloatingContentApp and extends BaseWaveApplLayer.
+
+The most useful feature our application inherits from the BaseWaveApplLayer is
+the beaconing system, used in our application for peer discovering. In Omnet++
+scheduling future events in order to implement timers, timeouts or delays is
+performed by letting the simple module to send a message to itself. The messages
+are called $self-messages$ and are delivered later to the simple module. It does
+not use the network interface card for its implementation. Self-messages are
+sent using $scheduleAt()$ function which accepts an absolute simulation time and a
+type of message for event identification. They are sent as regular messages and
+can be identified by using $isSelfMessage()$. We use self-messages to schedule
+beacons at an interval of 300s, a value which is read from the configuration file.
+
+Nodes are handling the received messages in $handleLowerMsg$ 
+
+Since our application must be aware of the node localization, there must be a
+method to send notifications from the road traffic simulator towards the network
+simulation at every simulation step. As we presented in an earlier section, the
+TraCIScenarioManager which handles message exchanges between the two simulators,
+updates the positions for every mobility module specific to a vehicle. Every
+mobility must notify the application module about the new position. Omnet++ has
+implemented a publish-subscribe style communication among modules. The advantage
+is that the two communication modules might not know about each other and
+possibly there is many-to-many relationship among them. In our implementation,
+the two modules we talk about are the $mobility$ module and the $application$
+module.
+
+Thus, every position update the network simulator receives, reaches the
+traffic scenario manager which notifies every mobility module in the network.
+The mobility module then signals the application module with a signal called
+$mobilityStateChangedSignal$ and with the help of $emit()$ function. The function
+takes the mobility module as argument to pass the new position in the
+application module.
+
+The application must subscribe to the mobility state change signal in order
+to start listening for these type of events. The listeners use $receiveSignal()$
+function to handle the received signals and decide next steps according to their
+type. In our case the callback function $handlePositionUpdate()$ is called, which
+computes results with the new position.
+
+When a node appears in the simulation the $initialize()$ method of each module
+and its submodule is called to perform data initialization. The application's
+ancestor class, $BaseWaveApplLayer$ schedules the discovering system based on
+beacon messages.
+
+
+
+
 
