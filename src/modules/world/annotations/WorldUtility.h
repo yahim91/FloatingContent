@@ -27,6 +27,7 @@ protected:
     TraCIScenarioManager* manager;
     int anchorSize;
     int anchorDistance;
+    bool anchorsCreated;
 
 public:
     //WorldUtility();
@@ -34,6 +35,7 @@ public:
     virtual void initialize(int stage);
     int getAnchorSize();
     Coord get_current_tile(Coord coord);
+    void createAnchors();
     int getMaxX();
     int getMaxY();
 };

@@ -917,7 +917,18 @@ type of message for event identification. They are sent as regular messages and
 can be identified by using $isSelfMessage()$. We use self-messages to schedule
 beacons at an interval of 300s, a value which is read from the configuration file.
 
-Nodes are handling the received messages in $handleLowerMsg$ 
+Regular messages are sent down to the lower layer using $sendDelayed()$ which
+keeps the message for a delay interval and send it afterwards. The message,
+delay value and gate id are the method arguments.
+
+Messages arrived at a module are handled in $handleMessage()$ method where a the
+application can decide to which callback to pass it based on the gate it arrived
+on. This method is specific to $BaseLayer$, a class extended by
+$BaseWaveApplLayer$ which call $handleSelfMessages()$ for $self-messages$,
+$handleUpperMsg()$ for messages from upper layers and $handleLowerMsg()$ for
+messages from the lower layers. $BaseWaveApplLayer$ classifies again the
+messages received in $handleLowerMsg()$ in ``beacons'' or ``data'' and call the
+methods implemented by FloatingContentApp, $onData()$ and $onBeacon()$, accordingly.
 
 Since our application must be aware of the node localization, there must be a
 method to send notifications from the road traffic simulator towards the network
@@ -949,7 +960,57 @@ and its submodule is called to perform data initialization. The application's
 ancestor class, $BaseWaveApplLayer$ schedules the discovering system based on
 beacon messages.
 
+We stored into a vector container the coordinates of the anchor zones we
+received information for. Thus, when a peer is dicovered i.e. a beacon is
+received, we encapsulate the list into a wave short message and send it out to
+the sender of the beacon. Since the message is broadcasted, we simulate
+unicasting by checking that the message recipient address field is the same with
+the current node id. Otherwise we discard the message.
 
+\section {Collecting Simulation Data}
 
+Omnet++ has built-in support for recording simulation data, via output vectors
+and output scalars. Output vectors give the full picture of what is happening
+during the simulation, while the output scalars are summary results, computed
+during the simulation and written out when the simulation completes. We use the
+latter in our simulation in order to compute the criticality condition.
 
+To estimate the feasibility of floating content, we positioned anchor zones
+every 200m in a grid across the simulation area as shown in the figure
+~\ref{fig:SanFrancisco_Anchors}. More details about the simulation environment
+in the next chapter.
 
+Every anchor zone has its own independent module which records multiple
+statistics during the simulation : the total number of vehicles crossing the
+anchor, the average sojourn time of a vehicle, the number of contacts of a
+vehicle during its soujorn time, etc. We decided to hold this data inside the
+$TraCIScenarioManager$ module due to its importance and the fact that it is
+unique and provides the same data to all the modules.
+
+With the help of $handlePositionUpdate()$, we can track the vehicles inside an
+anchor zone. We use different replication ranges for the anchor zones which are
+bigger than the distance between them. This results in having overlapped anchor
+zones. Determining all the anchor zones a vehicle resides in, may be quite a
+challenge.
+
+Our approach is very simple and complexity optimised. Based on the position of
+the vehicle, the box within the vehicle resides from the grid can be determined.
+Each of the corners represents the center of an anchor zone. If the radius of an
+anchor zone would be equal with the distance between the anchor zones, the
+vehicle can reside in some or all the anchor zones placed in the corners of its
+box as shown in Figure ~\ref{fig:node_az}.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.4\textwidth]{img/node_az}
+	\caption{Anchor zones in which node 8 resides, are coloured with red, the
+	other ones are coloured with yellow}
+	\label{fig:node_az}
+\end{figure}
+
+%\begin{figure}[t]
+%	\centering
+%	\includegraphics[width=0.6\textwidth]{img/SanFrancisco_Anchors}
+%	\caption{Simulation area and anchor locations every 200m}
+%	\label{fig:SanFrancisco_Anchors}
+%\end{figure}

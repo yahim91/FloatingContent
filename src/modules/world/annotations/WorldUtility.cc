@@ -27,19 +27,23 @@ void WorldUtility::initialize(int stage) {
 
         anchorSize = par("anchorRange");
         anchorDistance = par("anchorDistance");
+        anchorsCreated = false;
     }
+}
+
+void WorldUtility::createAnchors() {
 
     for (double i = 0; i <= getPgs()->x; i += anchorDistance) {
         for (double j = 0; j <= getPgs()->y; j += anchorDistance) {
 
             AnnotationManager::Annotation* circle = annotations->drawPoint(
-                    Coord(i, j), "blue", "", anchorSize);
-            manager->addPOIReplica(Coord(i, j),
-                    circle);
+                    Coord(i, j), "yellow", "", anchorSize);
+            manager->addPOIReplica(Coord(i, j), circle);
 
         }
     }
 
+    anchorsCreated = true;
 }
 
 Coord WorldUtility::get_current_tile(Coord pos) {
