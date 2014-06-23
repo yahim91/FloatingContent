@@ -888,7 +888,7 @@ in Veins framework for IVC simulation.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.6\textwidth]{img/nic80211p_connections}
-	\caption{Connections between physical and MAC layers}
+	\caption{Connections between physical and MAC layers.}
 	\label{fig:nic80211p_connections}
 \end{figure}
  
@@ -900,11 +900,21 @@ when messages come from the upper layers. The $radioIn$ ensures all messages
 received are sent to the physical module to simulate the their reception. In
 fact messages come from $ConnectionManager$ as we stated above.
 
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.6\textwidth]{img/appl_connections}
+	\caption{Connections between newtork interface card and application
+	layer.}
+	\label{fig:appl_connections}
+\end{figure}
+
 \subsection{Application layer}
 
 The application layer runs the algorithm which handles the exchange of the
 messages between the nodes and is the top layer in the IEEE802.11p standard. Our
 application module is called FloatingContentApp and extends BaseWaveApplLayer.
+Figure ~\ref{fig:appl_connections} shows the pair of connections between the two
+layers.
 
 The most useful feature our application inherits from the BaseWaveApplLayer is
 the beaconing system, used in our application for peer discovering. In Omnet++
@@ -912,10 +922,11 @@ scheduling future events in order to implement timers, timeouts or delays is
 performed by letting the simple module to send a message to itself. The messages
 are called $self-messages$ and are delivered later to the simple module. It does
 not use the network interface card for its implementation. Self-messages are
-sent using $scheduleAt()$ function which accepts an absolute simulation time and a
-type of message for event identification. They are sent as regular messages and
-can be identified by using $isSelfMessage()$. We use self-messages to schedule
-beacons at an interval of 300s, a value which is read from the configuration file.
+sent using $scheduleAt()$ function which accepts absolute simulation time and a
+type of message for event identification as parameters. They are sent as regular
+messages and can be identified by using $isSelfMessage()$. We use self-messages
+to schedule beacons at an interval of 300s, a value which is read from the
+configuration file.
 
 Regular messages are sent down to the lower layer using $sendDelayed()$ which
 keeps the message for a delay interval and send it afterwards. The message,
@@ -961,7 +972,7 @@ ancestor class, $BaseWaveApplLayer$ schedules the discovering system based on
 beacon messages.
 
 We stored into a vector container the coordinates of the anchor zones we
-received information for. Thus, when a peer is dicovered i.e. a beacon is
+received information for. Thus, when a peer is discovered i.e. a beacon is
 received, we encapsulate the list into a wave short message and send it out to
 the sender of the beacon. Since the message is broadcasted, we simulate
 unicasting by checking that the message recipient address field is the same with
@@ -983,7 +994,7 @@ in the next chapter.
 Every anchor zone has its own independent module which records multiple
 statistics during the simulation : the total number of vehicles crossing the
 anchor, the average sojourn time of a vehicle, the number of contacts of a
-vehicle during its soujorn time, etc. We decided to hold this data inside the
+vehicle during its sojourn time, etc. We decided to hold this data inside the
 $TraCIScenarioManager$ module due to its importance and the fact that it is
 unique and provides the same data to all the modules.
 
@@ -994,19 +1005,110 @@ zones. Determining all the anchor zones a vehicle resides in, may be quite a
 challenge.
 
 Our approach is very simple and complexity optimised. Based on the position of
-the vehicle, the box within the vehicle resides from the grid can be determined.
-Each of the corners represents the center of an anchor zone. If the radius of an
-anchor zone would be equal with the distance between the anchor zones, the
-vehicle can reside in some or all the anchor zones placed in the corners of its
-box as shown in Figure ~\ref{fig:node_az}.
+the vehicle, the box in which the vehicle resides from the grid can be
+determined. Each of the corners represents the center of an anchor zone. If the
+radius of an anchor zone is equal with the distance between the anchor zones,
+the vehicle can reside in some or all the anchor zones placed in the corners of
+its box as shown in Figure ~\ref{fig:node_az}. If the radius is bigger, than we
+process all the anchor zones that are farther and contain the vehicle.
+Opposed to iterating over all anchor zones and perform operations, this method
+reduces the computational complexity.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.4\textwidth]{img/node_az}
-	\caption{Anchor zones in which node 8 resides, are coloured with red, the
-	other ones are coloured with yellow}
+	\caption{Anchor zones in which node number 8 resides, are coloured with red,
+	the other ones are coloured with yellow.}
 	\label{fig:node_az}
 \end{figure}
+
+When an encounter takes place i.e. a module receives a message and $onData()$
+method is called we must check if both nodes reside in the same anchor zone as
+the calculation of $criticality condition$ requires. Thus, we keep the above
+algorithm for anchor zones calculation, but we verify if both vehicles, the
+sender or the receiver reside in the same anchor zone.
+
+The following values are recorded and calculated in our simulation :
+\begin{itemize}
+	\item {\it maxTransitNodes} represents the maximum number of nodes that exists
+	at a given time in the anchor zone.
+	\item {\it avgContactsInSJNTime} represents the average number of contacts in
+	their sojourn time.
+	\item {\it avgTimeInAnchor} denotes the average sojourn time of vehicles in an
+	anchor zone.
+	\item {\it criticality} which is equal to $maxTransitNodes$ *
+	$avgContactsInSJNTime$ * $avgTimeInAnchor$.
+\end{itemize}
+
+% ==== Simulation Environment and evaluation (CHAPTER 4) ================================================
+
+\chapter{Simulation Environment and Evaluation}
+
+In this section we will discuss about the simulation environment, traffic
+generation and the evaluation of resulted data.
+
+\section{Environment}
+
+The environment for our simulation required by Omnet++ was generated using
+OpenStreetMap ~\cite{openstreetmap} and several SUMO tools. We decided to use
+three different city scenarios to show that floating content in urban
+environments can be feasible regardless of particularity of road
+architecture. The cities we considered are: SanFrancisco, Beijing and Berlin.
+
+The road network file is generated from the exported map (from OpenStreetMap)
+file using $netconvert$. It has many paramaters that steer how the network is
+imported and how the resulting SUMO-network is generated. We are removing
+isolated edges because they have no influence and benefit for the simulation
+scenario. We also remove the unnecessary nodes that split edges without being at
+a junction. We cluster junctions with traffic lights and join the traffic light
+logic.
+
+OpenStreetMap contains not only the road network, but also a wide range of
+additional polygons such as buildings and rivers. They represent the obstacles
+existing on the map which generate signal attenuation and influence the
+communication between vehicles.
+
+\section{Mobility Simulation}
+
+There are many methods used to obtain suitable mobility pattern for simulations
+in urban vehicular scenarios. In this section we briefly describe several
+relevant mobility patterns.
+
+One of the most popular mobility models to evaluate mobile ad hoc network
+(MANET) routing protocols is called ``Random Waypoint Model''. It became popular
+due to its simplicity and wide availability. Each node following this mobility
+pattern pauses for a fixed number of seconds and selects a random destination
+in the simulation area and a random speed between 0 and some maximum speed. When
+it arrives at the destination it repeats the previous step. Despite of its
+simplicity, the analysis from ~\cite{yoon2003random} revealed that it can be
+harmful when simulating vehicular ad hoc networks.
+
+Real mobility traces is another method to obtain mobility models and presents a
+clear improvement over the random mobility. Traces are obtained from real
+vehicles such as taxis and buses which simply move in an ordinary day in a city.
+The mobility of nodes is tracked using on board equipment or road side
+equipment. Although they generate the most realistic mobility patterns, it is
+clear that it is influenced by other non tracked vehicles whose movement does
+not appear in the recorded traces. The major problem is that it lacks
+flexibility and does not allow performing exhaustive evaluation of ad hoc
+network protocols. For example we cannot change vehicle density without
+modifying speed ~\cite{baguena2013vacamobil}.
+
+As we stated in the previous chapter we use the SUMO road traffic simulator
+which overcome the restrictions of real traces with no loss of realism. SUMO
+defines two concepts used to generate traffic for a map generated network: trips
+which denotes the origin and the destination for a single vehicle, and flows
+which defines the same trip for multiple vehicles. We used a couple of SUMO
+tools to generate our traffic demand:
+
+\begin{itemize}
+  \item {\it randomTrips.py} is a random trip generator. It inserts a
+  new vehicle every second with a trip having a random origin and destination.
+  It doesn't check if the two locations on the map are connected.
+  \item {\it duarouter} generates the traffic demand using a file with trips and
+  flows. It is made up of vehicles with assigned routes, calculated using the
+  Dijkstra algorithm. Unconnected trips are deleted.
+\end{itemize}
 
 %\begin{figure}[t]
 %	\centering

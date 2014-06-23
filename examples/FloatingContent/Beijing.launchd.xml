@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+<copy file="Beijing.net.xml" />
+<copy file="Beijing.rou.alt.xml" />
+<copy file="Beijing.poly.xml" />
+<copy file="Beijing.sumo.cfg" type="config" />
+</launch>
