@@ -40,6 +40,7 @@
 #include "mobility/traci/TraCIConstants.h"
 #include "mobility/traci/TraCIMobility.h"
 #include "obstacle/ObstacleControl.h"
+#include "modules/world/annotations/WorldUtility.h"
 
 Define_Module(TraCIScenarioManager);
 
@@ -495,6 +496,7 @@ void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
     if (msg == connectAndStartTrigger) {
         connect();
         init_traci();
+        dynamic_cast<WorldUtility*>(world)->createAnchors();
         return;
     }
     if (msg == executeOneTimestepTrigger) {
@@ -939,10 +941,21 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
                     == anchorZones[az.getPairCoord()].nodes.end()) {
                 anchorZones[az.getPairCoord()].nodes[id].inTime = simTime();
                 currentNumNodes = anchorZones[az.getPairCoord()].nodes.size();
-                currentMaxNodes = anchorZones[az.getPairCoord()].maxTransitNodes;
+                currentMaxNodes =
+                        anchorZones[az.getPairCoord()].maxTransitNodes;
                 if (currentNumNodes > currentMaxNodes) {
-                    anchorZones[az.getPairCoord()].maxTransitNodes = currentNumNodes;
+                    anchorZones[az.getPairCoord()].maxTransitNodes =
+                            currentNumNodes;
                 }
+
+                /*if (id == 8) {
+                    // displaying current anchor zones for node id
+                    AnnotationManager *an =
+                            AnnotationManagerAccess().getIfExists();
+                    an->hide(anchorZones[az.getPairCoord()].ann);
+                    anchorZones[az.getPairCoord()].ann = an->drawPoint(az,
+                            "red", "", (int) par("anchorRadius"));
+                }*/
             }
             anchors[az.getPairCoord()] = true;
         }
@@ -967,11 +980,16 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
 
                 }
             }
-            if (peers != 0) {
+            if (peers != 0 && totalTime.inUnit(SIMTIME_S) != 0) {
                 anchorZones[it->first].avgContactsInSJNTime +=
                         ((double) contactsNum / peers)
                                 / totalTime.inUnit(SIMTIME_S);
             }
+            /*if (id == 8) {
+                // displaying current anchor zones for node id
+                AnnotationManager *an = AnnotationManagerAccess().getIfExists();
+                an->hide(anchorZones[it->first].ann);
+            }*/
             anchorZones[it->first].nodes.erase(id);
             anchors.erase(it++);
         } else {
@@ -1931,13 +1949,15 @@ void TraCIScenarioManager::AnchorZone::recordScalars() {
 
             }
         }
-        if (peers != 0) {
+        if (peers != 0 && totalTime.inUnit(SIMTIME_S) != 0) {
             avgContactsInSJNTime += ((double) contactsNum / peers)
                     / totalTime.inUnit(SIMTIME_S);
         }
     }
     if (numTransitNodes == 0) {
         avgTimeInAnchor = 0;
+        encounters = 0;
+        avgContactsInSJNTime = 0;
     } else {
         avgTimeInAnchor = (double) timeAverage.inUnit(SIMTIME_S)
                 / numTransitNodes;
@@ -1945,10 +1965,11 @@ void TraCIScenarioManager::AnchorZone::recordScalars() {
         avgContactsInSJNTime /= numTransitNodes;
     }
 
-    mod->recordScalar("criticality",
-            numTransitNodes * encounters);
-    mod->recordScalar("criticality2", numTransitNodes * avgContactsInSJNTime * avgTimeInAnchor);
-    mod->recordScalar("criticality3", maxTransitNodes * avgContactsInSJNTime * avgTimeInAnchor);
+    mod->recordScalar("criticality", numTransitNodes * encounters);
+    mod->recordScalar("criticality2",
+            numTransitNodes * avgContactsInSJNTime * avgTimeInAnchor);
+    mod->recordScalar("criticality3",
+            maxTransitNodes * avgContactsInSJNTime * avgTimeInAnchor);
     mod->recordScalar("transit", numTransitNodes);
     mod->recordScalar("contactsPerSecond", avgContactsInSJNTime);
     mod->recordScalar("timeAverage", avgTimeInAnchor);

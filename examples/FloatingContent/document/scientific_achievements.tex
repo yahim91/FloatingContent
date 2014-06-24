@@ -1053,20 +1053,35 @@ The environment for our simulation required by Omnet++ was generated using
 OpenStreetMap ~\cite{openstreetmap} and several SUMO tools. We decided to use
 three different city scenarios to show that floating content in urban
 environments can be feasible regardless of particularity of road
-architecture. The cities we considered are: SanFrancisco, Beijing and Berlin.
+architecture. The cities we used as simulation environment are: SanFrancisco,
+Beijing and Berlin.
 
 The road network file is generated from the exported map (from OpenStreetMap)
 file using $netconvert$. It has many paramaters that steer how the network is
-imported and how the resulting SUMO-network is generated. We are removing
+imported and how the resulting SUMO-network is generated. We removed
 isolated edges because they have no influence and benefit for the simulation
-scenario. We also remove the unnecessary nodes that split edges without being at
-a junction. We cluster junctions with traffic lights and join the traffic light
-logic.
+scenario. We also removed the unnecessary nodes that split edges without being
+at a junction. We clustered junctions with traffic lights and joined the traffic
+light logic.
 
 OpenStreetMap contains not only the road network, but also a wide range of
 additional polygons such as buildings and rivers. They represent the obstacles
 existing on the map which generate signal attenuation and influence the
 communication between vehicles.
+
+As suggested in \cite{percomfloatingcontent}, we also chose two different anchor
+zone radii: $a$ = $r$ $\epsilon$ \{200m, 500m\}. To evaluate the feasibility of
+floating content in the urban area we placed anchor zones every 200m
+horizontally and vertically across the entire simulation area. Figure
+~\ref{fig:anchor_zones_grid} shows how anchor zones are distributed on the
+simulation map.
+
+\begin{figure}[t]
+ \centering
+ \includegraphics[width=10cm]{img/SanFrancisco_Anchors}
+ \caption{Anchor zones every 200m over the simulation area}
+ \label{fig:anchor_zones_grid}
+\end{figure}
 
 \section{Mobility Simulation}
 
@@ -1110,6 +1125,17 @@ tools to generate our traffic demand:
   Dijkstra algorithm. Unconnected trips are deleted.
 \end{itemize}
 
+We ensured that every car travels a minimum distance of 1500 meters from origin
+to destination. $randomTrips.py$ distribute the vehicles randomly on their
+starting edges taking into account their speed and the edge maximum speed. We
+decided to place a bigger proportion of high speed vehicles on the map which
+will be placed on lanes with higher maximum speeds. This way, there will
+be heavy traffic on highways and anchor zones with higher criticality conditions
+should appear in the areas where the traffic jams may occur. It is a method to
+emphasize the anchor zones with high floating probability without loss of
+generality. The speed ranges from ~5m/s ( ~18km/h ) to ( ~79km/h ).
+
+\subsection{Evaluation}
 %\begin{figure}[t]
 %	\centering
 %	\includegraphics[width=0.6\textwidth]{img/SanFrancisco_Anchors}
