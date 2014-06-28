@@ -34,6 +34,7 @@
 #include "FindModule.h"
 #include "obstacle/ObstacleControl.h"
 #include "mobility/traci/TraCIColor.h"
+#include "application/traci/AnchorZone.h"
 
 /**
  * @brief
@@ -57,77 +58,6 @@ public:
     class Statistics {
     public:
         void initialize();
-    };
-
-    class Node {
-    public:
-        int id;
-        simtime_t inTime;
-        simtime_t outTime;
-        int numContacts;
-
-
-        Node() {
-        }
-        ;
-        Node(const Node& node) :
-                id(node.id), inTime(node.inTime), outTime(node.outTime), numContacts(
-                        node.numContacts) {
-        }
-        Node& operator=(const Node& node) {
-            this->id = node.id;
-            this->inTime = node.inTime;
-            this->inTime = node.outTime;
-            this->numContacts = node.numContacts;
-            return *this;
-        }
-    };
-
-    class AnchorZone {
-    public:
-        static int idx;
-        int replicas;
-        Coord pos;
-        AnnotationManager::Annotation* ann;
-        bool replicated;
-        int contacts;
-        simtime_t timeInContact;
-        cModule* mod;
-        double avgContactsInSJNTime;
-        std::map<int, Node> nodes;
-        std::map<std::pair<int, int>, int> contactsBetweenNodes;
-        simtime_t timeAverage;
-        int numTransitNodes;
-        int maxTransitNodes;
-
-        AnchorZone();
-        AnchorZone(Coord, cModule*);
-        AnchorZone(const AnchorZone& az) :
-                replicas(az.replicas), contacts(az.contacts), pos(az.pos), replicated(
-                        az.replicated), timeInContact(az.timeInContact), ann(
-                        az.ann), mod(az.mod), nodes(az.nodes), contactsBetweenNodes(
-                        az.contactsBetweenNodes),
-                        numTransitNodes(az.numTransitNodes),
-                        avgContactsInSJNTime(az.avgContactsInSJNTime),
-                        maxTransitNodes(az.maxTransitNodes){
-        }
-        void setAnnotation(AnnotationManager::Annotation*);
-        void recordScalars();
-        AnchorZone& operator=(const AnchorZone& az) {
-            replicas = az.replicas;
-            contacts = az.contacts;
-            pos = az.pos;
-            replicated = az.replicated;
-            ann = az.ann;
-            mod = az.mod;
-            nodes = az.nodes;
-            timeInContact = az.timeInContact;
-            contactsBetweenNodes = az.contactsBetweenNodes;
-            numTransitNodes = az.numTransitNodes;
-            avgContactsInSJNTime = az.avgContactsInSJNTime;
-            maxTransitNodes = az.maxTransitNodes;
-            return *this;
-        }
     };
 
     enum VehicleSignal {
@@ -228,7 +158,8 @@ public:
     void checkSameAnchor(Coord s, Coord r, int snd, int rcv, int x, int y);
     bool isInAnchor(Coord p, Coord az);
     void checkCurrentAnchors(Coord s, int id, int x, int y,
-            std::map<std::pair<double, double>, bool> &anchors);
+            std::map<std::pair<double, double>, bool> &anchors,
+            std::vector<Coord> &info);
 
     const std::map<std::string, cModule*>& getManagedHosts() {
         return hosts;
@@ -362,7 +293,7 @@ protected:
     int replicas;
     int anchorRadius;
     std::map<std::pair<int, int>, simtime_t> contactsInProcess;
-    std::map<std::pair<double, double>, AnchorZone> anchorZones;
+    std::map<std::pair<double, double>, AnchorZone*> anchorZones;
 
     bool debug; /**< whether to emit debug messages */
     simtime_t connectAt; /**< when to connect to TraCI server (must be the initial timestep of the server) */
@@ -372,6 +303,7 @@ protected:
     std::string moduleName; /**< module name to be used in the simulation for each managed vehicle */
     std::string moduleDisplayString; /**< module displayString to be used in the simulation for each managed vehicle */
     std::string host;
+    simtime_t ratesInterval;
     int port;
     bool autoShutdown; /**< Shutdown module as soon as no more vehicles are in the simulation */
     int margin;
@@ -391,6 +323,7 @@ protected:
     bool autoShutdownTriggered;
     cMessage* connectAndStartTrigger; /**< self-message scheduled for when to connect to TraCI server and start running */
     cMessage* executeOneTimestepTrigger; /**< self-message scheduled for when to next call executeOneTimestep */
+    cMessage* checkRatesTrigger;
 
     BaseWorldUtility* world;
     BaseConnectionManager* cc;
@@ -398,6 +331,8 @@ protected:
     uint32_t getCurrentTimeMs(); /**< get current simulation time (in ms) */
 
     void executeOneTimestep(); /**< read and execute all commands for the next timestep */
+
+    void checkRates();
 
     void connect();
     virtual void init_traci();

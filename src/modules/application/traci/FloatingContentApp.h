@@ -64,6 +64,7 @@ protected:
     Coord circleCoord;
     char circleDisplayString[50];
     int poiReplicationRange;
+    simtime_t ttl;
     std::string poiColor;
     simtime_t poiTTL;
     simtime_t refreshInterval;

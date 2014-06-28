@@ -7,20 +7,16 @@
 Mobile devices have become a staple of our society, with everyone of
 us owning at least one. They are everywhere and play increasingly greater roles
 in the lives of most everyone. Their availability is rapidly spreading
-throughout the world and making significant improvements in many lifes. Mobile
+throughout the world and making significant improvements in many lives. Mobile
 technology is making our lives better than ever before. We are now able to be in
 touch with those we need to reach no matter where we are.
 
-We are able to send important documents almost anywhere in the world in seconds
-so business is addressed when it becomes critical. We are able to collaborate
-with co-workers in real-time no matter what is their position on globe. Mobile
-technology has changed the way we do business for the better.
-
-Communication is wonderfully impacting our ability to stay close to our family
-and friends. It eliminates distances between us and gives us the freedom from
-the constraints of space giving us the opportunity to communicate with each
-other regardless of our location. We can have video chats to not only stay in
-touch, but to reach out and to touch with a nearly physical presence.
+Mobile technology makes possible documents transfer almost anywhere in
+the world in small amount of time so business is addressed when it
+encounters an emergency. It keeps employees and business owners connected
+regardless of their position on the globe and increases the company
+productivity. It also keeps the customer updated with information about services
+they use. Mobile technology transformed how companies do business.
 
 The daily uses of mobile technology have transformed us into a society tightly
 connected to each other. We have friends through such connections, even though
@@ -28,6 +24,7 @@ we may have never met them in persons. Media became subject of discussion, never
 possible before making the resultant friendships as strong as those in real
 life.
 
+ 
 We have more information in our hand than ever before. It has become easy and
 natural for someone to quickly look up helpful resources for whatever activity
 we need to do. Mobile application can even anticipate what information we need
@@ -137,17 +134,17 @@ detail in a further chapter.
 \section{Introduction}
 Floating Content network is a particular type of network that uses intermittent
 connectivity also known as delay tolerant networks (DTN). Recently, the new term
-disruption-tolerant networking has gained currency in the United States.
-Disruption may occur because of the limits of wireless radio range, sparsity of
-mobile nodes, energy resources, attack, and noise \cite{wikipedia_dtn}.
-This concept of information sharing matches the needs of context-aware
-applications because it keeps the spatial proximity in a close relation with
-connectivity.
+disruption-tolerant networking has gained popularity in the United States.
+Among the events that may generate disruption we can identify limits of wireless
+radio range, noise, energy resources and sparsity of mobile nodes
+\cite{wikipedia_dtn}. This concept of information sharing matches the needs of
+context-aware applications because it keeps the spatial proximity in a close
+relation with connectivity.
 
 Context awareness is a characteristic of a mobile devices and includes different
-types. The most important are identity, activity, time, and the most important
-for our analysis, location. The application can determine what activities are
-occurring near the entity and what objects or people are near the entity.
+types such as : identity, activity, time, and the most important for our
+analysis, location. The application can determine what activities may occur near
+the entity, the objects and people that are nearby.
 
 A use case scenario of context-aware application could be a tourist guide
 information sharing. When you're visiting an unfamiliar location, having an
@@ -158,33 +155,34 @@ to follow to reach a desired place and much more.
 
 \section{Applications for Floating Content}
 
-The features of floating content give the user useful opportunities but can also
-offer some important difficulties. The most useful opportunity enables
+The features of floating content offer the user exciting opportunities but can
+also offer some important difficulties. The most useful opportunity enables
 localized information sharing without using infrastructure services and without
-a central data records. Since there is no remote access, it gives the user some
-degree of privacy, as you must be present in order to ``see'' something which is
+central data records. Since there is no remote access, it gives the user some
+degree of privacy, as he must be present in order to ``see'' something which is
 a usual concept in the daily life. The major challenge is that the
 communications service makes no guarantees that the data will stay around until
-its lifetime expires. For example, during the night the content is expected
-to disappear. We can make intuitive deductions, which are assisted by the
+its lifetime expires. For example, during the night the content is expected to
+disappear. We can make intuitive deductions, which are assisted by the
 simulations which will be later discussed. If the service is used in an
-overcrowded place like a market square or a heavy traffic road, there is a big
+overcrowded place like a market square or a heavy traffic road, there is a high
 probability that the content will float for some time, even if not all other
-people are using context-aware mobile devices. In the end, the best-effort
-communication it is better than no communication at all.
+people use context-aware mobile devices. In the end, any type of
+communication (event the best-effort) may be better than no communication at
+all.
 
-Density fluctuations over the day may be a problem for the residing information
-in a certain place and it is expected to remain available for no more than a few
-hours. Making predictions that there will be enough people in that location is
-very limited for now. However, a limited amount of time, let's say one hour of
-``floating'' may be enough for the application to do its job. As a solution, a
-user can be a permanent seed staying around and reissue updated content.
+People's daily activities cause density fluctuations over the day which may be a
+problem for the residing information in certain places. Thus, the information is
+expected to remain available for no more than a few hours. Making predictions
+that there will be enough people in that location is very limited for now.
+However, a limited amount of time, let's say one hour of ``floating'' may be
+enough for the application to do its job. As a solution, a user can be a
+permanent seed, staying around and resending out updated content.
 
 Multiple use cases can emerge from the floating content concept. One of them can
 use infrastructure-less local data availability for advertising or selling
-goods. This type of market has a dynamic catalog of available merchandise, being
-able to operate updates on the fly. The information is by the nature ephemeral
-and of local relevance.
+goods. This type of market could have a dynamic catalog of available
+merchandise, being able to operate updates on the fly.
 
 Another one is information sharing between tourists and visitors about the local
 attractions or notifications about good services a certain hotel is offering.
@@ -192,23 +190,23 @@ Spreading news and keeping it localized, time-bounded and most important
 anonymous can be another use case of floating content for which best-effort
 operation perfectly suits the needs.
 
-Overall, floating content can be used in many ways or types, taking into
-consideration two important aspects of it: floating information is localized by
-design so the developers should consider multiple data-oriented architecture.
-The second aspect is that the concept is inherently best effort, a problem which
+Overall, floating content can be used in many ways, taking into consideration
+two important aspects of it. First, floating information is localized by design
+so the developers should consider multiple data-oriented architecture.
+The second aspect is that the concept is best effort, a problem which
 the Internet infrastructure solves with repair mechanisms that can recover lost
-packets. In our case, data that {\it sunk} is irrecoverable in an area. Taking
-these into account for future application will produce more interesting uses.
+packets. In our case, data that expires is irrecoverable in an area. Taking
+these into account for future application will produce more interesting use
+cases.
 
 \section{Service model}
 
 This section describes the floating content design and the environment
-constraints that the architecture needs in order to work.
-We assume users to be mobile nodes who are interested in the content generated
-by all other nodes. We assume that they are using mobile devices with unlimited
-data memory in order to handle the amount of data exchanged during their
-participation in ad-hoc network. Also, there is no supporting infrastructure for
-the system.
+constraints that the architecture needs in order to work. We assume users to be
+mobile nodes who are interested in the content generated by all other nodes. We
+assume that they are using mobile devices with unlimited data memory in order to
+handle the amount of data exchanged during their participation in ad-hoc
+network. Also, there is no supporting infrastructure for the system.
 
 We assume that nodes are uniformly distributed and travel independently, with a
 constant speed. In \cite{uniform_distribution} it is shown that this mobility
@@ -217,14 +215,14 @@ model preserve the spatial node distribution at all time points.
 The devices are equipped with wireless interfaces (Bluetooth or WLAN) to enhance
 network communication. Analysis of performance for 802.11p standard displayed in
 \cite {performance80211} have shown that using a bitrate of 6Mbps and a
-payload of 500 bytes yields a delivery rate of up to 80\%. This indicates the acceptable
-reliability and performance of IEEE 802.11p and confirms the viability of
-floating up to several megabytes of data (from text messages to photos). This
-standard is used also in our simulation which will be discussed in a further
-chapter. Making intuitive judgements, we can determine that contacts cannot last
-more than several tens of seconds, in vehicle case even less due to their high
-speeds. Thus there will be no need for the mobile devices to reserve a
-considerable amount of storage for the floating content.
+payload of 500 bytes yields a delivery rate of up to 80\%. This indicates the
+acceptable reliability and performance of IEEE 802.11p and confirms the
+viability of floating up to several megabytes of data (from text messages to
+photos). This standard is used also in our simulation which will be discussed in
+a further chapter. Making intuitive judgements, we can determine that contacts
+cannot last more than several tens of seconds, in vehicle case even less due to
+their high speeds. Thus there will be no need for the mobile devices to reserve
+a considerable amount of storage for the floating content.
 
 The devices also need to be equipped with accurate systems which determine their
 position, e.g. using GPS tracking, cellular base stations, cell tower
@@ -241,21 +239,21 @@ geographic origin, validity range and and time-to-live (TTL).
 Other nodes decide if they store the information and will replicate it further
 if they are in the associated anchor zone to others. The information is
 explicitly allowed to disappear providing no guarantees about its availability.
-If the lifetime of the content expires, it will be deleted by the application.
+If the lifetime of the content expires, it will be discarded by the application.
 In consequence an item may disappear if there are no nodes (or to few) to
 replicate it in its associated anchor zone, unless the creator is there to
 re-issue it again.
 
 \subsection{System operation}
 
-As \cite{percomfloatingcontent} presents, a node generates information I which
-has a size of s(I) and a defined lifetime (TTL). The information is tagged with
-the anchor zone also which is defined by its geo-located center P and two radii:
-{\it r} identifies the {\it replication range} and inside which nodes replicate
-the information to other nodes they encounter and {\it a} defines the
-{\it availability range} inside which the information is still stored with
-limited probability. As shown in the ~\ref{fig:anchor_zone} outside the
-availability zone there exist no copy of the item in nodes data storage.
+As \cite{percomfloatingcontent} presents, a node generates information $I$ which
+has a size of $s(I)$ and a defined lifetime (TTL). The information is tagged
+with the anchor zone also which is defined by its geo-located center $P$ and two
+radii: {\it r} identifies the {\it replication range}, inside which nodes
+replicate the information to other nodes they meet on their way and {\it a}
+defines the {\it availability range} inside which the information is still
+stored with limited probability. As shown in the ~\ref{fig:anchor_zone} outside
+the availability zone there exist no copy of the item in the node data storage.
 
 \begin{figure}[bt]
  \centering
@@ -319,7 +317,7 @@ function becoming useless in this case.
 As described in \cite{percomfloatingcontent}, the floating content protocol,
 also used in our evaluations, is an efficient and simple method to exchange
 items between nodes. A message is identified by a message id $Id$, the anchor point
-with the attributes described earlier $(P, r, a)$, and the lifetime $T$. The
+with the attributes described earlier $(P,\ r,\ a)$, and the lifetime $T$. The
 header of the message is filled with these characteristics, and the message body
 of size $s(I)$ is filled with the desired payload.
 
@@ -342,12 +340,12 @@ Below is the protocol which has 4 phases:
 
 It is assumed that nodes can exchange messages fully bidirectional during any
 step. Moreover, they can exchange messages simultaneously to multiple nodes
-(even though technology may not be able). The beaconing process can take place
+(even though technology may be limited). The beaconing process can take place
 while in middle of message exchange in order to keep the discovering process
 running. Since message exchanging is done in an incremental way, nodes can
 append the new coming messages to the list, while they are still in transfer.
 
-Deletion of item I occurs immediately the node moves outside of $a$. In
+Deletion of item $I$ occurs immediately the node moves outside of $a$. In
 \cite{percomfloatingcontent} is is suggested that a second possibility could be
 deletion $upon-encounter$ which discards a message when meeting a new node.
 stating that this policy is more sensible due to its asynchronous
@@ -392,31 +390,31 @@ Floating content model has been a subject of analysis in
 \cite{whendoesdatafloats} . The most important objective of this work has been
 finding a pattern to guarantee that a specific information remains in its anchor
 zone until the expiry of its lifetime with a high probability. It is called the
-$criticality condition$ and it depends on many aspects like mobility pattern and
-the replication policy of the nodes inside the anchor zone. 
+$criticality\ condition$ and it depends on many aspects like mobility pattern
+and the replication policy of the nodes inside the anchor zone. 
 
 \subsection{Criticality Condition}
 
 As before, we assume each information is being tagged with an anchor zone in
 which nodes keep entering, spend some time and finally exit. Also, we assume
-that the nodes spend a relatively long time inside the anchor and follow a
-random mobility pattern. The population is assumed to be large and ``well
+that the nodes spend a consistent amount of time inside the anchor and
+follow a random mobility pattern. The population is assumed to be large and ``well
 mixed'' in order to preserve the proportion between its size and the nodes
 having the information. Further the criticality condition at the
 fluid limit is explained.
 
-While moving inside the anchor zone, a node encounters randomly other nodes.
-We assume there are only two nodes moving permanently inside the zone. Let
-$\upsilon$ be the frequency at which they come in contact with each other. Now,
-assuming the population of nodes in anchor is N, then the total number of pairs
-is $\frac{1}{2}N(N-1) \approx \frac{1}{2}N^2$ and the total rate of encounters
-is $\frac{1}{2}N^2\upsilon$. A part of these encounters, more exactly $2p(1-p)$,
-replicate an item to nodes that doesn't have it yet in the data storage, thus
-the total rate of such events is $p(1-p)N^2\upsilon$. At this rate, the size of
-the population of nodes which have the item I tends to increase. Let
-$\frac{1}{\mu}$ be the time spent by a node in the anchor zone. It results that
-the total exit rate of nodes is $N\mu$ and the exit rate of tagged nodes is
-$Np\mu$. The growth rate is determined by the formula:
+While moving inside the anchor zone, a node may come in contact randomly
+with other nodes. We assume there are only two nodes moving permanently inside
+the zone. Let $\upsilon$ be the frequency at which they come in contact with
+each other. Now, assuming the population of nodes in anchor is N, then the total
+number of pairs is $\frac{1}{2}N(N-1) \approx \frac{1}{2}N^2$ and the total rate
+of encounters is $\frac{1}{2}N^2\upsilon$. A part of these encounters, more
+exactly $2p(1-p)$, replicate an item to nodes that doesn't have it yet in the
+data storage, thus the total rate of such events is $p(1-p)N^2\upsilon$. This
+rate shows the the type of monotonicity of the size of the population which have
+the item $I$. Let $\frac{1}{\mu}$ be the time spent by a node in the anchor
+zone. It results that the total exit rate of nodes is $N\mu$ and the exit rate
+of tagged nodes is $Np\mu$. The growth rate is determined by the formula:
 
 \begin{equation}
 N\frac{d}{dt}p = N^2p(1-p)\upsilon - Np\mu \label{eq:derivative}
@@ -512,7 +510,7 @@ levels.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.6\textwidth]{img/bidirectional_com}
+	\includegraphics[width=0.8\textwidth]{img/bidirectional_com}
 \end{figure}
 
 Messages may contain any sort of data, in addition to usual attributes such as
@@ -542,30 +540,30 @@ simple modules, and connect and assemble them into compound modules. It has
 several features which let it scale well to large projects.
 
 \begin{itemize}
-  \item Hierarchical. Any module which would be to complex, can be broken down
-  into smaller modules, and used as a compound module.
-  \item Component-Based. It provides module reusability, which reduces code
+  \item Hierarchical. Any module which appears to be complicated, can be
+  split into smaller modules, and used as a compound module.
+  \item Component-Based. It provides module reusability, reducing code
   copying, and more importantly allows component libraries like Veins to exist.
-  \item Interfaces are used as a placeholder where normally a module or channel
-  type would be used. The concrete module or channel type is determined at
-  network setup time by a parameter. Concrete modules types must implement the
-  interface they can substitute. For example, a compound module type named
-  MobileHost contains a mobility submodule of the type IMobility (an interface),
-  the actual type of mobility may be chosen from the module types that
-  implemented IMobility (RandomWalkMobility, TurtleMobility, etc.)
-  \item Inheritance. Modules and channels can be subclassed like C++ classes.
-  Derived class could add new parameters, gates, new submodules or connections.
-  They may set existing parameters to a specific value, and also set the gate
-  size of gate vector.
-  \item Packages. The NED language features a Java-like package structure, to
-  reduce the risk of name conflicting between different models. It has a similar
-  ``CLASSPATH'' called NEDPATH introduced to make it easier to specify
-  dependencies among simulation modules.
+  \item Interfaces have a special purpose: they replace a module or channel type
+  that would normally be declared in the network description. The concrete
+  module or channel type is determined at network setup time by a parameter.
+  Concrete modules types must implement the interface they substitute. For
+  example, a compound module type named MobileHost contains a mobility submodule
+  of the type IMobility (an interface); the actual type of mobility may be
+  chosen from the module types that implemented IMobility (RandomWalkMobility,
+  TurtleMobility, etc.)
+  \item Inheritance. Modules and channels can be inherited like C++ classes.
+  Extended modules could add new parameters, gates, new submodules
+  or connections. They may initialize some parameters to default values.
+  \item Packages. The NED language has a package structure similar to Java
+  language. Its main purpose is avoid name conflicts between different modules.
+  It has a similar ``CLASSPATH'' called NEDPATH introduced to make it easier to
+  specify dependencies among simulation modules.
 \end{itemize}
 
 \section{Architecture}
 Every simulation in Omnet++ is defined by a configuration file, usually called
-{\it omnetpp.ini}. It contains settings that control how the simulation is
+\mbox{\it omnetpp.ini}. It contains settings that control how the simulation is
 executed, values for model parameters, etc.
 
 \subsection{Network}
@@ -984,7 +982,7 @@ Omnet++ has built-in support for recording simulation data, via output vectors
 and output scalars. Output vectors give the full picture of what is happening
 during the simulation, while the output scalars are summary results, computed
 during the simulation and written out when the simulation completes. We use the
-latter in our simulation in order to compute the criticality condition.
+latter in our simulation in order to compute the $criticality$ condition.
 
 To estimate the feasibility of floating content, we positioned anchor zones
 every 200m in a grid across the simulation area as shown in the figure
@@ -1024,7 +1022,7 @@ reduces the computational complexity.
 
 When an encounter takes place i.e. a module receives a message and $onData()$
 method is called we must check if both nodes reside in the same anchor zone as
-the calculation of $criticality condition$ requires. Thus, we keep the above
+the calculation of $criticality\ condition$ requires. Thus, we keep the above
 algorithm for anchor zones calculation, but we verify if both vehicles, the
 sender or the receiver reside in the same anchor zone.
 
@@ -1078,7 +1076,7 @@ simulation map.
 
 \begin{figure}[t]
  \centering
- \includegraphics[width=10cm]{img/SanFrancisco_Anchors}
+ \includegraphics[width=15cm,height=14cm,keepaspectratio]{img/SanFrancisco_Anchors}
  \caption{Anchor zones every 200m over the simulation area}
  \label{fig:anchor_zones_grid}
 \end{figure}
@@ -1130,15 +1128,63 @@ to destination. $randomTrips.py$ distribute the vehicles randomly on their
 starting edges taking into account their speed and the edge maximum speed. We
 decided to place a bigger proportion of high speed vehicles on the map which
 will be placed on lanes with higher maximum speeds. This way, there will
-be heavy traffic on highways and anchor zones with higher criticality conditions
-should appear in the areas where the traffic jams may occur. It is a method to
-emphasize the anchor zones with high floating probability without loss of
+be heavy traffic on highways and anchor zones with higher $criticality\ 
+conditions$ should appear in the areas where the traffic jams may occur. It is a
+method to emphasize the anchor zones with high floating probability without loss of
 generality. The speed ranges from ~5m/s ( ~18km/h ) to ( ~79km/h ).
 
-\subsection{Evaluation}
-%\begin{figure}[t]
-%	\centering
-%	\includegraphics[width=0.6\textwidth]{img/SanFrancisco_Anchors}
-%	\caption{Simulation area and anchor locations every 200m}
-%	\label{fig:SanFrancisco_Anchors}
-%\end{figure}
+\section{Evaluation}
+
+We decided to perform simulations using different time values, to observe the
+behaviour of $criticality\ condition$: $t\ \epsilon\ \{300s, 600s\}$. Although
+time intervals appear to be short, they are sufficient for gathering consistent
+data. Since the application relies on data broadcasting, it forces the simulator
+to schedule thousands of messages which results in usage of a great amount of
+time and memory. For example, 10 minutes of simulation for San Francisco city
+was processed in 1 hour and 45 minutes.
+
+\subsection{Beijing}
+
+Figure ~\ref{fig:Beijing_300s} depicts the value of the $criticality$ for each
+anchor zone. Figure ~\ref{fig:Beijing_waiting} is a snapshot that displays the
+road network from an area of 6.7$\times$5.2 km$^2$. The map is coloured with
+respect to the amount of time a car has to wait due to the traffic lights placed
+in intersection. Road segments coloured in red have a bigger waiting time than
+the one coloured in black.
+  
+
+\begin{figure}[t]
+\centering
+	\begin{subfigure}[t]{1\textwidth}
+	\centering
+	\includegraphics[width=0.8\textwidth,height=6cm]{img/Beijing/Beijing4}
+	\caption{Beijing traffic waiting time heatmap}
+	\label{fig:Beijing_waiting}
+	\end{subfigure}
+	
+	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/Beijing/criticality3_sim_Beijing3_300s_200m}
+ 		\caption{Beijing Criticality Map $r\ =\ 200m$}
+ 		\label{fig:Beijing_criticality_300s}
+ 	\end{subfigure}%
+ 	\hfill
+ 	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/Beijing/transit_sim_Beijing3_300s_200m}
+ 		\caption{Transit Map $r\ =\ 200m$}
+ 		\label{fig:Beijing_transit_300s}
+ 	\end{subfigure}
+ 	
+ 	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/Beijing/criticality3_sim_Beijing3_300s_500m}
+ 		\caption{Beijing Criticality Map $r\ =\ 500m$}
+ 		\label{fig:Beijing_criticality_300s}
+ 	\end{subfigure}%
+ 	\hfill
+ 	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/Beijing/transit_sim_Beijing3_300s_500m}
+ 		\caption{Transit Map $r\ =\ 500m$}
+ 		\label{fig:Beijing_transit_300s}
+ 	\end{subfigure}
+ 	\caption{Beijing 300s simulation}
+ 	\label{fig:Beijing_300s}
+\end{figure}

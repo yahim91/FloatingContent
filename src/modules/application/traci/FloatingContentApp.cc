@@ -48,6 +48,7 @@ void FloatingContentApp::initialize(int stage) {
         poiCount = par("poiCount");
         refreshInterval = par("refreshInterval");
         poiReplicationRange = par("poiReplicationRange");
+        ttl = par("ttl");
         refreshPoi = new cMessage("refreshPoi");
 
         ASSERT(annotations);
@@ -74,16 +75,19 @@ void FloatingContentApp::initialize(int stage) {
 void FloatingContentApp::onBeacon(WaveShortMessage* wsm) {
     //beacon received - transmitting all stored informations
     Storage storage;
-    /*if (!tiles.size())
-     return;
+    if (!tiles.size())
+        return;
 
-     storage.writeInt(tiles.size());
-     for (unsigned int i = 0; i < tiles.size(); i++) {
-     storage.writeDouble(tiles[i].x);
-     storage.writeDouble(tiles[i].y);
-     }*/
+    storage.writeInt(tiles.size());
+    for (unsigned int i = 0; i < tiles.size(); i++) {
+        storage.writeDouble(tiles[i].x);
+        storage.writeDouble(tiles[i].y);
+        //storage.writeDouble(tiles[i].start);
+        storage.writeDouble(tiles[i].start.dbl());
+    }
+
     sendMessage(storage, wsm->getSenderAddress());
-    //statistics.contacts++;
+//statistics.contacts++;
 }
 
 void FloatingContentApp::onData(WaveShortMessage* wsm) {
@@ -94,32 +98,34 @@ void FloatingContentApp::onData(WaveShortMessage* wsm) {
     FloatingContentMessage* msg = dynamic_cast<FloatingContentMessage*>(wsm);
     if (msg->getRecipientAddress() != myId)
         return;
-    /*Storage storage = msg->getStorage();
-     storage.resetIter();
-     int poiCount = storage.readInt();
-     Coord temp;
-     for (int i = 0; i < poiCount; i++) {
-     temp = new Coord(storage.readDouble(), storage.readDouble());
-     if (traci->getCurrentPosition().distance(temp) < poiReplicationRange
-     && std::find(tiles.begin(), tiles.end(), temp) == tiles.end()) {
-     tiles.push_back(temp);
-     findHost()->getDisplayString().updateWith("r1=16,green");
-     traciManager->addPOIReplica(temp);
-     currentTilesX.record(temp.x);
-     currentTilesY.record(temp.y);
+    Storage storage = msg->getStorage();
+    storage.resetIter();
+    int poiCount = storage.readInt();
+    Coord temp;
+    for (int i = 0; i < poiCount; i++) {
+        temp = new Coord(storage.readDouble(), storage.readDouble());
+        temp.start = SimTime(storage.readDouble());
+        //temp.start = simTime();
+        if (traci->getCurrentPosition().distance(temp) < poiReplicationRange
+                && std::find(tiles.begin(), tiles.end(), temp) == tiles.end()) {
+            tiles.push_back(temp);
+            //findHost()->getDisplayString().updateWith("r1=16,green");
+            traciManager->addPOIReplica(temp);
+            currentTilesX.record(temp.x);
+            currentTilesY.record(temp.y);
 
-     traciManager->endTransmission(temp, wsm->getSenderAddress(),
-     wsm->getRecipientAddress());
-     //statistics.contacts++;
-     }
-     }*/
+            /*traciManager->endTransmission(temp, wsm->getSenderAddress(),
+                    wsm->getRecipientAddress());*/
+            //statistics.contacts++;
+        }
+    }
     traciManager->checkSameAnchor(wsm->getSenderPos(),
             traci->getCurrentPosition(), wsm->getSenderAddress(), myId,
             world->getMaxX(), world->getMaxY());
 
-    //statistics.contacts++;
-    traciManager->deleteTransmission(wsm->getSenderAddress(),
-            wsm->getRecipientAddress());
+//statistics.contacts++;
+    /*traciManager->deleteTransmission(wsm->getSenderAddress(),
+            wsm->getRecipientAddress());*/
 }
 
 void FloatingContentApp::sendMessage(Storage storage, int address) {
@@ -136,7 +142,7 @@ void FloatingContentApp::handlePositionUpdate(cObject* obj) {
     BaseWaveApplLayer::handlePositionUpdate(obj);
     Coord anchorPoint;
     traciManager->checkCurrentAnchors(traci->getCurrentPosition(), myId,
-            world->getMaxX(), world->getMaxY(), currentAnchors);
+            world->getMaxX(), world->getMaxY(), currentAnchors, tiles);
     /*if (traciManager->getCurrentPOI(traci->getCurrentPosition(), anchorPoint,
      this->getId())) {
      tiles.push_back(anchorPoint);
@@ -206,9 +212,11 @@ FloatingContentMessage* FloatingContentApp::prepareMessage(std::string name,
 void FloatingContentApp::refreshLocalStorage() {
     std::vector<Coord>::iterator tile = tiles.begin();
     while (tile != tiles.end()) {
-        if (tile->distance(traci->getCurrentPosition()) > poiReplicationRange) {
+        simtime_t timeout = simTime() - tile->start;
+        double distance = tile->distance(traci->getCurrentPosition());
+        if (distance > poiReplicationRange || timeout > ttl) {
             traciManager->removePOIReplica(*tile);
-            findHost()->getDisplayString().removeTag("r1");
+            //findHost()->getDisplayString().removeTag("r1");
             tile = tiles.erase(tile);
         } else {
             ++tile;
@@ -217,14 +225,14 @@ void FloatingContentApp::refreshLocalStorage() {
 }
 
 void FloatingContentApp::finish() {
-    //remove all anchor points
+//remove all anchor points
     std::vector<Coord>::iterator tile = tiles.begin();
     while (tile != tiles.end()) {
-        traciManager->removePOIReplica(*tile);
-        findHost()->getDisplayString().removeTag("r1");
+        //traciManager->removePOIReplica(*tile);
+        //findHost()->getDisplayString().removeTag("r1");
         tile = tiles.erase(tile);
     }
-    //statistics.recordScalars(*this);
+//statistics.recordScalars(*this);
     BaseWaveApplLayer::finish();
 }
 

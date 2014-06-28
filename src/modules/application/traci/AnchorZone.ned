@@ -13,9 +13,10 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package org.mixim.examples.FloatingContent;
+package org.mixim.modules.application.traci;
 
 
-module AnchorZone
+simple AnchorZone
 {
+    @class(AnchorZone);
 }

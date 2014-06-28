@@ -1,7 +1,8 @@
 #!/bin/bash
 
-latex document
-bibtex document
-latex document
-latex document
-dvipdfm document.dvi
+rubber --pdf document
+#pdflatex document
+#bibtex document
+#pdflatex document
+#pdflatex document
+#dvipdfm document.dvi

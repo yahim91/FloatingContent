@@ -8,8 +8,9 @@
 
 
 % ---- natbib package:
-\usepackage{natbib}
-\bibpunct{(}{)}{;}{a}{}{,}  % adjust author-year citation format 
+\usepackage[authoryear]{natbib}
+\bibpunct{(}{)}{;}{a}{,}{,}  % adjust author-year citation format 
+
 
 % in the document preamble
 \usepackage[stable]{footmisc}
@@ -103,6 +104,8 @@
 \renewcommand{\thefigure}{\thechapter.\arabic{figure}}
 \renewcommand{\thetable}{\thechapter.\arabic{table}}
 
+\input{global}
+
 
 % ==== END OF PREAMBLE =========================================================
 
@@ -116,7 +119,7 @@
 
 % ==== TITLE PAGE ==============================================================
 % ---- include tex-file (CHOOSE APPROPRIATE FILE):
-\include{titlepage}    % activate this line for Bachelor's Thesis
+\include{titlepage_en}    % activate this line for Bachelor's Thesis
 \setcounter{page}{1}
 
 % ==== TABLE OF CONTENTS =======================================================
@@ -142,8 +145,9 @@
 \addcontentsline{toc}{chapter}{Bibliography}
 % ---- use AMS reference format (use file ametsoc.bst included in ...
 %      ... http://www.ametsoc.org/pubs/journals/AMS_Latex_V3.0.tar.gz):s
-\bibliographystyle{ACM-Reference-Format-Journals}   % ametsoc.bst in local
+\bibliographystyle{plain}   % ametsoc.bst in local
 % directory ---- use BibTeX database file:
+
 \bibliography{bibfile}
 
 \newpage

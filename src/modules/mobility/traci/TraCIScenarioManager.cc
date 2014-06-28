@@ -60,6 +60,7 @@ void TraCIScenarioManager::initialize(int stage) {
     connectAt = par("connectAt");
     firstStepAt = par("firstStepAt");
     updateInterval = par("updateInterval");
+    ratesInterval = par("ratesInterval");
     if (firstStepAt == -1)
         firstStepAt = connectAt + updateInterval;
     moduleType = par("moduleType").stdstringValue();
@@ -134,6 +135,8 @@ void TraCIScenarioManager::initialize(int stage) {
     scheduleAt(connectAt, connectAndStartTrigger);
     executeOneTimestepTrigger = new cMessage("step");
     scheduleAt(firstStepAt, executeOneTimestepTrigger);
+    checkRatesTrigger = new cMessage("rates");
+    scheduleAt(ratesInterval, checkRatesTrigger);
 
     MYDEBUG << "initialized TraCIScenarioManager" << endl;
 }
@@ -478,9 +481,10 @@ void TraCIScenarioManager::finish() {
     while (hosts.begin() != hosts.end()) {
         deleteModule(hosts.begin()->first);
     }
-    for (std::map<std::pair<double, double>, AnchorZone>::iterator it =
+
+    for (std::map<std::pair<double, double>, AnchorZone*>::iterator it =
             anchorZones.begin(); it != anchorZones.end(); it++) {
-        it->second.recordScalars();
+        it->second->recordScalars();
     }
 }
 
@@ -501,6 +505,12 @@ void TraCIScenarioManager::handleSelfMsg(cMessage *msg) {
     }
     if (msg == executeOneTimestepTrigger) {
         executeOneTimestep();
+        return;
+    }
+
+    if (msg == checkRatesTrigger) {
+        checkRates();
+        scheduleAt(simTime() + ratesInterval, checkRatesTrigger);
         return;
     }
     error("TraCIScenarioManager received unknown self-message");
@@ -837,37 +847,60 @@ void TraCIScenarioManager::commandAddPoi(std::string poiId, std::string poiType,
 
 int TraCIScenarioManager::addPOIReplica(Coord p,
         AnnotationManager::Annotation* a) {
+    cModuleType* nodeType = cModuleType::get(
+            "org.mixim.modules.application.traci.AnchorZone");
+    if (!nodeType)
+        error("Module Type AnchorZone not found");
 
-    AnchorZone aZone(p, this);
-    aZone.setAnnotation(a);
-    aZone.replicas++;
+    cModule* mod = nodeType->create("anchorZone", this, 800, AnchorZone::idx++);
+    mod->finalizeParameters();
+    mod->callInitialize();
+    AnchorZone* aZone = dynamic_cast<AnchorZone*>(mod);
+    aZone->setCoord(p);
+    aZone->setAnnotation(a);
     anchorZones[p.getPairCoord()] = aZone;
-    return aZone.replicas;
+    return aZone->replicas;
 }
 
 int TraCIScenarioManager::addPOIReplica(Coord p) {
-    anchorZones[p.getPairCoord()].replicas++;
-    return anchorZones[p.getPairCoord()].replicas;
+    if (anchorZones.find(p.getPairCoord()) == anchorZones.end()) {
+        return -1;
+    }
+    anchorZones[p.getPairCoord()]->replicas++;
+    anchorZones[p.getPairCoord()]->infected++;
+    anchorZones[p.getPairCoord()]->currentCopiesVec->record(
+            anchorZones[p.getPairCoord()]->replicas);
+    anchorZones[p.getPairCoord()]->currentInfectVec->record(
+            anchorZones[p.getPairCoord()]->infected);
+    return anchorZones[p.getPairCoord()]->replicas;
 }
 
 int TraCIScenarioManager::removePOIReplica(Coord p) {
     if (anchorZones.find(p.getPairCoord()) == anchorZones.end()) {
         return -1;
     }
-    anchorZones[p.getPairCoord()].replicas--;
+    anchorZones[p.getPairCoord()]->replicas--;
+    anchorZones[p.getPairCoord()]->removed++;
 
-    if (anchorZones[p.getPairCoord()].replicas == 0) {
-        /*AnnotationManager *an = AnnotationManagerAccess().getIfExists();
-         an->erase(poi2Ann[p.getPairCoord()]);
-         poi2Ann.erase(p.getPairCoord());
-         poiNumReplicas.erase(p.getPairCoord());*/
+    if (anchorZones[p.getPairCoord()]->replicas == 0) {
+        //anchorZones[p.getPairCoord()]->replicated = false;
     }
+    anchorZones[p.getPairCoord()]->currentCopiesVec->record(
+            anchorZones[p.getPairCoord()]->replicas);
+    anchorZones[p.getPairCoord()]->currentRemoveVec->record(
+            anchorZones[p.getPairCoord()]->removed);
+    /*if (anchorZones[p.getPairCoord()].replicas == 0) {
+     AnnotationManager *an = AnnotationManagerAccess().getIfExists();
+     an->erase(poi2Ann[p.getPairCoord()]);
+     poi2Ann.erase(p.getPairCoord());
+     poiNumReplicas.erase(p.getPairCoord());
+     }*/
 
-    return anchorZones[p.getPairCoord()].replicas;
+    return anchorZones[p.getPairCoord()]->replicas;
 }
 
 void TraCIScenarioManager::updateContacts(Coord p, int sndId, int rcvId) {
-    anchorZones[p.getPairCoord()].contactsBetweenNodes[std::make_pair(sndId,
+    anchorZones[p.getPairCoord()]->contactsBetweenNodes[std::make_pair(sndId,
             rcvId)]++;
 
 }
@@ -881,16 +914,16 @@ void TraCIScenarioManager::endTransmission(Coord p, int sndId, int rcvId) {
             == contactsInProcess.end()) {
         return;
     }
-    simtime_t startTime = contactsInProcess[std::make_pair(sndId, rcvId)];
-    simtime_t elapsedTime = (simTime()
-            - contactsInProcess[std::make_pair(sndId, rcvId)]);
-    int toSec = elapsedTime.inUnit(SIMTIME_S);
-    anchorZones[p.getPairCoord()].timeInContact += (simTime()
-            - contactsInProcess[std::make_pair(sndId, rcvId)]);
+    /*simtime_t startTime = contactsInProcess[std::make_pair(sndId, rcvId)];
+     simtime_t elapsedTime = (simTime()
+     - contactsInProcess[std::make_pair(sndId, rcvId)]);
+     int toSec = elapsedTime.inUnit(SIMTIME_S);
+     anchorZones[p.getPairCoord()].timeInContact += (simTime()
+     - contactsInProcess[std::make_pair(sndId, rcvId)]);*/
 
-    anchorZones[p.getPairCoord()].contacts++;
-    anchorZones[p.getPairCoord()].nodes[rcvId].numContacts++;
-    anchorZones[p.getPairCoord()].nodes[sndId].numContacts++;
+    anchorZones[p.getPairCoord()]->contacts++;
+    anchorZones[p.getPairCoord()]->nodes[rcvId].numContacts++;
+    anchorZones[p.getPairCoord()]->nodes[sndId].numContacts++;
 
 }
 
@@ -906,7 +939,8 @@ bool TraCIScenarioManager::isInAnchor(Coord p, Coord az) {
 }
 
 void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
-        int maxY, std::map<std::pair<double, double>, bool> &anchors) {
+        int maxY, std::map<std::pair<double, double>, bool> &anchors,
+        std::vector<Coord> &tiles) {
     int anchorDistance = par("anchorDistance");
     int cellX = ((int) s.x / anchorDistance);
     int cellY = ((int) s.y / anchorDistance);
@@ -929,6 +963,7 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
                 continue;
             Coord az((cellX + i) * anchorDistance,
                     (cellY + j) * anchorDistance);
+            az.start = simTime();
             if (anchorZones.find(az.getPairCoord()) == anchorZones.end()) {
                 continue;
             }
@@ -937,25 +972,32 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
                 continue;
             }
 
-            if (anchorZones[az.getPairCoord()].nodes.find(id)
-                    == anchorZones[az.getPairCoord()].nodes.end()) {
-                anchorZones[az.getPairCoord()].nodes[id].inTime = simTime();
-                currentNumNodes = anchorZones[az.getPairCoord()].nodes.size();
+            if (anchorZones[az.getPairCoord()]->nodes.find(id)
+                    == anchorZones[az.getPairCoord()]->nodes.end()) {
+                anchorZones[az.getPairCoord()]->nodes[id].inTime = simTime();
+                currentNumNodes = anchorZones[az.getPairCoord()]->nodes.size();
                 currentMaxNodes =
-                        anchorZones[az.getPairCoord()].maxTransitNodes;
+                        anchorZones[az.getPairCoord()]->maxTransitNodes;
                 if (currentNumNodes > currentMaxNodes) {
-                    anchorZones[az.getPairCoord()].maxTransitNodes =
+                    anchorZones[az.getPairCoord()]->maxTransitNodes =
                             currentNumNodes;
                 }
 
+                if (!anchorZones[az.getPairCoord()]->replicated) {
+                    anchorZones[az.getPairCoord()]->replicated = true;
+                    tiles.push_back(az);
+                    addPOIReplica(az);
+                }
+
+
                 /*if (id == 8) {
-                    // displaying current anchor zones for node id
-                    AnnotationManager *an =
-                            AnnotationManagerAccess().getIfExists();
-                    an->hide(anchorZones[az.getPairCoord()].ann);
-                    anchorZones[az.getPairCoord()].ann = an->drawPoint(az,
-                            "red", "", (int) par("anchorRadius"));
-                }*/
+                 // displaying current anchor zones for node id
+                 AnnotationManager *an =
+                 AnnotationManagerAccess().getIfExists();
+                 an->hide(anchorZones[az.getPairCoord()].ann);
+                 anchorZones[az.getPairCoord()].ann = an->drawPoint(az,
+                 "red", "", (int) par("anchorRadius"));
+                 }*/
             }
             anchors[az.getPairCoord()] = true;
         }
@@ -967,10 +1009,10 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
         contactsNum = 0;
         if (it->second == false) {
             endTime = simTime();
-            totalTime = endTime - anchorZones[it->first].nodes[id].inTime;
-            anchorZones[it->first].timeAverage += totalTime;
-            anchorZones[it->first].numTransitNodes++;
-            contacts = anchorZones[it->first].contactsBetweenNodes;
+            totalTime = endTime - anchorZones[it->first]->nodes[id].inTime;
+            anchorZones[it->first]->timeAverage += totalTime;
+            anchorZones[it->first]->numTransitNodes++;
+            contacts = anchorZones[it->first]->contactsBetweenNodes;
             for (contactsIt = contacts.begin(); contactsIt != contacts.end();
                     contactsIt++) {
                 if (contactsIt->first.first == id
@@ -981,16 +1023,16 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
                 }
             }
             if (peers != 0 && totalTime.inUnit(SIMTIME_S) != 0) {
-                anchorZones[it->first].avgContactsInSJNTime +=
+                anchorZones[it->first]->avgContactsInSJNTime +=
                         ((double) contactsNum / peers)
                                 / totalTime.inUnit(SIMTIME_S);
             }
             /*if (id == 8) {
-                // displaying current anchor zones for node id
-                AnnotationManager *an = AnnotationManagerAccess().getIfExists();
-                an->hide(anchorZones[it->first].ann);
-            }*/
-            anchorZones[it->first].nodes.erase(id);
+             // displaying current anchor zones for node id
+             AnnotationManager *an = AnnotationManagerAccess().getIfExists();
+             an->hide(anchorZones[it->first].ann);
+             }*/
+            anchorZones[it->first]->nodes.erase(id);
             anchors.erase(it++);
         } else {
             it++;
@@ -1020,13 +1062,13 @@ void TraCIScenarioManager::checkSameAnchor(Coord snd, Coord rcv, int sndId,
 
             if (isInAnchor(snd, az) && isInAnchor(rcv, az)) {
                 std::map<std::pair<int, int>, int>::iterator end =
-                        anchorZones[az.getPairCoord()].contactsBetweenNodes.end();
-                if (anchorZones[az.getPairCoord()].contactsBetweenNodes.find(
+                        anchorZones[az.getPairCoord()]->contactsBetweenNodes.end();
+                if (anchorZones[az.getPairCoord()]->contactsBetweenNodes.find(
                         std::make_pair(rcvId, sndId)) != end) {
-                    anchorZones[az.getPairCoord()].contactsBetweenNodes[std::make_pair(
+                    anchorZones[az.getPairCoord()]->contactsBetweenNodes[std::make_pair(
                             rcvId, sndId)]++;
                 } else {
-                    anchorZones[az.getPairCoord()].contactsBetweenNodes[std::make_pair(
+                    anchorZones[az.getPairCoord()]->contactsBetweenNodes[std::make_pair(
                             sndId, rcvId)]++;
                 }
             }
@@ -1057,8 +1099,8 @@ bool TraCIScenarioManager::getCurrentPOI(Coord p, Coord& anchorPoint, int id) {
 //anchorZones[Coord(x, y).getPairCoord()].nodes[id].inTime = simTime();
 
     if (anchorZones.find(std::make_pair(x, y)) != anchorZones.end()
-            && !anchorZones[Coord(x, y).getPairCoord()].replicated) {
-        anchorZones[Coord(x, y).getPairCoord()].replicated = true;
+            && !anchorZones[Coord(x, y).getPairCoord()]->replicated) {
+        anchorZones[Coord(x, y).getPairCoord()]->replicated = true;
         anchorPoint.x = x;
         anchorPoint.y = y;
     } else {
@@ -1246,6 +1288,22 @@ bool TraCIScenarioManager::isInRegionOfInterest(const TraCICoord& position,
 
 uint32_t TraCIScenarioManager::getCurrentTimeMs() {
     return static_cast<uint32_t>(round(simTime().dbl() * 1000));
+}
+
+void TraCIScenarioManager::checkRates() {
+    typedef std::map<std::pair<double, double>, AnchorZone>::iterator az_type;
+    /*bool ok = true;
+     for (az_type it = anchorZones.begin(); it != anchorZones.end(); it++) {
+     /*it->second.avgInfected += it->second.infected;
+     it->second.avgRemoved += it->second.removed;
+     it->second.irNumSamples++;
+     if (it->second.replicas == 0) {
+     ok = false;
+     }
+     }
+     if (ok)
+     endSimulation();*/
+
 }
 
 void TraCIScenarioManager::executeOneTimestep() {
@@ -1888,97 +1946,5 @@ template<> TraCIScenarioManager::TraCICoord TraCIScenarioManager::TraCIBuffer::r
     p.y = read<double>();
 
     return p;
-}
-
-int TraCIScenarioManager::AnchorZone::idx;
-
-TraCIScenarioManager::AnchorZone::AnchorZone() {
-}
-
-TraCIScenarioManager::AnchorZone::AnchorZone(Coord pos, cModule *module) {
-    this->pos = pos;
-    this->replicas = 0;
-    this->contacts = 0;
-    this->numTransitNodes = 0;
-    this->avgContactsInSJNTime = 0;
-    this->maxTransitNodes = 0;
-    cModuleType* nodeType = cModuleType::get(
-            "org.mixim.examples.FloatingContent.AnchorZone");
-
-    mod = nodeType->create("anchorZone", module, 200, idx++);
-    mod->finalizeParameters();
-}
-
-void TraCIScenarioManager::AnchorZone::setAnnotation(
-        AnnotationManager::Annotation* ann) {
-    this->ann = ann;
-}
-
-void TraCIScenarioManager::AnchorZone::recordScalars() {
-    double numContacts;
-    double avgTimeInAnchor;
-    typedef std::map<std::pair<int, int>, int>::iterator it_type;
-    typedef std::map<int, Node>::iterator node_type;
-    std::map<std::pair<int, int>, int>::iterator contactsIt;
-    int peers, contactsNum;
-    simtime_t endTime, totalTime;
-
-    double encounters = 0;
-
-    if (contactsBetweenNodes.size()) {
-        for (it_type i = contactsBetweenNodes.begin();
-                i != contactsBetweenNodes.end(); i++) {
-            encounters += i->second;
-        }
-        //encounters /= contactsBetweenNodes.size();
-    }
-
-    for (node_type it = nodes.begin(); it != nodes.end(); it++) {
-        endTime = simTime();
-        totalTime = endTime - it->second.inTime;
-        timeAverage += totalTime;
-        numTransitNodes++;
-        peers = 0;
-        contactsNum = 0;
-        for (contactsIt = contactsBetweenNodes.begin();
-                contactsIt != contactsBetweenNodes.end(); contactsIt++) {
-            if (contactsIt->first.first == it->first
-                    || contactsIt->first.second == it->first) {
-                contactsNum += contactsIt->second;
-                peers++;
-
-            }
-        }
-        if (peers != 0 && totalTime.inUnit(SIMTIME_S) != 0) {
-            avgContactsInSJNTime += ((double) contactsNum / peers)
-                    / totalTime.inUnit(SIMTIME_S);
-        }
-    }
-    if (numTransitNodes == 0) {
-        avgTimeInAnchor = 0;
-        encounters = 0;
-        avgContactsInSJNTime = 0;
-    } else {
-        avgTimeInAnchor = (double) timeAverage.inUnit(SIMTIME_S)
-                / numTransitNodes;
-        encounters /= numTransitNodes;
-        avgContactsInSJNTime /= numTransitNodes;
-    }
-
-    mod->recordScalar("criticality", numTransitNodes * encounters);
-    mod->recordScalar("criticality2",
-            numTransitNodes * avgContactsInSJNTime * avgTimeInAnchor);
-    mod->recordScalar("criticality3",
-            maxTransitNodes * avgContactsInSJNTime * avgTimeInAnchor);
-    mod->recordScalar("transit", numTransitNodes);
-    mod->recordScalar("contactsPerSecond", avgContactsInSJNTime);
-    mod->recordScalar("timeAverage", avgTimeInAnchor);
-    mod->recordScalar("avgContacts", encounters);
-    mod->recordScalar("contactTime", timeInContact.inUnit(SIMTIME_MS));
-    mod->recordScalar("contacts", this->contacts);
-    mod->recordScalar("replicas", this->replicas);
-    mod->recordScalar("xpos", this->pos.x);
-    mod->recordScalar("ypos", this->pos.y);
-    mod->recordScalar("numNodes", this->nodes.size());
 }
 
