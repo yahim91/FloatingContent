@@ -1233,7 +1233,60 @@ the average number of contacts a vehicles has during its sojourn time.
  ~\ref{fig:Beijing_avg_300s_500m} reflect that every node has at least one
  contact during its sojourn time. The $criticality\ condition$ increases 4 times
  the one computed for a range of 200m.
-
+ 
+ Figure ~\ref{fig:Beijing_info_evolution} shows the information evolution within
+ an anchor zone during a simulation time of 1000s: infected and healed. We
+ decided to set the $ttl$ parameter (time-to-live) to 600s, a realistic number
+ that could be used for short lasting events and long enough to collect
+ consistent data. We chose an anchor zone with a high number of information
+ exchanges to provide a detailed picture of its evolution and avoided the ones
+ which disappeared before the expiry time because of stochastic fluctuations.
+ 
+ We recorded the number of replicas an information has during the simulation
+ denoted by $copies$ label. The other two labels are 2 classes which belong to
+ the epidemic SIR model: {\it infected} denote the information carrying nodes,
+ and {\it healed} the ones which previously had a copy of the information
+ and deleted it. The deletion could occur if the distance between the vehicle
+ and the geo-location origin was bigger than the anchor radius or the
+ information availability expired.
+ 
+ It is important to determine whether the information will spread or not. And if
+ it does, for how long, and how it will develop in time. As we presented in
+ ~\ref{TODO}, if $S_{0}\ > S_{c}\ =\ a/r$ the content will spread. The plot
+ confirms the latter condition: the threshold is 0 in the first 200s and there
+ are 3 susceptible as the $copies$ line chart displays. Further, the infection
+ rate increases due to the high number of vehicle available in the location.
+ When the nodes start deleting their copies the threshold rises above the
+ current number of susceptible and the number of copies decreases and goes to
+ 0.
+ 
+ \begin{figure}[t]
+	\centering
+	\def\svgwidth{\columnwidth}
+	\input{img/Beijing/sim_Beijing3_1000s_400m.pdf_tex}
+	\caption{Information life evolution}
+ 	\label{fig:Beijing_info_evolution}
+ \end{figure}
+ 
+ Figure ~\ref{fig:Beijing_info_evolution_range} depicts how the information
+ develops with respect to radius size. Establishing the optimum range enables
+ the equipment and application to save battery energy and have a better
+ resources management. 
+ 
+ Anchor zones with $r\ \epsilon\ \{100m,\ 200m\}$ yield a short life expectancy,
+ in our scenario the content lasts for about 100s, just $1/6$ of the due time.
+ Ranges within $\{300m,\ 400m\}$ increase the life up to 500s, but the
+ information disappears ahead of time. The range of 500m keeps the item alive
+ until its termination time.
+ 
+ \begin{figure}[h]
+	\centering
+	\def\svgwidth{\columnwidth}
+	\input{img/Beijing/sim_Beijing3.pdf_tex}
+	\caption{Information life evolution with respect to radius size}
+ 	\label{fig:Beijing_info_evolution_range}
+ \end{figure}
+ 
 \subsection{San Francisco}
 
 The area selected from San Francisco for our simulations has 4.5$\times$2.5
