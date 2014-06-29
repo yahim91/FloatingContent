@@ -1052,7 +1052,7 @@ OpenStreetMap ~\cite{openstreetmap} and several SUMO tools. We decided to use
 three different city scenarios to show that floating content in urban
 environments can be feasible regardless of particularity of road
 architecture. The cities we used as simulation environment are: SanFrancisco,
-Beijing and Berlin.
+Beijing and Erlangen.
 
 The road network file is generated from the exported map (from OpenStreetMap)
 file using $netconvert$. It has many paramaters that steer how the network is
@@ -1145,17 +1145,20 @@ was processed in 1 hour and 45 minutes.
 
 \subsection{Beijing}
 
-Figure ~\ref{fig:Beijing_300s} depicts the value of the $criticality$ for each
+Figure ~\ref{fig:Beijing_300s_200m} depicts the value of the $criticality$ for each
 anchor zone. Figure ~\ref{fig:Beijing_waiting} is a snapshot that displays the
 road network from an area of 6.7$\times$5.2 km$^2$. The map is coloured with
 respect to the amount of time a car has to wait due to the traffic lights placed
 in intersection. Road segments coloured in red have a bigger waiting time than
 the one coloured in black.
-  
 
-\begin{figure}[t]
+The figures below display the $criticality$ heatmap along with the average
+number of contacts a vehicle encounters during its sojourn time. The similarity
+between them is clearly visible.
+
+\begin{figure}[h]
 \centering
-	\begin{subfigure}[t]{1\textwidth}
+	\begin{subfigure}[h]{1\textwidth}
 	\centering
 	\includegraphics[width=0.8\textwidth,height=6cm]{img/Beijing/Beijing4}
 	\caption{Beijing traffic waiting time heatmap}
@@ -1165,26 +1168,212 @@ the one coloured in black.
 	\begin{subfigure}[t]{0.5\textwidth}
  		\includegraphics[width=\textwidth]{img/Beijing/criticality3_sim_Beijing3_300s_200m}
  		\caption{Beijing Criticality Map $r\ =\ 200m$}
- 		\label{fig:Beijing_criticality_300s}
+ 		\label{fig:Beijing_criticality_300s_200m}
  	\end{subfigure}%
  	\hfill
  	\begin{subfigure}[t]{0.5\textwidth}
- 		\includegraphics[width=\textwidth]{img/Beijing/transit_sim_Beijing3_300s_200m}
- 		\caption{Transit Map $r\ =\ 200m$}
- 		\label{fig:Beijing_transit_300s}
+ 		\includegraphics[width=\textwidth]{img/Beijing/avgContacts_sim_Beijing3_300s_200m}
+ 		\caption{Average Number of Contacts Map $r\ =\ 200m$}
+ 		\label{fig:Beijing_avg_300s_200m}
  	\end{subfigure}
- 	
+ 	\begin{comment}
  	\begin{subfigure}[t]{0.5\textwidth}
  		\includegraphics[width=\textwidth]{img/Beijing/criticality3_sim_Beijing3_300s_500m}
  		\caption{Beijing Criticality Map $r\ =\ 500m$}
- 		\label{fig:Beijing_criticality_300s}
+ 		\label{fig:Beijing_criticality_300s_500m}
  	\end{subfigure}%
  	\hfill
  	\begin{subfigure}[t]{0.5\textwidth}
- 		\includegraphics[width=\textwidth]{img/Beijing/transit_sim_Beijing3_300s_500m}
- 		\caption{Transit Map $r\ =\ 500m$}
- 		\label{fig:Beijing_transit_300s}
+ 		\includegraphics[width=\textwidth]{img/Beijing/avgContacts_sim_Beijing3_300s_500m}
+ 		\caption{Average Number of Contacts Map $r\ =\ 500m$}
+ 		\label{fig:Beijing_avg_300s_500m}
  	\end{subfigure}
- 	\caption{Beijing 300s simulation}
- 	\label{fig:Beijing_300s}
+ 	\end{comment}
+ 	\caption{Beijing 300s simulation with 200m anchor size}
+ 	\label{fig:Beijing_300s_200m}
 \end{figure}
+
+The black areas state that the $criticality$ factor is nearly 0, thus the
+probability of information floating is very low. Indeed, the black areas occur
+in places between streets or outside the traffic road network, where neither
+vehicles, nor their radio range can reach. In the 200m scenario, the anchor
+zones with a higher probability of floating scatter the map. In the blue
+coloured areas, appears an average $criticality\ condition$, slightly above
+1, the criticality threshold. According to the figure
+~\ref{fig:Beijing_avg_300s_200m} 9 out of 10 vehicles do not have any
+interaction with other vehicles, during its sojourn time. The reason could be
+the small amount of time spent in that location or no neighbours available when
+the beacon is sent out.
+
+The bright yellow area, occurs naturally in the road intersection. The
+expectations for an information to live rise with respect to the average waiting
+time on a road segment. The $criticality\ factor$ rise well over 8 as well as
+the average number of contacts a vehicles has during its sojourn time.
+
+\begin{figure}[t]
+	\centering
+	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/Beijing/criticality3_sim_Beijing3_300s_500m}
+ 		\caption{Beijing Criticality Map $r\ =\ 500m$}
+ 		\label{fig:Beijing_criticality_300s_500m}
+ 	\end{subfigure}%
+ 	\hfill
+ 	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/Beijing/avgContacts_sim_Beijing3_300s_500m}
+ 		\caption{Average Number of Contacts Map $r\ =\ 500m$}
+ 		\label{fig:Beijing_avg_300s_500m}
+ 	\end{subfigure}
+ 	\caption{Beijing 300s simulation with 500m anchor size}
+ 	\label{fig:Beijing_300s_500m}
+ \end{figure}
+ 
+ Increasing the anchor range yields better floating results. Figure
+ ~\ref{fig:Beijing_300s_500m} shows that information has a high probability of
+ living along the road network. Also, the small light yellow areas in figure 
+ ~\ref{fig:Beijing_avg_300s_500m} reflect that every node has at least one
+ contact during its sojourn time. The $criticality\ condition$ increases 4 times
+ the one computed for a range of 200m.
+
+\subsection{San Francisco}
+
+The area selected from San Francisco for our simulations has 4.5$\times$2.5
+km$^2$ and contains a road network made up from several type of road streets.
+Figure ~\ref{fig:SanFrancisco_waiting} displays the road average waiting time
+vehicles must be aware of, due to the traffic lights. Traffic jams occur on the
+red road segments which determine the vehicles to spend a big amount of time in
+place.
+
+The traffic generator created random trips for the vehicles used in simulation,
+having random starting points and destinations. However, vehicles choose high
+speed roads in order to finish their trips, which results in traffic jams shown
+by coloured segments in the figure.
+
+The $criticality$ heatmap and the average number of contacts map created
+with 200m anchor radius, match the coloured figure in
+~\ref{fig:SanFrancisco_waiting}. Black areas appear around the two-lane roads
+which scatter the map, between the San Francisco blocks. The $criticality
+factor$ is close to 0 which is supported by the low density of vehicles and
+the fact that they don't remain around to much.
+
+The areas which are expected to keep the information floating are coloured in
+blue and yellow. The diagonally placed street is clearly a information carrying
+medium, the average number of contacts being close to one. The intersection with
+the top horizontal street clusters the vehicle, raising the number of contacts
+up to 2 for each car which travels the location. Thus, the $criticality\
+condition$ reaches over 50 in the same area.
+
+\begin{figure}[t]
+\centering
+	\begin{subfigure}[h]{1\textwidth}
+	\centering
+	\includegraphics[width=0.8\textwidth,height=6cm]{img/SanFrancisco/SanFrancisco4}
+	\caption{San Francisco traffic waiting time heatmap}
+	\label{fig:SanFrancisco_waiting}
+	\end{subfigure}
+	
+	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/SanFrancisco/criticality3_sim_SanFrancisco6_300s_200m}
+ 		\caption{San Francisco Criticality Map $r\ =\ 200m$}
+ 		\label{fig:SanFrancisco_criticality_300s_200m}
+ 	\end{subfigure}%
+ 	\hfill
+ 	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/SanFrancisco/avgContacts_sim_SanFrancisco6_300s_200m}
+ 		\caption{Average Number of Contacts Map $r\ =\ 200m$}
+ 		\label{fig:SanFrancisco_avg_300s_200m}
+ 	\end{subfigure}
+ 	\caption{SanFrancisco 300s simulation with 200m anchor size}
+ 	\label{fig:SanFrancisco_300s_200m}
+\end{figure}
+
+Figure ~\ref{fig:San_Francisco_300s_500m} depicts the results using an anchor
+range of 500m. While the average number of contacts slightly increases from 2 to
+2.5 the criticality reaches 120 in the top spots, nearly 2.5 times than the
+former scenario. This is possible because the anchor zones now cover larger
+areas, thus involving more cars in the exchanging process. Another effect of
+the bigger radius is the diffusive characteristic of locations which yields a
+high probability of information floating if generated around the yellow coloured
+area. In the 200m scenario, the areas are more concentrated, and thus, linked to
+the high traffic zones.
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/SanFrancisco/criticality3_sim_SanFrancisco6_300s_500m}
+ 		\caption{Criticality Map $r\ =\ 500m$}
+ 		\label{fig:San_Francisco_criticality_300s_500m}
+ 	\end{subfigure}%
+ 	\hfill
+ 	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/SanFrancisco/avgContacts_sim_SanFrancisco6_300s_500m}
+ 		\caption{Average Number of Contacts Map $r\ =\ 500m$}
+ 		\label{fig:San_Francisco_avg_300s_500m}
+ 	\end{subfigure}
+ 	\caption{San Francisco 300s simulation with 500m anchor size}
+ 	\label{fig:San_Francisco_300s_500m}
+\end{figure}
+
+\subsection{Erlangen}
+
+For our third and final scenario, we chose an area of Erlangen, which is
+3.5$\times$3.1 km$^2$ and has a less dense road network than San Francisco,
+although is about the same size. Figure ~\ref{fig:Erlangen_300s_200m} displays
+the road segments with a high probability of holding often traffic jams, and
+thus, forcing the vehicles to stay in place a considerable amount of time.
+
+It is clearly visible that our plots in take the shape of the main street in
+Erlangen; black areas generated a criticality below 1 and are not a suitable
+place for sustaining information floating.
+
+Naturally, the main street, which crosses the entire area, has a consistent flow
+of vehicles and an average criticality of 6 and an average number of contacts of
+0.1 during its sojourn time.
+
+Figure ~\ref{fig:Erlangen_300s_500m} depicts the results for a scenario with an
+anchor zone radius of 500m, keeping the same effect seen in other 2 cities. The
+criticality increases nearly 4 times which is also supported by the fact that
+each node had at least one encounter during the period it crossed the anchor
+location.
+
+\begin{figure}[t]
+\centering
+	\begin{subfigure}[t]{1\textwidth}
+	\centering
+	\includegraphics[width=0.8\textwidth,height=6cm]{img/Erlangen/Erlangen}
+	\caption{Erlangen traffic waiting time heatmap}
+	\label{fig:Erlangen_waiting}
+	\end{subfigure}
+	
+	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/Erlangen/criticality3_sim_Erlangen_300s_200m}
+ 		\caption{Criticality Map $r\ =\ 200m$}
+ 		\label{fig:Erlangen_criticality_300s_200m}
+ 	\end{subfigure}%
+ 	\hfill
+ 	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/Erlangen/avgContacts_sim_Erlangen_300s_200m}
+ 		\caption{Average Number of Contacts Map $r\ =\ 200m$}
+ 		\label{fig:Erlangen_avg_300s_200m}
+ 	\end{subfigure}
+ 	\caption{Erlangen 300s simulation with 200m anchor size}
+ 	\label{fig:Erlangen_300s_200m}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/Erlangen/criticality3_sim_Erlangen_300s_500m}
+ 		\caption{Criticality Map $r\ =\ 500m$}
+ 		\label{fig:Erlangen_criticality_300s_500m}
+ 	\end{subfigure}%
+ 	\hfill
+ 	\begin{subfigure}[t]{0.5\textwidth}
+ 		\includegraphics[width=\textwidth]{img/Erlangen/avgContacts_sim_Erlangen_300s_500m}
+ 		\caption{Average Number of Contacts Map $r\ =\ 500m$}
+ 		\label{fig:Erlangen_avg_300s_500m}
+ 	\end{subfigure}
+ 	\caption{Erlangen 300s simulation with 500m anchor size}
+ 	\label{fig:Erlangen_300s_500m}
+\end{figure}
+
+

@@ -16,6 +16,10 @@ if [[ "${1:0:11}" == "criticality" ]]; then
     cblabel="Criticality"
 elif [[ "$1" == "transit" ]]; then
     cblabel="Transit"
+elif [[ "$1" == "contacts" ]]; then
+    cblabel="Contacts"
+elif [[ "$1" == "avgContacts" ]]; then
+    cblabel="Average contacts"
 fi
 
 scavetool scalar -p "module(*.anchorZone[*]) AND name($1) OR name(xpos) OR name(ypos)" \
