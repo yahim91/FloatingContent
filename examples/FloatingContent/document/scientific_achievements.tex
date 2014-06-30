@@ -439,12 +439,65 @@ p = 0. Moreover, since we need to prevent accidental disappearance of the
 information carrying population by stochastic fluctuations, $Np = N - \mu /
 \upsilon$ must be large.
 
+\subsection{Information evolution during its lifetime}
+\label{sec:sir_model}
+Inspired by the mathematical modeling of the spread of infection diseases
+\cite{hethcote2000mathematics} we decided to analyze the evolution of
+information spreading as if it was a virus. Moreover, the protocol proposed uses
+broadcasting as way of transmission which is known as epidemic routing.
+
+Our approach is very similar with the SIR model: $S$ stands for susceptibles,
+the nodes interested in information but which don't own a copy yet; $I$
+stands for the infected ones, or the ones who already have a copy and can send
+it further to the neighbours; $R$ stand for the removed, the one which deleted
+their copy either because their availability time expired, or they are out of
+the anchor range.
+
+As shown in ~\cite{hethcote2000mathematics}, we define $r$ as the infection rate
+and the increase number of the infected proportional with the current number of 
+susceptible and infected: $rSI$. We define $a$ as the removal rate and the
+increase number of removed proportional to the infected only: $aI$.
+
+We are able to compute the number of each type using the following equations:
+
+\begin{equation}
+\frac{dS}{dt} = -rSI \label{eq:dS}
+\end{equation}
+
+\begin{equation}
+\frac{dI}{dt} = rSI - aI \label{eq:dI}
+\end{equation}
+
+\begin{equation}
+\frac{dR}{dt} = aI \label{eq:dR}
+\end{equation}
+
+The equations ensure that the total population $N\ =\ S\ + I\ +\ R$ and $S_{0}\
+>\ 0$, $I_{0}\ >\ 0$ and $R_{0}\ >\ 0$.
+
+From ~\eqref{eq:dI}, at the beginning of information exchanging, when $t\ =\ 0$
+the following equation results:
+
+\begin{equation}
+\left.
+\frac{dI}{dt}
+\right|_{t=0} = I_{0} (rS_{0} - a)\ \gtrless\ 0\ if\ S_{0}\ \gtrless
+\frac{a}{r}\ = \mu
+\label{eq:dI_0}
+\end{equation}
+
+There are two cases which emerge from ~\eqref{eq:dI_0}: $S_{0}\ <\ \mu$ implies
+that the number of infectives drop from $I_{0}$ to 0 and no epidemic can occur,
+$S_{0}\ >\ \mu$ the number of infectives increases and the information spreads.
+$\mu$ can be considered as a threshold which determines whether the information
+will live or not.
+
 \subsection{Model applicability}
 
 It can be seen that the black non-spatial model for content exchange is highly
 abstract, only capturing the essential elements. The most important assumptions
 on which the model relies on are the fluid limit approximation and a well-mixed
-mobility pattern. In this case the criticality condition shows that the
+mobility pattern. In this case the $criticality\ condition$ shows that the
 information ``floats'' due to the large number of nodes in the anchor zone
 assumed by the fluid limit approximation. In a real case situation the number of
 nodes carrying the information may be small, thus having a big probability of
@@ -456,16 +509,16 @@ of time, past encounters having no influence on it.
 In our simulation, which will be discussed later in the document, the spatial
 aspects of information exchange is ignored. So the probability of a node
 carrying information is the same on the entire simulation network (of course
-without taking in consideration water zones). In addition, the criticality
-condition doesn't take into consideration some important parameters. On of the
+without taking in consideration water zones). In addition, the $criticality\ 
+condition$ doesn't take into consideration some important parameters. On of the
 would be the transmission range which affects directly the encounter rate
 $\upsilon$.
 
 The non-spatial model is applied in the simulation performed, because it
-captures the fundamental elements of the system, and defines the criticality
-condition which is an indicator whether an information item may float or not. As
-in \cite{percomfloatingcontent} we compute three key elements and then observe
-how the criticality condition correlates with the road network and the final
+captures the fundamental elements of the system, and defines the $criticality\ 
+condition$ which is an indicator whether an information item may float or not.
+As in \cite{percomfloatingcontent} we compute three key elements and then observe
+how the $criticality condition$ correlates with the road network and the final
 information life time. The simulation results happened to be very similar,
 confirming the applicability of the abstract model in complex mobility
 scenarios.
@@ -1135,22 +1188,27 @@ generality. The speed ranges from ~5m/s ( ~18km/h ) to ( ~79km/h ).
 
 \section{Evaluation}
 
-We decided to perform simulations using different time values, to observe the
-behaviour of $criticality\ condition$: $t\ \epsilon\ \{300s, 600s\}$. Although
-time intervals appear to be short, they are sufficient for gathering consistent
+%We decided to perform simulations using different time values, to observe the
+%behaviour of $criticality\ condition$: $t\ \epsilon\ \{300s, 600s\}$. Although
+We decided to collect data from 300s of simulation. Although the   
+time interval appear to be short, it is sufficient for gathering consistent
 data. Since the application relies on data broadcasting, it forces the simulator
 to schedule thousands of messages which results in usage of a great amount of
-time and memory. For example, 10 minutes of simulation for San Francisco city
-was processed in 1 hour and 45 minutes.
+time and memory e.g. 10 minutes of simulation for San Francisco city is
+processed in 1 hour and 45 minutes.
+We analyzed the probability of information floating taking into consideration
+the particularity of the road network as well as the spatial distribution of
+vehicles, and also the evolution during the simulation using the SIR model.
 
 \subsection{Beijing}
 
-Figure ~\ref{fig:Beijing_300s_200m} depicts the value of the $criticality$ for each
-anchor zone. Figure ~\ref{fig:Beijing_waiting} is a snapshot that displays the
-road network from an area of 6.7$\times$5.2 km$^2$. The map is coloured with
-respect to the amount of time a car has to wait due to the traffic lights placed
-in intersection. Road segments coloured in red have a bigger waiting time than
-the one coloured in black.
+Figure ~\ref{fig:Beijing_waiting} displays an area from Beijing city on which
+we conducted our simulations. More specifically the figure is a snapshot that
+displays the road network from an area of 6.7$\times$5.2 km$^2$. The map is
+coloured with respect to the amount of time a car has to wait due to the traffic
+lights placed in intersections. Road segments coloured in red have a waiting
+time of about 40s, more than the ones coloured in black which have a continuous
+flow of vehicles and thus a waiting time close to 0s.
 
 The figures below display the $criticality$ heatmap along with the average
 number of contacts a vehicle encounters during its sojourn time. The similarity
@@ -1196,14 +1254,14 @@ between them is clearly visible.
 The black areas state that the $criticality$ factor is nearly 0, thus the
 probability of information floating is very low. Indeed, the black areas occur
 in places between streets or outside the traffic road network, where neither
-vehicles, nor their radio range can reach. In the 200m scenario, the anchor
+vehicles, nor their radio range can reach them. In the 200m scenario, the anchor
 zones with a higher probability of floating scatter the map. In the blue
 coloured areas, appears an average $criticality\ condition$, slightly above
 1, the criticality threshold. According to the figure
-~\ref{fig:Beijing_avg_300s_200m} 9 out of 10 vehicles do not have any
-interaction with other vehicles, during its sojourn time. The reason could be
-the small amount of time spent in that location or no neighbours available when
-the beacon is sent out.
+~\ref{fig:Beijing_avg_300s_200m}, 9 out of 10 vehicles do not have any
+interaction with other vehicles, during their sojourn time. The reason could be
+the small amount of time spent in that location or lack of neighbours at the
+time a beacon is sent out.
 
 The bright yellow area, occurs naturally in the road intersection. The
 expectations for an information to live rise with respect to the average waiting
@@ -1242,8 +1300,28 @@ the average number of contacts a vehicles has during its sojourn time.
  exchanges to provide a detailed picture of its evolution and avoided the ones
  which disappeared before the expiry time because of stochastic fluctuations.
  
+ \begin{comment}
  We recorded the number of replicas an information has during the simulation
- denoted by $copies$ label. The other two labels are 2 classes which belong to
+ denoted by $Replicas$ label. The other two labels are 2 classes which belong to
+ the epidemic SIR model: {\it infected} denote the information carrying nodes,
+ and {\it healed} the ones which previously had a copy of the information
+ and deleted it. The deletion could occur if the distance between the vehicle
+ and the geo-location origin was bigger than the anchor radius or the
+ information availability expired.
+ \end{comment}
+ 
+ \begin{figure}[h]
+	\centering
+	\def\svgwidth{\columnwidth}
+	\input{img/Beijing/500m_replicas.pdf_tex}
+	\caption{Information life evolution with 500m range. The number of copies
+	is equal with the total number of ``infections'' minus the total number of
+	``healings''.}
+ 	\label{fig:Beijing_info_evolution}
+ \end{figure}
+ 
+  We recorded the number of replicas an information has during the simulation
+ denoted by $Replicas$ label. The other two labels are 2 classes which belong to
  the epidemic SIR model: {\it infected} denote the information carrying nodes,
  and {\it healed} the ones which previously had a copy of the information
  and deleted it. The deletion could occur if the distance between the vehicle
@@ -1252,20 +1330,23 @@ the average number of contacts a vehicles has during its sojourn time.
  
  It is important to determine whether the information will spread or not. And if
  it does, for how long, and how it will develop in time. As we presented in
- ~\ref{TODO}, if $S_{0}\ > S_{c}\ =\ a/r$ the content will spread. The plot
- confirms the latter condition: the threshold is 0 in the first 200s and there
- are 3 susceptible as the $copies$ line chart displays. Further, the infection
- rate increases due to the high number of vehicle available in the location.
- When the nodes start deleting their copies the threshold rises above the
- current number of susceptible and the number of copies decreases and goes to
- 0.
+ subsection ~\ref{sec:sir_model}, if $S_{0}\ > S_{c}\ =\ a/r$ the content will
+ spread. The plot in ~\ref{fig:Beijing_info_evolution_epidemy} confirms the
+ condition for a 500m anchor radius: the threshold is around 0 during most of
+ the information lifetime and the amount of susceptibles is greater than the
+ threshold which means that they could have a copy in the near future. The
+ end time period suggests that the number of susceptibles become less than $\mu$
+ and thus the replication process reaches the end.
  
- \begin{figure}[t]
+ \begin{figure}[h]
 	\centering
 	\def\svgwidth{\columnwidth}
-	\input{img/Beijing/sim_Beijing3_1000s_400m.pdf_tex}
-	\caption{Information life evolution}
- 	\label{fig:Beijing_info_evolution}
+	\input{img/Beijing/500m_evolution.pdf_tex}
+	\caption{ When $S\ >\ \mu$ the number of replicas the number of replicas can
+	increase, on the other hand, when $S\ <\ \mu$, the number of replicas decrease
+	towards 0; $\mu$ represents the epidemy threshold; the anchor zone radius is
+	500m}
+ 	\label{fig:Beijing_info_evolution_epidemy}
  \end{figure}
  
  Figure ~\ref{fig:Beijing_info_evolution_range} depicts how the information
@@ -1273,8 +1354,8 @@ the average number of contacts a vehicles has during its sojourn time.
  the equipment and application to save battery energy and have a better
  resources management. 
  
- Anchor zones with $r\ \epsilon\ \{100m,\ 200m\}$ yield a short life expectancy,
- in our scenario the content lasts for about 100s, just $1/6$ of the due time.
+ Anchor zones with $r\ \epsilon\ \{100m,\ 200m\}$ yield a short life expectancy.
+ In our scenario the content lasts for about 100s, just $1/6$ of the due time.
  Ranges within $\{300m,\ 400m\}$ increase the life up to 500s, but the
  information disappears ahead of time. The range of 500m keeps the item alive
  until its termination time.
@@ -1289,12 +1370,12 @@ the average number of contacts a vehicles has during its sojourn time.
  
 \subsection{San Francisco}
 
-The area selected from San Francisco for our simulations has 4.5$\times$2.5
-km$^2$ and contains a road network made up from several type of road streets.
-Figure ~\ref{fig:SanFrancisco_waiting} displays the road average waiting time
-vehicles must be aware of, due to the traffic lights. Traffic jams occur on the
-red road segments which determine the vehicles to spend a big amount of time in
-place.
+The area selected from San Francisco used in our simulations has 4.5$\times$2.5
+km$^2$ and contains a road network made up from road streets with different
+numbers of lanes on each way. Figure ~\ref{fig:SanFrancisco_waiting} displays
+the road average waiting time vehicles must be aware of, because of the traffic
+lights logic. Traffic jams occur on the red road segments which determine the
+vehicles to spend a big amount of time in place.
 
 The traffic generator created random trips for the vehicles used in simulation,
 having random starting points and destinations. However, vehicles choose high
@@ -1303,13 +1384,13 @@ by coloured segments in the figure.
 
 The $criticality$ heatmap and the average number of contacts map created
 with 200m anchor radius, match the coloured figure in
-~\ref{fig:SanFrancisco_waiting}. Black areas appear around the two-lane roads
+~\ref{fig:SanFrancisco_waiting}. Black areas appear around the two-lane streets
 which scatter the map, between the San Francisco blocks. The $criticality
-factor$ is close to 0 which is supported by the low density of vehicles and
-the fact that they don't remain around to much.
+factor$ is close to 0 which is supported by the low density of vehicles and the
+fact that they don't remain around to much.
 
 The areas which are expected to keep the information floating are coloured in
-blue and yellow. The diagonally placed street is clearly a information carrying
+blue and yellow. The diagonally placed street is clearly an information carrying
 medium, the average number of contacts being close to one. The intersection with
 the top horizontal street clusters the vehicle, raising the number of contacts
 up to 2 for each car which travels the location. Thus, the $criticality\
@@ -1370,17 +1451,17 @@ the high traffic zones.
 
 For our third and final scenario, we chose an area of Erlangen, which is
 3.5$\times$3.1 km$^2$ and has a less dense road network than San Francisco,
-although is about the same size. Figure ~\ref{fig:Erlangen_300s_200m} displays
+although is about the same size. Figure \ref{fig:Erlangen_300s_200m} displays
 the road segments with a high probability of holding often traffic jams, and
 thus, forcing the vehicles to stay in place a considerable amount of time.
 
-It is clearly visible that our plots in take the shape of the main street in
-Erlangen; black areas generated a criticality below 1 and are not a suitable
-place for sustaining information floating.
+It is clearly visible that islands which occur in the plots take the shape of
+the main street in Erlangen; black areas generated a criticality below 1 and
+thus, are not a suitable place for sustaining information floating.
 
 Naturally, the main street, which crosses the entire area, has a consistent flow
-of vehicles and an average criticality of 6 and an average number of contacts of
-0.1 during its sojourn time.
+of vehicles with an average number of contacts of 0.1. After the calculation,
+the average criticality on the main street becomes 6.
 
 Figure ~\ref{fig:Erlangen_300s_500m} depicts the results for a scenario with an
 anchor zone radius of 500m, keeping the same effect seen in other 2 cities. The
