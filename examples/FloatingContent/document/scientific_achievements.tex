@@ -1332,11 +1332,15 @@ the average number of contacts a vehicles has during its sojourn time.
  it does, for how long, and how it will develop in time. As we presented in
  subsection ~\ref{sec:sir_model}, if $S_{0}\ > S_{c}\ =\ a/r$ the content will
  spread. The plot in ~\ref{fig:Beijing_info_evolution_epidemy} confirms the
- condition for a 500m anchor radius: the threshold is around 0 during most of
- the information lifetime and the amount of susceptibles is greater than the
- threshold which means that they could have a copy in the near future. The
- end time period suggests that the number of susceptibles become less than $\mu$
- and thus the replication process reaches the end.
+ condition for a 500m anchor radius: the threshold $\mu$ is around 0 during most
+ of the information lifetime and the amount of susceptibles is greater than the
+ threshold. This means that they could possibly receive a copy in the near
+ future and become ``infected''. The end time period states that the number of
+ susceptibles become less than $\mu$ and thus the replication process reaches
+ the end. The reason the threshold suddenly becomes so big is because the
+ application deletes the item once the lifetime expires. The ``infected"
+ will become susceptible again, fact confirmed by the figure which shows a
+ slight increase.
  
  \begin{figure}[h]
 	\centering
@@ -1356,9 +1360,14 @@ the average number of contacts a vehicles has during its sojourn time.
  
  Anchor zones with $r\ \epsilon\ \{100m,\ 200m\}$ yield a short life expectancy.
  In our scenario the content lasts for about 100s, just $1/6$ of the due time.
- Ranges within $\{300m,\ 400m\}$ increase the life up to 500s, but the
+ Such distances are probably more suitable if used indoor public places like
+ shopping malls, metro stations, usually overcrowded places were the message
+ exchanging is possible.
+ 
+ Ranges within $\{300m,\ 400m\}$ increase the life time up to 500s, but the
  information disappears ahead of time. The range of 500m keeps the item alive
- until its termination time.
+ until its termination time. As long as the range is big enough to hold a
+ considerable amount of vehicles inside, the information will last.
  
  \begin{figure}[h]
 	\centering
@@ -1372,22 +1381,24 @@ the average number of contacts a vehicles has during its sojourn time.
 
 The area selected from San Francisco used in our simulations has 4.5$\times$2.5
 km$^2$ and contains a road network made up from road streets with different
-numbers of lanes on each way. Figure ~\ref{fig:SanFrancisco_waiting} displays
-the road average waiting time vehicles must be aware of, because of the traffic
-lights logic. Traffic jams occur on the red road segments which determine the
-vehicles to spend a big amount of time in place.
+numbers of lanes on each way. We removed the bicycle, pedestrian, cityrail and
+public transport segment roads and left only the segments for regular road
+vehicles. Figure ~\ref{fig:SanFrancisco_waiting} displays the road average
+waiting time vehicles must be aware of, because of the traffic lights logic.
+Traffic jams occur on the red road segments which determine the vehicles to
+spend a big amount of time in place.
 
 The traffic generator created random trips for the vehicles used in simulation,
-having random starting points and destinations. However, vehicles choose high
-speed roads in order to finish their trips, which results in traffic jams shown
-by coloured segments in the figure.
+having random starting points and destinations. However, the vehicles majority
+choose the high speed roads in order to finish their trips, and thus traffic
+jams occur. This explain the red coloured segments in the figure.
 
 The $criticality$ heatmap and the average number of contacts map created
 with 200m anchor radius, match the coloured figure in
 ~\ref{fig:SanFrancisco_waiting}. Black areas appear around the two-lane streets
 which scatter the map, between the San Francisco blocks. The $criticality
 factor$ is close to 0 which is supported by the low density of vehicles and the
-fact that they don't remain around to much.
+fact that they don't remain around to much. 
 
 The areas which are expected to keep the information floating are coloured in
 blue and yellow. The diagonally placed street is clearly an information carrying
@@ -1422,13 +1433,15 @@ condition$ reaches over 50 in the same area.
 
 Figure ~\ref{fig:San_Francisco_300s_500m} depicts the results using an anchor
 range of 500m. While the average number of contacts slightly increases from 2 to
-2.5 the criticality reaches 120 in the top spots, nearly 2.5 times than the
-former scenario. This is possible because the anchor zones now cover larger
-areas, thus involving more cars in the exchanging process. Another effect of
-the bigger radius is the diffusive characteristic of locations which yields a
-high probability of information floating if generated around the yellow coloured
-area. In the 200m scenario, the areas are more concentrated, and thus, linked to
-the high traffic zones.
+2.5 the $criticality$ reaches 120 in the top spots, nearly 2.5 times than the
+former approach. This is possible because the anchor zones now cover larger
+areas, thus involving more cars in the exchanging process. The bigger
+radius make the anchor zones more diffusive inside the heatmap confirming that a
+user may receive much more items spread on a larger area. In the 200m scenario,
+the areas are more concentrated, with the need of being close to the high
+traffic zones in order for the replication to be possible. The big values that
+appear over a big portion of the map are an indicator that even in the
+probabilistic system used the information will float. 
 
 \begin{figure}[h]
 	\centering
