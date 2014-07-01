@@ -555,8 +555,8 @@ applicability of the abstract model in real case mobility scenarios.
 
 In the previous chapters we presented the theoretical protocol of a data storage
 service using geo-located information and its advantages over the classic
-infrastructure based network. We also discussed the criticality condition which
-is an indicator regarding the probability of item floating which takes into
+infrastructure based network. We also presented the $criticality\ condition$
+which is an indicator of the probability of item floating .It takes into
 consideration the number of the population, its sojourn time and the exchange
 frequency. In this chapter we present our implementation of the service using a
 network simulator and a mobility simulator using vehicles as nodes.
@@ -576,7 +576,7 @@ emulation, alternative programming languages such as Java and C\#, database
 integration and several other functions \cite{omnetpp}. The fundamental
 ingredient of its infrastructure is the component architecture for simulation
 models. Models are assembled from reusable components termed {\it modules}, and
-can be combined in various ways like LEGO blocks.
+can be combined in various ways.
 
 As we mentioned earlier, the Omnet++ model consists of multiple modules that
 communicate with message passing. Simple modules, which are written in C++ using
@@ -645,33 +645,31 @@ executed, values for model parameters, etc.
 \subsection{Network}
 The most important parameter which has to be defined in the configuration file
 is the network module type (if it is not defined in the configuration file it
-will be asked for at runtime). Our network is called simply FloatingScenario and
+will be asked for at runtime). Our network is called simply Floatingscenario and
 extends a simple module called FloatingContent. Networks usually consist
 of two main important section: first include the nodes that form the network,
-and second include how the nodes are to be connected. In our particular case the
-nodes are vehicles which are moving across a map, so they are not static and its
-defined based on multiple files (we will talk about it later in the document).
-The module which handles this information is TraCIScenarioManagerLaunchd.
-
-It contains the next submodules:
+and the second include how the nodes are to be connected. In our particular
+case, the nodes are not static, they are basically vehicles which are moving
+across a map. The module which handles the mobility data is called
+$TraCIScenarioManagerLaunchd$ and contains the next submodules: 
 
 \begin{itemize}
-  \item ObstacleControl model uses obstacles from poly file resulted from the
-  map export in order to block the radio transmission as in real world. The
+  \item {\it ObstacleControl} model uses obstacles from polygon file resulted
+  from the map export in order to block the radio transmission as in real world. The
   obstacles refer mainly to buildings which exist on the map, and may block
   radio propagation of signals between vehicles.
-  \item AnnotationManager manages annotations in Omnet++ canvas. It displays
-  module graphical representation (as icon) or additional representation
+  \item {\it AnnotationManager} manages annotations in Omnet++ canvas. It
+  displays module graphical representation (as icon) or additional representation
   strings.
-  \item ConnectionManager handles all connection related stuff. It will be
+  \item {\it ConnectionManager} handles all connection related stuff. It will be
   discussed in detail later in the document.
-  \item WorldUtility extends basic module BaseWorldUtility which provide utility
-  methods and information used by the whole network as well as simulation wide
-  black board functionality. It collects global parameters like the dimensions
-  of the network (playground), whether is 2D or 3D, anchor range and distance
-  between them.
-  \item TraCIScenarioManagerLaunchd extends TraCIScenarioManager and handles
-  nodes from the network details.
+  \item {\it WorldUtility} extends basic module {\it BaseWorldUtility} which
+  provide utility methods and information used by the whole network as well as
+  simulation wide black board functionality. It collects global parameters like
+  the dimensions of the network (playground), whether is 2D or 3D, anchors
+  range and distance between them.
+  \item {\it TraCIScenarioManagerLaunchd} extends {\it TraCIScenarioManager} and
+  handles nodes from the network details.
 \end{itemize}
 
 
@@ -696,7 +694,7 @@ simulated vehicle. The reason there are no predefined routes is the fact that
 the mobility of each car can be influenced by the network simulator, based on
 the information it receives (for example a bad weather warning).
 
-We denote {\it TraCI-Server} the road simulator and the {\it TraCI-Client} the
+We denote {\it TraCI-Server} the road simulator and {\it TraCI-Client} the
 network simulator. They are connected over a TCP connection for exchanging
 messages. So when the connection is established, the network controls the
 traffic simulator via the data exchange protocol, enhancing the control of the
@@ -705,7 +703,7 @@ send commands as requests to the traffic simulator. The traffic simulator
 may respond to each command once or multiple times.
 
 Time synchronization between both simulators is performed by the client which
-sends periodically, at each simulation step, e.g. 1[s], a message to the road
+sends periodically, at each simulation step, e.g. 1s, a message to the road
 traffic simulator that contains the current simulation time plus one simulation
 step. The road traffic simulator computes the next step and sends the data to
 the network simulator. The vehicle positions are converted into linear movements
@@ -714,12 +712,12 @@ positions at the time specified by traffic simulator. The execution of the
 atomic mobility commands is delayed by one simulation step, because the road
 traffic simulator is always one simulation step ahead. This may represent a
 drawback of the method, but considering the very short simulation time step -
-for traffic efficiency applications approximately 1[s] and for safety
-applications - 0.1[s], the drawback is negligible. When the network simulator or
+for traffic efficiency applications approximately 1s and for safety
+applications - 0.1s, the drawback is negligible. When the network simulator or
 road traffic simulator ends, it closes the TCP connection, and causes the other
 simulator to stop immediately \cite{traci_interface}.
 
-TraCIScenarioManagerLaunchd is the manager module which handles the Traffic
+$TraCIScenarioManagerLaunchd$ is the manager module which handles the Traffic
 Control Interface. Parameters $host$ and $port$ indicate Omnet++ the address and
 the port on which SUMO listens for connections. We can specify the time interval
 of host's position updates by setting $updateInterval$. Parameter $moduleType$
@@ -741,7 +739,7 @@ nodes which are far away from the origin, and thus making it negligible.
 As presented in \cite{Kopke}, the $maximal interference distance$ is a
 conservative bound on the maximal distance at which a node can still disturb the
 communication of a neighbour. In order to reduce the computational complexity,
-MIXIM connects nodes only if they are within the maximal interference distance.
+Veins connects nodes only if they are within the maximal interference distance.
 
 The objects present in the propagation environment influence the $maximal
 interference distance$ by reducing it due to the additional attenuation they
@@ -806,7 +804,7 @@ layer to perform carrier sensing, or notification of PHY layer that the
 transmission of data is over.
 
 The MAC and physical layer are grouped into a module called Network Interface
-Card (NIC) in Figure ~\ref{fig:nic}, because they their design is usually
+Card (NIC) as shown in Figure ~\ref{fig:nic}, because their design is usually
 tightly coupled and specific for different communication techniques like
 bluetooth or GSM. A node can have multiple different NICs.
 
@@ -826,15 +824,14 @@ by the $updateInterval$, the module iterates over the entire node list, reads
 the next node position on the road and updates the fields accordingly.
 
 The BaseMobility class takes care of the graphical representation of the module.
-So every change of the position is reflected into the on the graphical
-representation. It publishes the new position so that other modules get
-informed, e.g the physical layer must update the position with the
-ConnectionManager. It also takes care of exiting the border.
+So every change of the position is reflected into the graphical representation.
+It publishes the new position so that other modules get informed  e.g the
+physical layer must update the position with the ConnectionManager. It also
+takes care of exiting the border.
 
 TraCIMobility contains a field called $statistics$ which records generated data
 during the simulation. Recorded information are: $startTime$, $stopTime$,
-$totalTime$, $totalDistance$, $minSpeed$, $maxSpeed$ and much more could be
-added.
+$totalTime$, $totalDistance$, $minSpeed$, $maxSpeed$ and much more.
 
 \subsection{WAVE: Wireless Access in Vehicular Environment}
 
@@ -901,7 +898,7 @@ stores all messages in the ChannelInfo class which can compute the AirFrames
 intersecting with a given time interval. This is useful for the decider that
 calculates the signal-to-noise ratio (SNR) of a given message.
 
-MIXIM simulates path loss, shadowing and fading, because Omnet++ doesn't have
+Veins simulates path loss, shadowing and fading, because Omnet++ doesn't have
 attenuation. The physical layer supports multiple analogue models, each one
 representing basically a filter class for signals. Summing up the attenuation
 from all analogue models, gives the attenuation part of the signal, calculated
@@ -986,9 +983,9 @@ fact messages come from $ConnectionManager$ as we stated above.
 
 The application layer runs the algorithm which handles the exchange of the
 messages between the nodes and is the top layer in the IEEE802.11p standard. Our
-application module is called FloatingContentApp and extends BaseWaveApplLayer.
-Figure ~\ref{fig:appl_connections} shows the pair of connections between the two
-layers.
+application module is called $FloatingContentApp$ and extends
+$BaseWaveApplLayer$. Figure ~\ref{fig:appl_connections} shows the pair of
+connections between the two layers.
 
 The most useful feature our application inherits from the BaseWaveApplLayer is
 the beaconing system, used in our application for peer discovering. In Omnet++
@@ -999,8 +996,8 @@ not use the network interface card for its implementation. Self-messages are
 sent using $scheduleAt()$ function which accepts absolute simulation time and a
 type of message for event identification as parameters. They are sent as regular
 messages and can be identified by using $isSelfMessage()$. We use self-messages
-to schedule beacons at an interval of 300s, a value which is read from the
-configuration file.
+to schedule beacons at an interval of 300s, a value read from the configuration
+file.
 
 Regular messages are sent down to the lower layer using $sendDelayed()$ which
 keeps the message for a delay interval and send it afterwards. The message,
@@ -1114,11 +1111,21 @@ The following values are recorded and calculated in our simulation :
 	$avgContactsInSJNTime$ * $avgTimeInAnchor$.
 \end{itemize}
 
+
+In addition, we decided to record the evolution of the number of replicas the
+shared content has, in order to analyze the epidemic model SIR. So every time
+the number of replicas of an anchor zone changes we record it in a file called
+the vector file.
+
+The simulations revealed we choosed the right simulation tools, encountering no
+serious challenge that couldn't be solved. We further present our results for
+the distributed storage application.
+ 
 % ==== Simulation Environment and evaluation (CHAPTER 4) ================================================
 
 \chapter{Simulation Environment and Evaluation}
 
-In this section we will discuss about the simulation environment, traffic
+In this section we discuss about the simulation environment, traffic
 generation and the evaluation of resulted data.
 
 \section{Environment}
@@ -1126,9 +1133,8 @@ generation and the evaluation of resulted data.
 The environment for our simulation required by Omnet++ was generated using
 OpenStreetMap ~\cite{openstreetmap} and several SUMO tools. We decided to use
 three different city scenarios to show that floating content in urban
-environments can be feasible regardless of particularity of road
-architecture. The cities we used as simulation environment are: SanFrancisco,
-Beijing and Erlangen.
+environments is feasible regardless of particularity of road architecture. The
+cities we used as simulation environment are: SanFrancisco, Beijing and Erlangen.
 
 The road network file is generated from the exported map (from OpenStreetMap)
 file using $netconvert$. It has many paramaters that steer how the network is
@@ -1381,13 +1387,13 @@ the average number of contacts a vehicles has during its sojourn time.
  the equipment and application to save battery energy and have a better
  resources management. 
  
- Anchor zones with $r\ \epsilon\ \{100m,\ 200m\}$ yield a short life expectancy.
+ Anchor zones with $r\ \epsilon\ [100m,\ 200m]$ yield a short life expectancy.
  In our scenario the content lasts for about 100s, just $1/6$ of the due time.
  Such distances are probably more suitable if used indoor public places like
  shopping malls, metro stations, usually overcrowded places were the message
  exchanging is possible.
  
- Ranges within $\{300m,\ 400m\}$ increase the life time up to 500s, but the
+ Ranges within $[300m,\ 400m]$ increase the life time up to 500s, but the
  information disappears ahead of time. The range of 500m keeps the item alive
  until its termination time. As long as the range is big enough to hold a
  considerable amount of vehicles inside, the information will last.
@@ -1483,6 +1489,49 @@ probabilistic system used the information will float.
  	\label{fig:San_Francisco_300s_500m}
 \end{figure}
 
+
+Again the epidemic model SIR is confirmed as shown in the figure
+~\ref{fig:SanFrancisco_info_epidemy}. During its lifetime the removal
+rate is close two 0. Around $t\ =\ 475s$ a spike occurs in the epidemic
+threshold $\mu$ which is a sign that vehicles deleted their copy of the item
+when got out of range. The number of susceptibles is above the threshold, so
+epidemy is sustained and the number of replicas stays around 70.
+
+When lifetime expires, the replication rate drops to 0 and the deletion rate
+starts increasing. The threshold thus gets over the number of susceptibles.
+The same happens with the number of susceptibles, and it happens because the
+information carrying nodes start information deletion process and transform into
+susceptibles again. The anchor zone is crossed by a higher number of vehicles
+than in Beijing, a fact that is reflected in the average number of replicas
+which is around 70.
+
+\begin{figure}[h]
+	\centering
+	\def\svgwidth{\columnwidth}
+	\input{img/SanFrancisco/SanFrancisco500m_epidemic.pdf_tex}
+	\caption{When $S\ >\ \mu$ the number of replicas the number of replicas can
+	increase, on the other hand, when $S\ <\ \mu$, the number of replicas decrease
+	towards 0; $\mu$ represents the epidemy threshold; the anchor zone radius is
+	500m}
+ 	\label{fig:SanFrancisco_info_epidemy}
+ \end{figure}
+ 
+ Figure ~\ref{fig:SanFrancisco_info_evolution_range} describe how the spread
+ develops in time with respect to anchor radius size. It indicates that when $r\
+ \epsilon\ [300m,\ 500m]$ the information floats the entire due time.
+ Intuitively, the only difference is the average number of replicas
+ proportionally with the range size. A lower radius kills the item prematurely,
+ existing no peer to exchange messages with. Thus, the application is
+ highly influenced by the spatial factor. 
+ 
+ \begin{figure}[h]
+	\centering
+	\def\svgwidth{\columnwidth}
+	\input{img/SanFrancisco/SanFrancisco500m_radii.pdf_tex}
+	\caption{Information life evolution with respect to radius size}
+ 	\label{fig:SanFrancisco_info_evolution_range}
+ \end{figure}
+ 
 \subsection{Erlangen}
 
 For our third and final scenario, we chose an area of Erlangen, which is
