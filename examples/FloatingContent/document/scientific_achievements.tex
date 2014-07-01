@@ -1,80 +1,70 @@
-\chapter{Mobile social networking}\label{chap1}
+
+%====  (CHAPTER 1) ================================================================
+\chapter{Mobile context aware social applications}\label{chap1}
 
 
 % ====SECTION 1 ================================================================
 \section{Introduction}
 
 Mobile devices have become a staple of our society, with everyone of
-us owning at least one. They are everywhere and play increasingly greater roles
-in the lives of most everyone. Their availability is rapidly spreading
-throughout the world and making significant improvements in many lives. Mobile
-technology is making our lives better than ever before. We are now able to be in
-touch with those we need to reach no matter where we are.
+us owning at least one. They bring significant improvements in the quality of
+life and most people rely on them for their basic daily activities.
+The number of smartphones have reached in 2014 around 1.75 billion users and is
+expected that about 50\% of them may use the internet network \cite{emarketer}.
+And they are spreading at a fast pace as the price of mobile continues to drop
+and the data network expands.
 
-Mobile technology makes possible documents transfer almost anywhere in
-the world in small amount of time so business is addressed when it
-encounters an emergency. It keeps employees and business owners connected
-regardless of their position on the globe and increases the company
-productivity. It also keeps the customer updated with information about services
-they use. Mobile technology transformed how companies do business.
+Mobile technology transformed how companies do business. Mobile technology makes
+possible documents transfer almost anywhere in the world in small amount of time
+so business is addressed when it encounters an emergency. It keeps employees and
+business owners connected regardless of their position on the globe and
+increases the company productivity. It also keeps the customers updated with
+information about services they use and pay for.
 
-The daily uses of mobile technology have transformed us into a society tightly
-connected to each other. We have friends through such connections, even though
-we may have never met them in persons. Media became subject of discussion, never
-possible before making the resultant friendships as strong as those in real
-life.
+Mobile devices can no longer serve one single purpose as communication, now
+being able to run rich stand-alone applications like games, navigation apps,
+ebook readers, music and video players and many more. We have the information
+in our hand and it has become easy and natural for us to quickly look up for
+helpful resources for whatever activity we need to do. Mobile application can
+even anticipate what information we need and present it to us when it is most
+useful.
 
- 
-We have more information in our hand than ever before. It has become easy and
-natural for someone to quickly look up helpful resources for whatever activity
-we need to do. Mobile application can even anticipate what information we need
-and present it to us when it is most useful.
+Some of the applications are used only in specific contexts e.g. travelling to
+unfamiliar places may force the user to use navigation apps like Google Maps or
+Waze. But out of all categories, the social and communication apps are the most
+used throughout the day. The most popular is the social network Facebook, which
+enables you to share photos and personal content with your friends. Another one
+is Twitter which displays the content in a page similar with a blog.
 
-
-\section{Social mobile applications}
-
-Increasing mobile Internet use has made information sharing experiences very
-popular among the users. There are many type of services on which the content is
-being shared. The most popular is the social network Facebook, which enables you
-to share photos and personal content with your friends. Another one is Twitter
-which enables you to share information in something similar with a blog.
 The evolution of location-aware mobile technology has influenced the mobile
-application industry offering users a more contextual experience. The Facebook
-Messenger provides the users with the location of their communication partner
-and the latest feature of Nearby Friends notifies the user whether a friend is
-in the nearby location. The best examples are Google Maps and Google Earth whose
-purpose is to store data and display the geographic proximity based on the
-position of the user.
+application industry offering users context based experiences. The Facebook
+Messenger provides the users with the location of their communication partners.
+Moreover the latest feature, Nearby Friends send notifications when a the user
+comes within a short distance of a friend if they choose to share their
+location. Many location aware apps have been developed because of the
+increasing curiosity of people about friends activities. They even enable to
+interact with strangers around you like Tinder or Skout does.
 
-\section{Inter-Vehicle Communication}
+Prior the worldwide spread of smartphones location was mainly used for space
+orientation. Drivers used global positioning devices (GPS) to guide themselfs
+in a journey. The major problem was the little memory space which could carry a
+a limited area of the geographic map. Now application like Google Maps, Google
+Earth or Waze has replaced the single-purpose GPS devices and can display
+geographic proximity based on the position of the user. Although mobiles have
+much bigger storage sizes, several GB, it is still very limited for storing big
+amount of map data. The data network services enhance them to provide the user
+detailed views of any position on the globe.
 
-Vehicle-to-vehicle wireless communication have emerged from the desire to
-provide more safety, entertainment and comfortable driving to a huge number of
-individuals that use vehicles on the roads every day.
+Recently, navigation services have become social and act as real communities
+where people share information with certain location importance. Maps support
+point-of-interest tagging, photo and text description, and even online street
+navigation. They are able to share information in real time, like
+Waze does. Drivers can inform other about the driving conditions they experience
+on the road, and send alerts about traffic jams or accidents.
 
-It is a known fact that many car manufacturers have already introduced wireless
-communication equipment in their cars. Volvo implementation is called ``Volvo on
-Call'' \citep{volvo} and BMW implementation is called ``BMW Assist''
-\cite{bmw_assist}. Their purpose is to help drivers in case of accidents or
-collisions. Their current implementation use ``central'' infrastructure based
-services based on cell phone technology, existing base stations, long range and
-centralised servers. Naturally, the next step would be to modify the equipment
-in order to provide Inter-Vehicle Communication.
-
-Inter-vehicle Communication is a type of ad-hoc network which mainly uses
-broadcast as a method of information distribution. The only limitations vehicles
-may have are the available transmission capacity which depends on the rate and
-the size of the information broadcasted.
-
-As we mentioned, communication between vehicles means adding some benefits to
-driving experience. Some of relevant information for sharing might be: accident
-warnings, driving conditions, weather, announcements and even advertisements
-with audio/video content. They provide useful information related to a limited
-geographical area, for a limited amount of time. For example, an accident
-happened a day ago would not be of much interest for the drivers, so the need of
-limiting the life of information is obvious. The biggest challenge is making
-the information ``float'', thus we try to analyze and test a communication
-protocol further in this thesis.
+New problems have emerged from the fact that mobile applications rely on the
+data network. The next section describes in detail the challenges mobile
+application may encounter.
 
 \section{Weaknesses of network-based mobile application}
 While social network applications are dependent on the infrastructure services
@@ -112,13 +102,44 @@ purposes.
 \end{itemize}
 
 The solution to all the above problems is a content sharing service which is
-entirely dependent on mobile devices in the vicinity using principles of
+entirely dependent on mobile devices in the vicinity, using principles of
 opportunistic networking. Bringing social media and content sharing into ad-hoc
 networks seems it is the next frontier in mobile industry. It can be seen as an
 extension to the Internet infrastructure, by bringing connectivity where the
 infrastructure is not able to.
 
+\section{Inter-Vehicle Communication}
 
+Vehicle-to-vehicle wireless communication have emerged from the desire to
+provide more safety, entertainment and comfortable driving to a huge number of
+individuals that use vehicles on the roads every day.
+
+It is a known fact that many car manufacturers have already introduced wireless
+communication equipment in their cars. Volvo implementation is called ``Volvo on
+Call'' \citep{volvo} and BMW implementation is called ``BMW Assist''
+\cite{bmw_assist}. Their purpose is to help drivers in case of accidents or
+collisions. Their current implementation use ``central'' infrastructure based
+services based on cell phone technology, existing base stations, long range and
+centralised servers. Naturally, the next step would be to modify the equipment
+in order to provide Inter-Vehicle Communication.
+
+Inter-vehicle Communication is a type of ad-hoc network which mainly uses
+broadcast as a method of information distribution. The only limitations vehicles
+may have are the available transmission capacity which depends on the rate and
+the size of the information broadcasted.
+
+As we mentioned, communication between vehicles means adding benefits to driving
+experience. Some of the relevant information to be shared could be: accident
+warnings, driving conditions, weather, announcements and even advertisements
+with audio/video content. They provide useful information related to a limited
+geographical area, for a limited amount of time. For example, an accident
+happened a day ago would not be of much interest for the drivers, so the need of
+limiting the life of information is obvious.
+The biggest challenge is making the information stay alive and ``float'' to
+achieve the main purpose of the sharing process which is to reach a high number
+of vehicles. In the next chapter we analyzed the feasibility of a distributed
+storage and dissemination service addressed to overcome all the mentioned before
+problems.
 
 
 % ==== Floating Content (CHAPTER 2) ================================================
@@ -127,49 +148,48 @@ infrastructure is not able to.
 
 
 This chapter will describe the Floating Content model of the data storage.
-My application is based on this model used to simulate and observe the existence
-behaviour of the content on a real world map. The analysis is presented in
-detail in a further chapter.
+Our application is based on this analytic model used to simulate and observe the
+existence behaviour of the content on a real world map. The testing and
+evaluation is presented detailed in a further chapter.
 
 \section{Introduction}
 Floating Content network is a particular type of network that uses intermittent
 connectivity also known as delay tolerant networks (DTN). Recently, the new term
 disruption-tolerant networking has gained popularity in the United States.
-Among the events that may generate disruption we can identify limits of wireless
-radio range, noise, energy resources and sparsity of mobile nodes
-\cite{wikipedia_dtn}. This concept of information sharing matches the needs of
-context-aware applications because it keeps the spatial proximity in a close
-relation with connectivity.
+Among the events that may generate disruption, the following can be spotted: the
+limits of wireless radio range, noise, energy resources and sparsity of mobile
+nodes \cite{wikipedia_dtn}. This concept of information sharing matches the
+needs of context-aware applications because it keeps the spatial proximity in a
+close relation with connectivity.
 
-Context awareness is a characteristic of a mobile devices and includes different
+Context awareness is a characteristic of mobile devices and includes different
 types such as : identity, activity, time, and the most important for our
 analysis, location. The application can determine what activities may occur near
 the entity, the objects and people that are nearby.
 
 A use case scenario of context-aware application could be a tourist guide
-information sharing. When you're visiting an unfamiliar location, having an
-application that provides you with information about the surroundings can be a
-blessing. The content can include information, history about places you are
+information sharing. When you are visiting unfamiliar places, having an
+application that provides you with useful information about the surroundings can
+be a blessing. The content can include description, history about places you are
 visiting, hotel and restaurants and their service quality, directions you have
-to follow to reach a desired place and much more.
+to follow to reach a desired place and many more.
 
 \section{Applications for Floating Content}
 
-The features of floating content offer the user exciting opportunities but can
-also offer some important difficulties. The most useful opportunity enables
-localized information sharing without using infrastructure services and without
-central data records. Since there is no remote access, it gives the user some
-degree of privacy, as he must be present in order to ``see'' something which is
-a usual concept in the daily life. The major challenge is that the
-communications service makes no guarantees that the data will stay around until
-its lifetime expires. For example, during the night the content is expected to
-disappear. We can make intuitive deductions, which are assisted by the
-simulations which will be later discussed. If the service is used in an
-overcrowded place like a market square or a heavy traffic road, there is a high
-probability that the content will float for some time, even if not all other
-people use context-aware mobile devices. In the end, any type of
-communication (event the best-effort) may be better than no communication at
-all.
+The features of floating content offer the user exciting opportunities but
+many problems can emerge. The most useful opportunity enables localized
+information sharing without using infrastructure services and without central
+data records. Since there is no remote access, it gives the user some degree of
+privacy, as he must be present in order to ``see'' something which is a usual
+concept in the daily life. The major challenge is that the communications
+service makes no guarantees that the data will stay around until its lifetime
+expires. For example  during the night the content is expected to disappear. We
+can make intuitive deductions, which are assisted by the simulations which will
+be later discussed. If the service is used in an overcrowded place like a market
+square or a heavy traffic road, there is a high probability that the content
+will float for some time, even if not all other people use context-aware mobile
+devices. In the end, any type of communication (event the best-effort) may be
+better than no communication at all.
 
 People's daily activities cause density fluctuations over the day which may be a
 problem for the residing information in certain places. Thus, the information is
@@ -177,7 +197,7 @@ expected to remain available for no more than a few hours. Making predictions
 that there will be enough people in that location is very limited for now.
 However, a limited amount of time, let's say one hour of ``floating'' may be
 enough for the application to do its job. As a solution, a user can be a
-permanent seed, staying around and resending out updated content.
+permanent seed, staying around and resending updated content.
 
 Multiple use cases can emerge from the floating content concept. One of them can
 use infrastructure-less local data availability for advertising or selling
@@ -191,8 +211,8 @@ anonymous can be another use case of floating content for which best-effort
 operation perfectly suits the needs.
 
 Overall, floating content can be used in many ways, taking into consideration
-two important aspects of it. First, floating information is localized by design
-so the developers should consider multiple data-oriented architecture.
+two important aspects of it. First, floating information is location aware
+so the developers should consider multiple data-oriented architectures.
 The second aspect is that the concept is best effort, a problem which
 the Internet infrastructure solves with repair mechanisms that can recover lost
 packets. In our case, data that expires is irrecoverable in an area. Taking
@@ -228,21 +248,23 @@ The devices also need to be equipped with accurate systems which determine their
 position, e.g. using GPS tracking, cellular base stations, cell tower
 triangulations using WLAN access points or Wi-fi tracking which is a very
 popular technology. Each of these methodologies has its own advantages which
-will make them more appropriate in different domains regarding the facts like
-accuracy percentage needed, battery consumption etc. but in order to provide the
-best location based service, you need to acquire the most accurate location
-coordinates. Finally, nodes need to synchronize their clock time to tag the
-floating information; it can be done with the help of GPS or cellular networks.
+will make them more appropriate in different use cases. Many factors
+need to be taken into consideration lieke accuracy percentage needed, battery
+consumption etc. In order to provide the best location based service, the
+equipment must acquire the most accurate location coordinates. Finally,
+nodes need to synchronize their clock time so the users can process exchanged
+information as anyone else ; it can be done with the help of GPS or cellular
+networks.
 
 When producing information, the application must tag the information with its
 geographic origin, validity range and and time-to-live (TTL).
-Other nodes decide if they store the information and will replicate it further
-if they are in the associated anchor zone to others. The information is
-explicitly allowed to disappear providing no guarantees about its availability.
-If the lifetime of the content expires, it will be discarded by the application.
-In consequence an item may disappear if there are no nodes (or to few) to
-replicate it in its associated anchor zone, unless the creator is there to
-re-issue it again.
+Other nodes decide if they store the information and replicate it further. The
+only requirement is they need to be in the associated anchor zone to be able to
+receive it. The information is explicitly allowed to disappear providing no
+guarantees about its availability. If the lifetime of the content expires, it
+will be discarded by the application. In consequence an item may disappear if
+there are no nodes (or to few) to replicate it in its associated anchor zone,
+unless the creator is there to re-issue it again.
 
 \subsection{System operation}
 
@@ -258,11 +280,11 @@ the availability zone there exist no copy of the item in the node data storage.
 \begin{figure}[bt]
  \centering
  \includegraphics[width=0.6\textwidth]{img/anchor_zone}
- \caption{Moving nodes inside across an anchor zone. Black nodes are
+ \caption{Moving nodes inside an anchor zone. Black nodes are
  information-carrying nodes, white nodes will eventually get the information
  from the black ones. The probability of a node carrying an item tends to 1
- inside the replication zone, and decreases until reaching an availability a
- after which no more copies are found. }
+ inside the replication zone, and decreases until reaching an availability
+ distance $a$ after which no more copies are found. }
  \label{fig:anchor_zone}
 \end{figure}
 
@@ -272,11 +294,12 @@ other node will immediately send it so both nodes can be able to access it. As a
 result, every node inside the anchor zone should have a copy of the item while
 nodes which are leaving the anchor can delete it at their own discretion.
 
-Let's consider two nodes A and B which encounter at some point in time. Node A
-does have an item I tagged with an anchor zone centered in point P and radii
-{\it a} and {\it r}. Let {\it h} be the distance of node A from the center P.
-When node A meets node B, item I gets replicated to B with the probability
-$p_r(h)$:
+Let's consider two nodes $A$ and $B$ which encounter at some point in time. Node
+$A$ does have an item $I$ tagged with an anchor zone centered in point $P$ and
+radii {\it a} and {\it r}. Let {\it h} be the distance of node $A$ from the
+center $P$.
+When node $A$ meets node $B$, item $I$ gets replicated to $B$ with the
+probability $p_r(h)$:
 
 $$p_r(h) = \begin{cases}
 	1 & \text{if } h \leq r \\
@@ -295,22 +318,22 @@ $$p_d(h) = \begin{cases}
 	1 & \text{otherwise} \\
 \end{cases}$$
 
-The node preserves the free space due to the deletion function. It follows the
-first in, first out (FIFO) principle, deleting the oldest items first if there
-is a need for free space.
+The node preserves the free space due to the deletion function. Many deletion
+policies can be applied. The elementary first in, first out (FIFO) principle
+can be used, deleting the oldest items first if there is a need for free space.
 
 The area between {\it replication range} and {\it availability range} acts as a
-buffer zone, that prevents immediate deletion of items. It is beneficial
+buffer zone, that prevents immediate deletion of items. It is advantageous
 for nodes that leave the {\it replication range} for a short period of time,
-preventing them performing deletion operation. Thus, after returning inside
-{\it replication range}, they have the associated items preserved. Outside the
+preventing them to perform deletion operation. Thus, after returning inside
+{\it replication range}, they already have the associated items. Outside the
 anchor zone, a node could delete specific items when meeting with other nodes,
 or at a predefined timeout, checking if items are outside their zones or their
 lifetime expired.
 
-As \cite{percomfloatingcontent} did, for simplicity and more trackability, in
-our evaluation there is no buffer zone, i.e. {\it r = a}, deletion and replication
-function becoming useless in this case.
+As shown in \cite{percomfloatingcontent} and because of simplicity and more
+trackability, in our evaluation there is no buffer zone, i.e. {\it r = a},
+deletion and replication function becoming useless in this case.
 
 \subsection{Communication Protocol}
 
@@ -347,7 +370,7 @@ append the new coming messages to the list, while they are still in transfer.
 
 Deletion of item $I$ occurs immediately the node moves outside of $a$. In
 \cite{percomfloatingcontent} is is suggested that a second possibility could be
-deletion $upon-encounter$ which discards a message when meeting a new node.
+deletion $upon-encounter$ which discards a message when meeting a new node,
 stating that this policy is more sensible due to its asynchronous
 characteristic triggered by an external event. Naturally, deletion takes place
 before the list of items is sent to other peers.
@@ -368,20 +391,19 @@ implement them without having an central infrastructure to enhance
 authentication of identities. Also being a best-effort service is another nail
 in the coffin for the rewarding system. Some simple mechanisms could be added to
 implementation like prioritizing items taking into consideration their expected
-storage consumption and the distance from the anchor. Thus, deleting the
-farthest or the most largest item may discourage unlimited content distribution.
+storage consumption and the distance from the anchor location. Thus, deleting
+the farthest or the most largest item may discourage unlimited content distribution.
 
 As shown in \cite{percomfloatingcontent}, the application can smartly manage its
 resources by giving preference to items with smallest anchor range. Items with
 very large anchor zones would have low availability due to the poor coverage it
-may have. Of course a spammer could move around on a large area to create items
-with small anchor zones and simulate an large anchor zone. There is no
-prevention mechanism for this, but it is considered that the spammer should put
-a lot of effort to achieve its goal. Also, the anchor zone needs to be
-periodically revisited due to the ephemerality characteristic of the
-information.
-This security mechanism doesn't require infrastructure service or any degree of
-mutual trust which is an advantage.
+may have. Spammers could move around on a large area to create items with small
+anchor zones and simulate a large anchor zone. There is no prevention mechanism
+for this, but it is considered that spammers should put a lot of effort to
+achieve their goal. Also, the anchor zone needs to be periodically revisited due
+to the ephemerality characteristic of the information. This security mechanism
+doesn't require infrastructure service or any degree of mutual trust which is an
+advantage.
 
 
 \section {Analytical model}
@@ -390,18 +412,19 @@ Floating content model has been a subject of analysis in
 \cite{whendoesdatafloats} . The most important objective of this work has been
 finding a pattern to guarantee that a specific information remains in its anchor
 zone until the expiry of its lifetime with a high probability. It is called the
-$criticality\ condition$ and it depends on many aspects like mobility pattern
-and the replication policy of the nodes inside the anchor zone. 
+$criticality\ condition$ and it depends on many aspects like mobility patterns
+and replication policies of the nodes inside the anchor zone. 
 
 \subsection{Criticality Condition}
 
-As before, we assume each information is being tagged with an anchor zone in
-which nodes keep entering, spend some time and finally exit. Also, we assume
-that the nodes spend a consistent amount of time inside the anchor and
-follow a random mobility pattern. The population is assumed to be large and ``well
-mixed'' in order to preserve the proportion between its size and the nodes
-having the information. Further the criticality condition at the
-fluid limit is explained.
+As before, we assume each information is being tagged with a geo-location
+data of the anchor zone in which nodes keep entering, spend some time and
+finally exit. Also, we assume that the nodes spend a consistent amount of time
+inside the anchor and follow a random mobility pattern. The population is
+assumed to be large and ``well mixed''. It is important to preserve the
+proportion between the total number of nodes and the number of ones which have
+a copy of information. Further the criticality condition at the fluid limit is
+explained.
 
 While moving inside the anchor zone, a node may come in contact randomly
 with other nodes. We assume there are only two nodes moving permanently inside
@@ -420,8 +443,8 @@ of tagged nodes is $Np\mu$. The growth rate is determined by the formula:
 N\frac{d}{dt}p = N^2p(1-p)\upsilon - Np\mu \label{eq:derivative}
 \end{equation}
 
-The two terms on the right hand side are equal in equilibrium leading to the
-stationary value $p^* = 1 - \mu / (\upsilon N)$. In order to have a positive
+The two terms on the right hand side are equal when in equilibrium leading to
+the stationary value $p^* = 1 - \mu / (\upsilon N)$. In order to have a positive
 solution, $p^* > 0$, it requires that,
 
 \begin{equation}
@@ -432,8 +455,8 @@ Equation \eqref{eq:criticality} is called {\it criticality condition}. The left
 hand side value represents the average number of collisions a randomly chosen
 node has during its sojourn time. Taking into consideration the sign of
 the equation \eqref{eq:derivative} it can be seen that the solution is stable.
-If $p > 1 - \mu / (\upsilon N)$ it tends to increase, else if $p < 1 - \mu /
-(\upsilon N)$ it tends to decrease. The information disappears (even in the
+If $p > 1 - \mu / (\upsilon N)$, it tends to increase, else if $p < 1 - \mu /
+(\upsilon N)$, it tends to decrease. The information disappears (even in the
 fluid model) when the derivative is everywhere negative leading the solution to
 p = 0. Moreover, since we need to prevent accidental disappearance of the
 information carrying population by stochastic fluctuations, $Np = N - \mu /
@@ -455,10 +478,10 @@ the anchor range.
 
 As shown in ~\cite{hethcote2000mathematics}, we define $r$ as the infection rate
 and the increase number of the infected proportional with the current number of 
-susceptible and infected: $rSI$. We define $a$ as the removal rate and the
+susceptibles and infected: $rSI$. We define $a$ as the removal rate and the
 increase number of removed proportional to the infected only: $aI$.
 
-We are able to compute the number of each type using the following equations:
+We are able to compute the number of each class using the following equations:
 
 \begin{equation}
 \frac{dS}{dt} = -rSI \label{eq:dS}
@@ -490,7 +513,9 @@ There are two cases which emerge from ~\eqref{eq:dI_0}: $S_{0}\ <\ \mu$ implies
 that the number of infectives drop from $I_{0}$ to 0 and no epidemic can occur,
 $S_{0}\ >\ \mu$ the number of infectives increases and the information spreads.
 $\mu$ can be considered as a threshold which determines whether the information
-will live or not.
+will live or not. The presented model helps us to understand how the information
+develops in time, how the number of neighbours and the radius size influence its
+spread.
 
 \subsection{Model applicability}
 
@@ -510,18 +535,16 @@ In our simulation, which will be discussed later in the document, the spatial
 aspects of information exchange is ignored. So the probability of a node
 carrying information is the same on the entire simulation network (of course
 without taking in consideration water zones). In addition, the $criticality\ 
-condition$ doesn't take into consideration some important parameters. On of the
-would be the transmission range which affects directly the encounter rate
-$\upsilon$.
+condition$ doesn't take into consideration some important parameters e.g. 
+transmission range which affects directly the encounter rate $\upsilon$.
 
 The non-spatial model is applied in the simulation performed, because it
 captures the fundamental elements of the system, and defines the $criticality\ 
 condition$ which is an indicator whether an information item may float or not.
 As in \cite{percomfloatingcontent} we compute three key elements and then observe
-how the $criticality condition$ correlates with the road network and the final
-information life time. The simulation results happened to be very similar,
-confirming the applicability of the abstract model in complex mobility
-scenarios.
+how the $criticality\ condition$ correlates with the road network and the final
+information life time. The simulation produced similar results, confirming the
+applicability of the abstract model in real case mobility scenarios.
 
 
 
