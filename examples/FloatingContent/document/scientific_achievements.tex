@@ -1,6 +1,6 @@
 
 %====  (CHAPTER 1) ================================================================
-\chapter{Mobile context aware social applications}\label{chap1}
+\chapter{Social context-aware mobile applications}\label{chap1}
 
 
 % ====SECTION 1 ================================================================
@@ -462,12 +462,14 @@ p = 0. Moreover, since we need to prevent accidental disappearance of the
 information carrying population by stochastic fluctuations, $Np = N - \mu /
 \upsilon$ must be large.
 
+
 \subsection{Information evolution during its lifetime}
 \label{sec:sir_model}
 Inspired by the mathematical modeling of the spread of infection diseases
 \cite{hethcote2000mathematics} we decided to analyze the evolution of
-information spreading as if it was a virus. Moreover, the protocol proposed uses
-broadcasting as way of transmission which is known as epidemic routing.
+information spreading as if it was a virus. The reason we decided to perform
+analysis using this model is because the protocol proposed uses broadcasting as
+way of transmission which is known as epidemic routing. 
 
 Our approach is very similar with the SIR model: $S$ stands for susceptibles,
 the nodes interested in information but which don't own a copy yet; $I$
@@ -496,7 +498,8 @@ We are able to compute the number of each class using the following equations:
 \end{equation}
 
 The equations ensure that the total population $N\ =\ S\ + I\ +\ R$ and $S_{0}\
->\ 0$, $I_{0}\ >\ 0$ and $R_{0}\ >\ 0$.
+>\ 0$, $I_{0}\ >\ 0$ and $R_{0}\ >\ 0$. Also, when a susceptible gets infected
+i.e. receives the message, it becomes immediately infectious.
 
 From ~\eqref{eq:dI}, at the beginning of information exchanging, when $t\ =\ 0$
 the following equation results:
@@ -1058,9 +1061,8 @@ during the simulation and written out when the simulation completes. We use the
 latter in our simulation in order to compute the $criticality$ condition.
 
 To estimate the feasibility of floating content, we positioned anchor zones
-every 200m in a grid across the simulation area as shown in the figure
-~\ref{fig:SanFrancisco_Anchors}. More details about the simulation environment
-in the next chapter.
+every 200m in a grid across the simulation area. More details about the
+simulation environment in the next chapter.
 
 Every anchor zone has its own independent module which records multiple
 statistics during the simulation : the total number of vehicles crossing the
@@ -1087,7 +1089,7 @@ reduces the computational complexity.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.4\textwidth]{img/node_az}
+	\includegraphics[width=0.5\textwidth]{img/node_az}
 	\caption{Anchor zones in which node number 8 resides, are coloured with red,
 	the other ones are coloured with yellow.}
 	\label{fig:node_az}
@@ -1132,9 +1134,9 @@ generation and the evaluation of resulted data.
 
 The environment for our simulation required by Omnet++ was generated using
 OpenStreetMap ~\cite{openstreetmap} and several SUMO tools. We decided to use
-three different city scenarios to show that floating content in urban
+two different city scenarios to show that floating content in urban
 environments is feasible regardless of particularity of road architecture. The
-cities we used as simulation environment are: SanFrancisco, Beijing and Erlangen.
+cities we used as simulation environment are: SanFrancisco and Beijing.
 
 The road network file is generated from the exported map (from OpenStreetMap)
 file using $netconvert$. It has many paramaters that steer how the network is
@@ -1501,9 +1503,10 @@ When lifetime expires, the replication rate drops to 0 and the deletion rate
 starts increasing. The threshold thus gets over the number of susceptibles.
 The same happens with the number of susceptibles, and it happens because the
 information carrying nodes start information deletion process and transform into
-susceptibles again. The anchor zone is crossed by a higher number of vehicles
-than in Beijing, a fact that is reflected in the average number of replicas
-which is around 70.
+susceptibles again. The anchor zone is crossed by a higher number of vehicles if
+we take a look at the number of susceptibles. Another indicator is the fact that
+the average number of replicas is much higher, with less than 20 in Beijing and
+over 70 in the current scenario.
 
 \begin{figure}[h]
 	\centering
@@ -1519,19 +1522,21 @@ which is around 70.
  Figure ~\ref{fig:SanFrancisco_info_evolution_range} describe how the spread
  develops in time with respect to anchor radius size. It indicates that when $r\
  \epsilon\ [300m,\ 500m]$ the information floats the entire due time.
- Intuitively, the only difference is the average number of replicas
+ Intuitively, the distinctive aspect is the average number of replicas
  proportionally with the range size. A lower radius kills the item prematurely,
- existing no peer to exchange messages with. Thus, the application is
- highly influenced by the spatial factor. 
+ existing no peer to exchange messages with. Thus, the application is highly
+ influenced by the spatial factor and the stochastic fluctuations when using
+ small ranges.
  
- \begin{figure}[h]
+ \begin{figure}[t]
 	\centering
 	\def\svgwidth{\columnwidth}
 	\input{img/SanFrancisco/SanFrancisco500m_radii.pdf_tex}
 	\caption{Information life evolution with respect to radius size}
  	\label{fig:SanFrancisco_info_evolution_range}
  \end{figure}
- 
+
+ \begin{comment}
 \subsection{Erlangen}
 
 For our third and final scenario, we chose an area of Erlangen, which is
@@ -1594,5 +1599,40 @@ location.
  	\caption{Erlangen 300s simulation with 500m anchor size}
  	\label{fig:Erlangen_300s_500m}
 \end{figure}
+\end{comment}
 
+\chapter{Conclusion}
 
+We have presented a distributed storage and dissemination service based on
+floating content designed to work exclusively on mobile devices without a
+central infrastructure network. We performed our evaluations using realistic
+scenarios and the results revealed that floating content could be feasible in
+urban environment.
+
+There are several important factors that influence information floatability.
+A high density inside the anchor location sustain the life of the information
+regardless the radius size (but the number of copies would be small for small
+radii). On the other hand, a bigger radius may cluster more vehicles and thus,
+increase the probability of floating. The radio range could also affect
+information sharing. A small radio range compared to the information
+availability range may prevent the application to spread content in the entire
+zone and rely on vehicle density.
+
+While the simulator used accurately recreates working process of IEEE 802.11p,
+it is limited in creating a realistic mobility pattern for a road network.
+However, our predictions may still hold in certain places like overcrowded
+intersections. Moreover, it is a known fact that real world urban road networks
+are overwhelmed by the high number of cars, making them suitable for information
+exchange.
+
+We validated the analytical model presented and confirmed the predictions made
+for the probability that content is able to float in a certain location. We
+also, confirmed the SIR epidemic model which determines whether the information
+spreads or not taking into account the number of susceptibles and the
+replication rate.
+
+Information sharing applications between mobile entities will experience a
+growth in the near future, a prediction supported by the improvements made in
+wireless communication, the increase spread of mobile phones worldwide, the
+construction of vehicles with communication equipment and the developers desire
+to provide the best solutions for increasing quality of life. 
