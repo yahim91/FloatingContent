@@ -1,0 +1,268 @@
+% vim: set tw=78 tabstop=4 shiftwidth=4 aw ai:
+\documentclass{beamer}
+
+\usepackage[utf8x]{inputenc}		% diacritice
+\usepackage[english]{babel}
+\usepackage{color}			% highlight
+\usepackage{alltt}			% highlight
+\usepackage{subfigure}
+\usepackage{tikz}
+\usepackage[belowskip=-40pt,aboveskip=-2pt]{caption}
+\captionsetup{labelformat=empty,labelsep=none}
+
+
+% highlight; comment this out in case you don't input code source files
+%\usepackage{code/highlight}		% highlight
+
+\usepackage{hyperref}			% folositii \url{http://...}
+					% sau \href{http://...}{Nume Link}
+\usepackage{verbatim}
+
+\mode<presentation>
+{ \usetheme{Berlin} }
+
+\newcommand\Wider[2][3em]{%
+\makebox[\linewidth][c]{%
+  \begin{minipage}{\dimexpr\textwidth+#1\relax}
+  \raggedright#2
+  \end{minipage}%
+  }%
+}
+
+
+% incarcarea simbolurilor Unicode romanesti inn titlu sii primele pagini
+\PreloadUnicodePage{200}
+
+\title[Distributed storage and dissemination service based on floating
+content]{Distributed storage and dissemination service based on floating
+content}
+\institute{Automatic Control and Computers Faculty,\\
+	University Politehnica of Bucharest}
+\author[Mihai Ciocan, Ciprian Dobre]{Mihai Ciocan, Ciprian Dobre}
+\date{July, 2014}
+
+\begin{document}
+
+% Slide-urile cu mai multe parti sunt marcate cu textul (cont.)
+\setbeamertemplate{frametitle continuation}[from second]
+
+% aratam numarul frame-ului
+% \setbeamertemplate{footline}[frame number]
+
+\frame{\titlepage}
+
+\frame{\tableofcontents}
+
+% NB: Sectiunile nu sunt marcate vizual, ci doar apar in cuprins
+\section{Introduction}
+
+% Titlul unui frame se specifica fie in acolade, imediat dupa \begin{frame},
+% fie folosind \frametitle
+\begin{frame}{Actualitate}
+	\begin{itemize}
+		\item Se estimeaza ca numarul de utilizatori de device-uri mobile in anul
+		2014 va ajunge la 1.75 miliarde
+		\item Principalele aplicatii utilizate pe device-uri sunt cele sociale
+		(Twitter, Facebook, etc.), de comunicatie (WhatsApp, Facebook Messenger) si de
+		localizare si afisare a obiectivelor din proximitate precum si de
+		ghidare spatiala(Google Maps, Waze)
+		\item Majoritatea aplicatiilor sunt dependente de serviciile din
+		infrastructura de retea pentru corecta functionare
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Posibile probleme}
+	\begin{itemize}
+	  \item Probleme de conectivitate:
+	  \begin{itemize}
+	    \item Preturi roaming foarte mari
+	  	\item Conectivitate slaba
+	  	\item Servicii de date fara acoperire
+	  \end{itemize}
+	  \item Probleme in managementul datelor transferate:
+	  \begin{itemize}
+	    \item Relevanta geografica
+	    \item Relevanta temporala
+	    \item Identificarea detinatorului
+	    \item Utilizarea unui serviciu central de gestiune a datelor
+	  \end{itemize}
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Alternativa}
+	\begin{itemize}
+	  \item Serviciu pentru distribuirea informatiilor efemere dependent in
+	  totalitate de device-uri mobile din vecinatate
+	  \item Fiecare user poate genera informatii caracteristice pentru o anumita
+	  locatie, pentru o perioda limitata de timp
+	  \item Potrivit pentru comunicatia intre vehicule pentru imbunatatirea
+	  experientei de conducere
+	  \item Starea vremii, a carosabilului si a traficului printre informatiile
+	  care pot imbunatatii experienta de conducere a soferului
+	\end{itemize}
+\end{frame}
+
+\section{Modelul aplicatiei}
+
+\begin{frame}{Comportamentul serviciului}
+	 \begin{columns}
+	    \begin{column}[l]{0.55\textwidth}
+			\begin{itemize}
+			  \item Informatia generata va fi distribuita numai vecinilor din raza de
+			  valabilitate $r$
+			  \item Informatia este stearsa din memorie atunci cand vehiculul se
+			  departeaza la o distanta mai mare decat $a$ fata de origine
+			  \item Informatia va “pluti” (float) atat timp cat exista un numar
+			  semnificativ de device-uri in raza de valabilitate pentru a participa la
+			  stocare si replicare
+			\end{itemize}
+		\end{column}
+		\begin{column}[r]{0.45\textwidth}
+			\begin{figure}
+				\centering
+		    	\includegraphics[scale=0.35]{img/anchor_zone}
+		    \end{figure}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Floating Content Protocol}
+	\begin{enumerate}
+	  \item Nodurile trimit mesaje de descoperire a vecinilor (beacons) la un
+	  anumit interval de timp (300s in simulare)
+	  \item La primirea unui astfel de mesaj, nodul trimite lista proprie de
+	  elemente valabile pentru replicare
+	  \item Dupa primirea listei, nodul cere un subset de date, a caror distanta de
+	  valabilitate este mai mare decat pozitia nodului fata de origine (nodul se
+	  afla in raza de valabilitate)
+	  \item Informatiile cerute se transfera pana cand nodurile pierd contactul sau
+	  transferul se termina complet
+	  \item se repeta pasii incepand de la pasul 1.
+	\end{enumerate}
+\end{frame}
+
+\section{Simulare si Evaluare}
+
+\begin{frame}{Tool-uri pentru simulare}
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+			  \item Am utilizat framework-ul Veins bazat pe 2 simulatoare
+			  \item Simulation of Urban Mobility (road traffic simulator)
+			  \item OMNeT++ - simulator de retele
+			  \item Cele 2 comunica in timpul simularii prin conexiune TCP
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{figure}
+				\centering
+				\subfigure{\includegraphics[scale=0.13]{img/sumo}
+				}
+				\subfigure{\includegraphics[scale=0.35]{img/omnetpp}
+				}
+			\end{figure}
+		\end{column}
+	\end{columns}
+\end{frame}
+
+\begin{frame}{Criterii de fezabilitate - Conditia de criticalitate}
+	\begin{itemize}
+	  \item $\upsilon$ $\rightarrow$ frecventa cu care un nod intra in contact cu
+	  vecinii sai
+	  \item $N$ $\rightarrow$ populatia din zona de valabilitate; numarul de
+	  perechi este $\frac{1}{2}N(N-1) \approx \frac{1}{2}N^2$; numarul total de
+	  contacte este $\frac{1}{2}N^2\upsilon$
+	  \item $2p(1-p)$ din numarul de contacte transfera informatie noua unui nod;
+	  totalul acestor evenimente va fi $p(1-p)N^2\upsilon$; aceasta este frecventa
+	  spre care populatia totala ce contine informatia tinde sa creasca;  
+	  \item $1/\mu$ $\rightarrow$ timpul unui nod aflat in zona de valabilitate;
+	  frecventa de iesire din zona este $N\mu$; frecventa de iesire a nodurilor cu
+	  informatie este $Np\mu$
+	  \item frecventa de crestere este $N\frac{d}{dt}p = N^2p(1-p)\upsilon - Np\mu$
+	  \item exista unei solutii pozitive $p^* > 0$ necesita:
+	\end{itemize}
+	\hskip0.5in
+	\small{
+		\begin{beamerboxesrounded}[lower=block body,shadow=true,width=3.2in]{}
+			\begin{center}
+				\texttt{$N\frac{\upsilon}{\mu} > 1$ $\rightarrow$ $criticality\ condition$}
+			\end{center}
+		\end{beamerboxesrounded}
+	}
+\end{frame}
+
+\begin{frame}{Criterii de fezabilitate - Modelul epidemic SIR}
+	\begin{itemize}
+	  \item $S$ $\rightarrow$ noduri susceptibile (noduri fara informatie), $I$
+	  $\rightarrow$ noduri infectate (detin informatia), $R$ $\rightarrow$ noduri
+	  ``vindecate'' (au sters informatia), $N\ =\ S\ +\ I\ +\ R$
+	  \item $\frac{dS}{dt} = -rSI$ $\rightarrow$ rata de micsorare a numarului de
+	  susceptibili
+	  \item $\frac{dI}{dt} = rSI - aI$ $\rightarrow$ rata de crestere a numarului
+	  de infectati
+	  \item $\frac{dR}{dt} = aI$ $\rightarrow$ rata de crestere a numarului de
+	  noduri ``vindecate''
+	  \item $\left.
+\frac{dI}{dt}
+\right|_{t=0} = I_{0} (rS_{0} - a)\ \gtrless\ 0\ if\ S_{0}\ \gtrless
+\frac{a}{r}\ = \mu$
+	\end{itemize}
+	\hskip0.5in
+	\small{
+		\begin{beamerboxesrounded}[lower=block body,shadow=true,width=3.2in]{}
+			\begin{itemize}
+				\item{$\frac{a}{r}\ = \mu$ $\rightarrow$ $epidemy\ threshold$}
+				\item{$S_{0}\ >\ \mu\ \rightarrow$ epidemy occurs}
+				\item{$S_{0}\ <\ \mu\ \rightarrow$ no epidemy can occur}
+			\end{itemize}
+		\end{beamerboxesrounded}
+	}
+\end{frame}
+
+\begin{frame}{Colectarea datelor - SanFrancisco}
+\Wider{
+	\begin{figure}[t]
+		\centering
+		\includegraphics[scale=0.25]{img/SanFrancisco_Anchors}
+	\end{figure}}
+\end{frame}
+
+\begin{frame}{Conditia de criticalitate - San Francisco}
+	\Wider{
+	\begin{figure}[t]
+		\vspace*{-1cm} 
+		\centering
+		\subfigure
+		{\includegraphics[width=2in]{img/SanFrancisco/criticality3_sim_SanFrancisco6_300s_200m}
+		\includegraphics[width=2in]{img/SanFrancisco/avgContacts_sim_SanFrancisco6_300s_200m}
+		}
+		\caption{\tiny r = 200m}
+	\end{figure}
+	\begin{figure}[t]
+		\centering
+		\subfigure
+		{\includegraphics[width=2in]{img/SanFrancisco/criticality3_sim_SanFrancisco6_300s_500m}
+		}
+		\subfigure
+		{\includegraphics[width=2in]{img/SanFrancisco/avgContacts_sim_SanFrancisco6_300s_500m}
+		}
+		\caption{\tiny r = 500m}
+	\end{figure}
+	}
+\end{frame}
+
+\begin{frame}{Evolutia numarului de replici a unui element cu r = 500m}
+	\begin{figure}[t]
+		\centering
+		\def\svgwidth{\columnwidth}
+		\input{img/SanFrancisco/SanFrancisco500m_epidemic.pdf_tex}
+	\end{figure}
+\end{frame}
+\begin{frame}{Evolutia numarului de replici in functie de raza}
+	\begin{figure}[t]
+		\centering
+		\def\svgwidth{\columnwidth}
+		\input{img/SanFrancisco/SanFrancisco500m_radii.pdf_tex}
+	\end{figure}
+\end{frame}
+\end{document}

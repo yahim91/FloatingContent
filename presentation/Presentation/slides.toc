@@ -1,0 +1,7 @@
+\beamer@endinputifotherversion {3.17pt}
+\select@language {english}
+\beamer@sectionintoc {1}{Introduction}{3}{0}{1}
+\beamer@sectionintoc {2}{Contact Prediction}{4}{0}{2}
+\beamer@sectionintoc {3}{SPRINT}{5}{0}{3}
+\beamer@sectionintoc {4}{Experimental Results}{9}{0}{4}
+\beamer@sectionintoc {5}{Conclusions}{17}{0}{5}
