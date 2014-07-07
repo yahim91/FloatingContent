@@ -54,14 +54,14 @@ content}
 \frame{\tableofcontents}
 
 % NB: Sectiunile nu sunt marcate vizual, ci doar apar in cuprins
-\section{Introduction}
+\section{Introducere}
 
 % Titlul unui frame se specifica fie in acolade, imediat dupa \begin{frame},
 % fie folosind \frametitle
 \begin{frame}{Actualitate}
 	\begin{itemize}
 		\item Se estimeaza ca numarul de utilizatori de device-uri mobile in anul
-		2014 va ajunge la 1.75 miliarde
+		2014 va ajunge la 1.75 miliarde (conform eMarketer)
 		\item Principalele aplicatii utilizate pe device-uri sunt cele sociale
 		(Twitter, Facebook, etc.), de comunicatie (WhatsApp, Facebook Messenger) si de
 		localizare si afisare a obiectivelor din proximitate precum si de
@@ -108,6 +108,8 @@ content}
 	 \begin{columns}
 	    \begin{column}[l]{0.55\textwidth}
 			\begin{itemize}
+			  \item Fiecare informatie va avea asignata o zona de valabilitate si
+			  replicare determinata de razele $a$ si $r$
 			  \item Informatia generata va fi distribuita numai vecinilor din raza de
 			  valabilitate $r$
 			  \item Informatia este stearsa din memorie atunci cand vehiculul se
@@ -119,8 +121,11 @@ content}
 		\end{column}
 		\begin{column}[r]{0.45\textwidth}
 			\begin{figure}
+				\vspace*{-2cm}
 				\centering
 		    	\includegraphics[scale=0.35]{img/anchor_zone}
+		    	\caption{Zona gri reprezinta zona de replicare, zona alba este zona
+		    	tampon (datele nu se replica, doar se pastreaza)}
 		    \end{figure}
 		\end{column}
 	\end{columns}
@@ -141,30 +146,8 @@ content}
 	\end{enumerate}
 \end{frame}
 
-\section{Simulare si Evaluare}
 
-\begin{frame}{Tool-uri pentru simulare}
-	\begin{columns}[t]
-		\begin{column}{0.5\textwidth}
-			\begin{itemize}
-			  \item Am utilizat framework-ul Veins bazat pe 2 simulatoare
-			  \item Simulation of Urban Mobility (road traffic simulator)
-			  \item OMNeT++ - simulator de retele
-			  \item Cele 2 comunica in timpul simularii prin conexiune TCP
-			\end{itemize}
-		\end{column}
-		\begin{column}{0.5\textwidth}
-			\begin{figure}
-				\centering
-				\subfigure{\includegraphics[scale=0.13]{img/sumo}
-				}
-				\subfigure{\includegraphics[scale=0.35]{img/omnetpp}
-				}
-			\end{figure}
-		\end{column}
-	\end{columns}
-\end{frame}
-
+\section {Criterii de fezabilitate}
 \begin{frame}{Criterii de fezabilitate - Conditia de criticalitate}
 	\begin{itemize}
 	  \item $\upsilon$ $\rightarrow$ frecventa cu care un nod intra in contact cu
@@ -193,13 +176,14 @@ content}
 
 \begin{frame}{Criterii de fezabilitate - Modelul epidemic SIR}
 	\begin{itemize}
-	  \item $S$ $\rightarrow$ noduri susceptibile (noduri fara informatie), $I$
-	  $\rightarrow$ noduri infectate (detin informatia), $R$ $\rightarrow$ noduri
-	  ``vindecate'' (au sters informatia), $N\ =\ S\ +\ I\ +\ R$
+	  \item $S$ $\rightarrow$ noduri ``susceptibile'' (noduri fara informatie), $I$
+	  $\rightarrow$ noduri ``infectate'' (detin informatia), $R$ $\rightarrow$ noduri
+	  ``vindecate'' (au sters informatia), $r\ \rightarrow$ rata de ``infectare''
+	  \mbox{$a$ $\rightarrow$ rata de ``vindecare"}
 	  \item $\frac{dS}{dt} = -rSI$ $\rightarrow$ rata de micsorare a numarului de
-	  susceptibili
+	  ``susceptibili''
 	  \item $\frac{dI}{dt} = rSI - aI$ $\rightarrow$ rata de crestere a numarului
-	  de infectati
+	  de ``infectati''
 	  \item $\frac{dR}{dt} = aI$ $\rightarrow$ rata de crestere a numarului de
 	  noduri ``vindecate''
 	  \item $\left.
@@ -212,18 +196,51 @@ content}
 		\begin{beamerboxesrounded}[lower=block body,shadow=true,width=3.2in]{}
 			\begin{itemize}
 				\item{$\frac{a}{r}\ = \mu$ $\rightarrow$ $epidemy\ threshold$}
-				\item{$S_{0}\ >\ \mu\ \rightarrow$ epidemy occurs}
-				\item{$S_{0}\ <\ \mu\ \rightarrow$ no epidemy can occur}
+				\item{$S_{0}\ >\ \mu\ \rightarrow$ epidemia este posibila}
+				\item{$S_{0}\ <\ \mu\ \rightarrow$ epidemia nu este posibila}
 			\end{itemize}
 		\end{beamerboxesrounded}
 	}
 \end{frame}
 
+\section{Simulare si Evaluare}
+
+\begin{frame}{Instrumente pentru simulare}
+	\begin{columns}[t]
+		\begin{column}{0.5\textwidth}
+			\begin{itemize}
+			  \item Am utilizat framework-ul Veins bazat pe 2 simulatoare
+			  \item Simulation of Urban Mobility (road traffic simulator)
+			  \item OMNeT++ - simulator de retele
+			  \item Cele 2 comunica in timpul simularii prin conexiune TCP
+			\end{itemize}
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\vspace*{-2cm} 
+			\begin{figure}
+				\centering
+				\subfigure{\includegraphics[height=1in]{img/sumo}
+				}
+				\caption{\tiny SUMO}
+			\end{figure}
+			\begin{figure}
+				\vspace*{0.5cm}
+				\centering
+				\subfigure{\includegraphics[height=1in, width=2in]{img/omnetpp}
+				}
+				\caption{\tiny OMNeT++}
+			\end{figure}
+		\end{column}
+	\end{columns}
+\end{frame}
 \begin{frame}{Colectarea datelor - SanFrancisco}
 \Wider{
 	\begin{figure}[t]
+		\vspace*{-1cm}
 		\centering
 		\includegraphics[scale=0.25]{img/SanFrancisco_Anchors}
+		\caption{\tiny Punctele semnifica zona de valabilitate a unor elemente
+		distincte la distanta de 200m}
 	\end{figure}}
 \end{frame}
 
@@ -256,13 +273,19 @@ content}
 		\centering
 		\def\svgwidth{\columnwidth}
 		\input{img/SanFrancisco/SanFrancisco500m_epidemic.pdf_tex}
+		%\caption{r = 500m, timpul de valabilitate = 600s}
 	\end{figure}
+	
+	\centerline{r = 500m, timpul de valabilitate = 600s}
 \end{frame}
 \begin{frame}{Evolutia numarului de replici in functie de raza}
 	\begin{figure}[t]
 		\centering
 		\def\svgwidth{\columnwidth}
 		\input{img/SanFrancisco/SanFrancisco500m_radii.pdf_tex}
+		%\caption{timpul de valabilitate = 600s}
 	\end{figure}
+	
+	\centerline{timpul de valabilitate = 600s}
 \end{frame}
 \end{document}
