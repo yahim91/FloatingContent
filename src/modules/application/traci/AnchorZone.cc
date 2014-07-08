@@ -32,6 +32,7 @@ void AnchorZone::initialize() {
     this->currentCopiesVec = new cOutVector("copies");
     this->currentInfectVec = new cOutVector("infect");
     this->currentRemoveVec = new cOutVector("remove");
+    this->numOfSusceptibles = new cOutVector("susceptibles");
 }
 
 void AnchorZone::finish() {

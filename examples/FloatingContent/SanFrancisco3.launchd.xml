@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<!-- debug config -->
-<launch>
-	<copy file="SanFrancisco4.net.xml" />
-	<copy file="SanFrancisco4.rou.alt.xml" />
-	<copy file="SanFrancisco3.poly.xml" />
-	<copy file="SanFrancisco3.sumo.cfg" type="config" />
-</launch>
-

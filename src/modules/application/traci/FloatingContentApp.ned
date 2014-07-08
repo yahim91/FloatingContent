@@ -26,6 +26,7 @@ simple FloatingContentApp extends BaseWaveApplLayer
 	int poiReplicationRange @unit("m") = default(0); //replication range
 	string poiColor = default("black");
 	int poiTTL @unit("s") = default(0);
+	int ttl @unit("s") = default(0);
 	int refreshInterval @unit("s") = default(0);
 	
 }

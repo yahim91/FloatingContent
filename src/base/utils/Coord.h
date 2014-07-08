@@ -39,7 +39,6 @@ class MIXIM_API Coord : public cObject
 public:
 	/** @brief Constant with all values set to 0. */
 	static const Coord ZERO;
-	std::pair<double,double> coordPair;
 
 public:
     /** @name x, y and z coordinate of the position. */
@@ -47,24 +46,25 @@ public:
     double x;
     double y;
     double z;
+    simtime_t start;
     /*@}*/
 
 public:
     /** @brief Default constructor. */
     Coord()
-        : x(0.0), y(0.0), z(0.0), coordPair(std::make_pair(0,0)) {}
+        : x(0.0), y(0.0), z(0.0) {}
 
     /** @brief Initializes a coordinate. */
     Coord(double x, double y, double z = 0.0)
-        : x(x), y(y), z(z), coordPair(std::make_pair(x,y)){}
+        : x(x), y(y), z(z) {}
 
     /** @brief Initializes coordinate from other coordinate.*/
     Coord( const Coord& pos )
-        : cObject(pos), x(pos.x), y(pos.y), z(pos.z), coordPair(std::make_pair(pos.x,pos.y)) {}
+        : cObject(pos), x(pos.x), y(pos.y), z(pos.z), start(pos.start) {}
 
     /** @brief Initializes coordinate from other coordinate.*/
     Coord( const Coord* pos )
-        : cObject(*pos), x(pos->x), y(pos->y), z(pos->z), coordPair(std::make_pair(pos->x,pos->y)) {}
+        : cObject(*pos), x(pos->x), y(pos->y), z(pos->z), start(pos->start) {}
 
     /** @brief Returns a string with the value of the coordinate.*/
     std::string info() const {
@@ -140,6 +140,7 @@ public:
         x = a.x;
         y = a.y;
         z = a.z;
+        start = a.start;
         return *this;
     }
 

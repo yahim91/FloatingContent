@@ -61,4 +61,4 @@ with open('removed.csv', 'w') as f:
 
 with open(out_file, 'w') as f:
     for i in range(0, len(data5)):
-        f.write(str(data5[i][0]) + " " + str(min(data5[i][1]/data4[i][1], 70)) + "\n")
+        f.write(str(data5[i][0]) + " " + str(min(data5[i][1]/data4[i][1], 200)) + "\n")

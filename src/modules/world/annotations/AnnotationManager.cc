@@ -319,11 +319,11 @@ void AnnotationManager::show(const Annotation* annotation) {
 		}
 
 		TraCIScenarioManager* traci = TraCIScenarioManagerAccess().get();
-		if (traci && traci->isConnected()) {
+		/*if (traci && traci->isConnected()) {
 			std::stringstream nameBuilder; nameBuilder << o->text << " " << ev.getUniqueNumber();
 			traci->commandAddPoi(nameBuilder.str(), "Annotation", TraCIColor::fromTkColor(o->color), 6, o->pos);
 			annotation->traciPoiIds.push_back(nameBuilder.str());
-		}
+		}*/
 	}
 	else if (const Line* l = dynamic_cast<const Line*>(annotation)) {
 

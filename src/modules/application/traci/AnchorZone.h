@@ -67,6 +67,7 @@ public:
     cOutVector* currentRemoveVec;
     cOutVector* currentInfectVec;
     cOutVector* currentCopiesVec;
+    cOutVector* numOfSusceptibles;
 
     AnchorZone();
     AnchorZone(Coord, cModule*);

@@ -45,16 +45,16 @@ module FloatingContent
             parameters:
                 @display("p=150,0;i=abstract/multicast");
         }
+        manager: TraCIScenarioManagerLaunchd {
+            parameters:
+                @display("p=512,128");
+        }
         world: WorldUtility {
             parameters:
                 playgroundSizeX = playgroundSizeX;
                 playgroundSizeY = playgroundSizeY;
                 playgroundSizeZ = playgroundSizeZ;
                 @display("p=30,0;i=misc/globe");
-        }
-        manager: TraCIScenarioManagerLaunchd {
-            parameters:
-                @display("p=512,128");
         }
 
     connections allowunconnected:

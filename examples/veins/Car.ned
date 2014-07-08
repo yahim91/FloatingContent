@@ -28,6 +28,7 @@ module Car
     parameters:
         string applType; //type of the application layer
         string mobilityType; //type of the mobility module
+        @display("bgb=,,white");
     gates:
         input radioIn; // gate for sendDirect
     submodules:
@@ -50,6 +51,7 @@ module Car
             parameters:
                 @display("p=130,172;i=block/cogwheel");
         }
+        
     connections:
         nic.upperLayerOut --> appl.lowerLayerIn;
         nic.upperLayerIn <-- appl.lowerLayerOut;

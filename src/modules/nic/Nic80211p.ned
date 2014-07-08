@@ -34,6 +34,7 @@ import org.mixim.modules.mac.ieee80211p.Mac1609_4;
 //
 module Nic80211p
 {
+    @display("bgb=,,white");
     gates:
         input upperLayerIn; // to upper layers
         output upperLayerOut; // from upper layers
@@ -58,7 +59,7 @@ module Nic80211p
         mac1609_4.lowerLayerOut --> phy80211p.upperLayerIn;
         phy80211p.upperLayerOut --> mac1609_4.lowerLayerIn;
         phy80211p.upperControlOut --> mac1609_4.lowerControlIn;
-        
+
         mac1609_4.upperControlIn <-- upperControlIn;
         mac1609_4.upperLayerIn <-- upperLayerIn;
 

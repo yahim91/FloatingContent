@@ -22,8 +22,8 @@ src/*.so
 src/base/*.so
 src/modules/*.so
 Makefile
-ieee802154a/ieee802154a
 results
+ieee802154a/ieee802154a
 examples/**/figures
 examples/**/.tkenvrc
 examples/**/miximexamples
@@ -53,7 +53,9 @@ examples/ieee802154a/ieee802154a
 examples/multiConnectionManager/multiConnectionManager
 examples/BaseMoBANNetwork/BaseMoBANNetwork
 examples/WSNRouting/WSNRouting
+examples/FloatingContent/document/biblio
 examples/bmac/bmac
 examples/lmac/lmac
 **.vci
 
+/.computed

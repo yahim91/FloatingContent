@@ -107,7 +107,8 @@ void FloatingContentApp::onData(WaveShortMessage* wsm) {
         temp.start = SimTime(storage.readDouble());
         //temp.start = simTime();
         if (traci->getCurrentPosition().distance(temp) < poiReplicationRange
-                && std::find(tiles.begin(), tiles.end(), temp) == tiles.end()) {
+                && std::find(tiles.begin(), tiles.end(), temp) == tiles.end() &&
+                simTime() - temp.start <= ttl) {
             tiles.push_back(temp);
             //findHost()->getDisplayString().updateWith("r1=16,green");
             traciManager->addPOIReplica(temp);
@@ -218,6 +219,9 @@ void FloatingContentApp::refreshLocalStorage() {
             traciManager->removePOIReplica(*tile);
             //findHost()->getDisplayString().removeTag("r1");
             tile = tiles.erase(tile);
+            if (timeout > ttl) {
+                EV << "timeout\n";
+            }
         } else {
             ++tile;
         }
@@ -228,7 +232,7 @@ void FloatingContentApp::finish() {
 //remove all anchor points
     std::vector<Coord>::iterator tile = tiles.begin();
     while (tile != tiles.end()) {
-        //traciManager->removePOIReplica(*tile);
+        traciManager->removePOIReplica(*tile);
         //findHost()->getDisplayString().removeTag("r1");
         tile = tiles.erase(tile);
     }

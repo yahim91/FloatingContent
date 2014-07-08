@@ -32,14 +32,16 @@ void WorldUtility::initialize(int stage) {
 }
 
 void WorldUtility::createAnchors() {
-
+    int k = 0;
     for (double i = 0; i <= getPgs()->x; i += anchorDistance) {
         for (double j = 0; j <= getPgs()->y; j += anchorDistance) {
-
-            AnnotationManager::Annotation* circle = annotations->drawPoint(
-                    Coord(i, j), "yellow", "", anchorSize);
-            manager->addPOIReplica(Coord(i, j), circle);
-
+            //if (k == 186/* || k == 39 || k == 54 || k == 55 || k == 70 || k == 71
+              //      || k == 72 || k == 88*/) {
+                AnnotationManager::Annotation* circle = annotations->drawPoint(
+                        Coord(i, j), "yellow", "", anchorSize);
+                manager->addPOIReplica(Coord(i, j), circle);
+            //}
+            k++;
         }
     }
 

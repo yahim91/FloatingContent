@@ -863,6 +863,7 @@ int TraCIScenarioManager::addPOIReplica(Coord p,
 }
 
 int TraCIScenarioManager::addPOIReplica(Coord p) {
+    int susceptibles;
     if (anchorZones.find(p.getPairCoord()) == anchorZones.end()) {
         return -1;
     }
@@ -872,10 +873,14 @@ int TraCIScenarioManager::addPOIReplica(Coord p) {
             anchorZones[p.getPairCoord()]->replicas);
     anchorZones[p.getPairCoord()]->currentInfectVec->record(
             anchorZones[p.getPairCoord()]->infected);
+    susceptibles = anchorZones[p.getPairCoord()]->nodes.size()
+            - anchorZones[p.getPairCoord()]->replicas;
+    anchorZones[p.getPairCoord()]->numOfSusceptibles->record(susceptibles);
     return anchorZones[p.getPairCoord()]->replicas;
 }
 
 int TraCIScenarioManager::removePOIReplica(Coord p) {
+    int susceptibles;
     if (anchorZones.find(p.getPairCoord()) == anchorZones.end()) {
         return -1;
     }
@@ -884,11 +889,16 @@ int TraCIScenarioManager::removePOIReplica(Coord p) {
 
     if (anchorZones[p.getPairCoord()]->replicas == 0) {
         //anchorZones[p.getPairCoord()]->replicated = false;
+        //endSimulation();
     }
     anchorZones[p.getPairCoord()]->currentCopiesVec->record(
             anchorZones[p.getPairCoord()]->replicas);
     anchorZones[p.getPairCoord()]->currentRemoveVec->record(
             anchorZones[p.getPairCoord()]->removed);
+    susceptibles = anchorZones[p.getPairCoord()]->nodes.size()
+                - anchorZones[p.getPairCoord()]->replicas;
+
+    anchorZones[p.getPairCoord()]->numOfSusceptibles->record(susceptibles);
     /*if (anchorZones[p.getPairCoord()].replicas == 0) {
      AnnotationManager *an = AnnotationManagerAccess().getIfExists();
      an->erase(poi2Ann[p.getPairCoord()]);
@@ -902,7 +912,6 @@ int TraCIScenarioManager::removePOIReplica(Coord p) {
 void TraCIScenarioManager::updateContacts(Coord p, int sndId, int rcvId) {
     anchorZones[p.getPairCoord()]->contactsBetweenNodes[std::make_pair(sndId,
             rcvId)]++;
-
 }
 
 void TraCIScenarioManager::startTransmission(int sndId, int rcvId) {
@@ -963,7 +972,7 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
                 continue;
             Coord az((cellX + i) * anchorDistance,
                     (cellY + j) * anchorDistance);
-            az.start = simTime();
+
             if (anchorZones.find(az.getPairCoord()) == anchorZones.end()) {
                 continue;
             }
@@ -985,10 +994,10 @@ void TraCIScenarioManager::checkCurrentAnchors(Coord s, int id, int maxX,
 
                 if (!anchorZones[az.getPairCoord()]->replicated) {
                     anchorZones[az.getPairCoord()]->replicated = true;
+                    az.start = simTime();
                     tiles.push_back(az);
                     addPOIReplica(az);
                 }
-
 
                 /*if (id == 8) {
                  // displaying current anchor zones for node id
@@ -1070,6 +1079,7 @@ void TraCIScenarioManager::checkSameAnchor(Coord snd, Coord rcv, int sndId,
                 } else {
                     anchorZones[az.getPairCoord()]->contactsBetweenNodes[std::make_pair(
                             sndId, rcvId)]++;
+                    anchorZones[az.getPairCoord()]->contacts++;
                 }
             }
         }
