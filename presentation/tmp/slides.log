@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2012.2.16)  8 JUL 2014 10:06
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9) (preloaded format=pdflatex 2012.2.16)  8 JUL 2014 10:36
 entering extended mode
 **slides.tex
 
@@ -1165,24 +1165,6 @@ Overfull \hbox (10.98851pt too wide) has occurred while \output is active
 
  <D:/cipsm/Diploma/Diploma 2013-2014/Mihai Ciocan/licenta Floating Content/Floa
 tingContent/presentation/img/anchor_zone.png>]
-
-! LaTeX Error: Lonely \item--perhaps a missing list environment.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.176 \end{frame}
-                 
-Try typing  <return>  to proceed.
-If that doesn't work, type  X <return>  to quit.
-
-
-Underfull \hbox (badness 10000) detected at line 176
-[][]
- []
-
-
 Overfull \hbox (10.98851pt too wide) has occurred while \output is active
   [] [] [] [] []  
  []
