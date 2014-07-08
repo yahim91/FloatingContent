@@ -1,0 +1,38 @@
+\BOOKMARK [0][-]{table.caption.2}{Contents}{}% 1
+\BOOKMARK [0][-]{chapter.1}{Social context-aware mobile applications}{}% 2
+\BOOKMARK [1][-]{section.1.1}{Introduction}{chapter.1}% 3
+\BOOKMARK [1][-]{section.1.2}{Weaknesses of network-based mobile application}{chapter.1}% 4
+\BOOKMARK [1][-]{section.1.3}{Inter-Vehicle Communication}{chapter.1}% 5
+\BOOKMARK [0][-]{chapter.2}{Floating Content}{}% 6
+\BOOKMARK [1][-]{section.2.1}{Introduction}{chapter.2}% 7
+\BOOKMARK [1][-]{section.2.2}{Applications for Floating Content}{chapter.2}% 8
+\BOOKMARK [1][-]{section.2.3}{Service model}{chapter.2}% 9
+\BOOKMARK [2][-]{subsection.2.3.1}{System operation}{section.2.3}% 10
+\BOOKMARK [2][-]{subsection.2.3.2}{Communication Protocol}{section.2.3}% 11
+\BOOKMARK [2][-]{subsection.2.3.3}{Security issues and resource management}{section.2.3}% 12
+\BOOKMARK [1][-]{section.2.4}{Analytical model}{chapter.2}% 13
+\BOOKMARK [2][-]{subsection.2.4.1}{Criticality Condition}{section.2.4}% 14
+\BOOKMARK [2][-]{subsection.2.4.2}{Information evolution during its lifetime}{section.2.4}% 15
+\BOOKMARK [2][-]{subsection.2.4.3}{Model applicability}{section.2.4}% 16
+\BOOKMARK [0][-]{chapter.3}{Floating Content Implementation}{}% 17
+\BOOKMARK [1][-]{section.3.1}{Omnet++ and Simulation of Urban MObility}{chapter.3}% 18
+\BOOKMARK [1][-]{section.3.2}{Network Description in Omnet++}{chapter.3}% 19
+\BOOKMARK [1][-]{section.3.3}{Architecture}{chapter.3}% 20
+\BOOKMARK [2][-]{subsection.3.3.1}{Network}{section.3.3}% 21
+\BOOKMARK [2][-]{subsection.3.3.2}{Traffic Simulation}{section.3.3}% 22
+\BOOKMARK [2][-]{subsection.3.3.3}{Connection modeling}{section.3.3}% 23
+\BOOKMARK [1][-]{section.3.4}{Car modules}{chapter.3}% 24
+\BOOKMARK [2][-]{subsection.3.4.1}{Car mobility}{section.3.4}% 25
+\BOOKMARK [2][-]{subsection.3.4.2}{WAVE: Wireless Access in Vehicular Environment}{section.3.4}% 26
+\BOOKMARK [2][-]{subsection.3.4.3}{Physical layer}{section.3.4}% 27
+\BOOKMARK [2][-]{subsection.3.4.4}{MAC layer}{section.3.4}% 28
+\BOOKMARK [2][-]{subsection.3.4.5}{Application layer}{section.3.4}% 29
+\BOOKMARK [1][-]{section.3.5}{Collecting Simulation Data}{chapter.3}% 30
+\BOOKMARK [0][-]{chapter.4}{Simulation Environment and Evaluation}{}% 31
+\BOOKMARK [1][-]{section.4.1}{Environment}{chapter.4}% 32
+\BOOKMARK [1][-]{section.4.2}{Mobility Simulation}{chapter.4}% 33
+\BOOKMARK [1][-]{section.4.3}{Evaluation}{chapter.4}% 34
+\BOOKMARK [2][-]{subsection.4.3.1}{Beijing}{section.4.3}% 35
+\BOOKMARK [2][-]{subsection.4.3.2}{San Francisco}{section.4.3}% 36
+\BOOKMARK [0][-]{chapter.5}{Conclusion}{}% 37
+\BOOKMARK [0][-]{chapter.5}{Bibliography}{}% 38

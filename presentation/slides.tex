@@ -7,6 +7,7 @@
 \usepackage{alltt}			% highlight
 \usepackage{subfigure}
 \usepackage{tikz}
+\usepackage{lmodern}
 \usepackage[belowskip=-40pt,aboveskip=-2pt]{caption}
 \captionsetup{labelformat=empty,labelsep=none}
 
@@ -35,16 +36,24 @@
 
 \title[Distributed storage and dissemination service based on floating
 content]{Distributed storage and dissemination service based on floating
-content \\ 
-\\
-Analiza fezabilatii stocarii si distributiei de date in
+content} 
+
+\subtitle{Analiza fezabilatii stocarii si distributiei de date in
 medii mobile, pe baza modelului Floating Content}
 % \title[Analiza fezabilatii stocarii si distributiei de date in
 % medii mobile, pe baza modelului Floating Content]{Analiza fezabilatii stocarii si distributiei de date in
 % medii mobile, pe baza modelului Floating Content}
 
-\institute{Facultatea de Automatica si Calculatoare,\\
-	Universitatea POLITEHNICA din Bucuresti}
+% \institute{Facultatea de Automatica si Calculatoare,\\
+% 	Universitatea POLITEHNICA din Bucuresti}
+\institute{
+ \begin{tabular}[t]{cc}
+Coordonator: Conf.dr.ing. Ciprian Dobre\\
+\\
+Facultatea de Automatica si Calculatoare,\\
+	Universitatea POLITEHNICA din Bucuresti
+	\end{tabular}
+	}
 \author[Mihai Ciocan]{Mihai Ciocan}
 \date{Iulie 2014}
 
@@ -61,7 +70,7 @@ medii mobile, pe baza modelului Floating Content}
 \frame{\tableofcontents}
 
 % NB: Sectiunile nu sunt marcate vizual, ci doar apar in cuprins
-\section{Back}
+\section{Stadiul actual si motivatia lucrarii}
 
 % Titlul unui frame se specifica fie in acolade, imediat dupa \begin{frame},
 % fie folosind \frametitle
@@ -69,10 +78,14 @@ medii mobile, pe baza modelului Floating Content}
 	\begin{itemize}
 		\item Se estimeaza ca numarul de utilizatori de device-uri mobile in anul
 		2014 va ajunge la 1.75 miliarde (conform eMarketer)
-		\item Principalele aplicatii utilizate pe device-uri sunt cele sociale
-		(Twitter, Facebook, etc.), de comunicatie (WhatsApp, Facebook Messenger) si de
-		localizare si afisare a obiectivelor din proximitate precum si de
-		ghidare spatiala(Google Maps, Waze)
+\item Aplicatii utilizate pe device-uri:
+		\begin{itemize}
+		  \item sociale (Twitter, Facebook, etc.)
+		\item comunicatie (WhatsApp, Facebook Messenger) 
+		\item localizare, afisare obiective din proximitate, ghidare spatiala(Google
+Maps, Waze)
+\item combinate (Nearby Friends from Facebook)
+\end{itemize}
 		\item Majoritatea aplicatiilor sunt dependente de serviciile din
 		infrastructura de retea pentru corecta functionare
 	\end{itemize}
@@ -99,14 +112,15 @@ medii mobile, pe baza modelului Floating Content}
 
 \begin{frame}{Alternativa}
 	\begin{itemize}
-	  \item Serviciu pentru distribuirea informatiilor efemere dependent in
-	  totalitate de device-uri mobile din vecinatate
-	  \item Fiecare user poate genera informatii caracteristice pentru o anumita
-	  locatie, pentru o perioda limitata de timp
-	  \item Potrivit pentru comunicatia intre vehicule pentru imbunatatirea
-	  experientei de conducere
-	  \item Starea vremii, a carosabilului si a traficului printre informatiile
-	  care pot imbunatatii experienta de conducere a soferului
+	  \item Model de distribuire a informatiilor intr-o maniera distribuita
+	  (serviciile curente sunt preponderent centralizate)
+	  \item Distributia datelor functie de locatie, contextul de comunicatie, 
+	  dependent de device-uri mobile situate din vecinatate
+	  \item Fiecare utilizator poate genera informatii caracteristice pentru o
+	  anumita locatie, pentru o perioda limitata de timp
+	  \item Folosind comunicatia intre vehicule, poate fi folosit pentru
+	  imbunatatirea experientei de conducere
+	  \item Informatii precum: starea vremii, a carosabilului si a traficului
 	\end{itemize}
 \end{frame}
 
@@ -118,13 +132,14 @@ medii mobile, pe baza modelului Floating Content}
 			\begin{itemize}
 			  \item Fiecare informatie va avea asignata o zona de valabilitate si
 			  replicare determinata de razele $a$ si $r$
-			  \item Informatia generata va fi distribuita numai vecinilor din raza de
-			  valabilitate $r$
-			  \item Informatia este stearsa din memorie atunci cand vehiculul se
-			  departeaza la o distanta mai mare decat $a$ fata de origine
-			  \item Informatia va “pluti” (float) atat timp cat exista un numar
+			  \begin{itemize}
+			  \item Informatia distribuita doar vecinilor
+			  \item E stearsa atunci cand vehiculul se
+			  departeaza 
+			  \end{itemize}
+			  \item Informatia va ``pluti" (float) atat timp cat exista un numar
 			  semnificativ de device-uri in raza de valabilitate pentru a participa la
-			  stocare si replicare
+			  stocare si replicare\ldots oare?
 			\end{itemize}
 		\end{column}
 		\begin{column}[r]{0.45\textwidth}
@@ -140,7 +155,8 @@ medii mobile, pe baza modelului Floating Content}
 \end{frame}
 
 \begin{frame}{Floating Content Protocol}
-	\begin{enumerate}
+	Propus de Aalto University, Finland:
+	\begin{enumerate}{\fontsize{8}{12}\selectfont
 	  \item Nodurile trimit mesaje de descoperire a vecinilor (beacons) la un
 	  anumit interval de timp (300s in simulare)
 	  \item La primirea unui astfel de mesaj, nodul trimite lista proprie de
@@ -150,12 +166,17 @@ medii mobile, pe baza modelului Floating Content}
 	  afla in raza de valabilitate)
 	  \item Informatiile cerute se transfera pana cand nodurile pierd contactul sau
 	  transferul se termina complet
-	  \item se repeta pasii incepand de la pasul 1.
+	  \item se repeta pasii incepand de la pasul 1.}
 	\end{enumerate}
+% 	\begin{itemize}
+	\item Ne propunem sa evaluam fezabilitatea modelului Floating Content,
+	impreuna cu protocolul de mai sus, si combinarea originala a acestora
+	intr-un serviciu ce ruleaza folosind V2V.
+% 	\end{itemize} 
 \end{frame}
 
 
-\section {Criterii de fezabilitate}
+\section {Criterii propuse de autor pentru evaluarea fezabilitatii}
 \begin{frame}{Criterii de fezabilitate - Conditia de criticalitate}
 	\begin{itemize}
 	  \item $\upsilon$ $\rightarrow$ frecventa cu care un nod intra in contact cu
@@ -211,7 +232,7 @@ medii mobile, pe baza modelului Floating Content}
 	}
 \end{frame}
 
-\section{Simulare si Evaluare}
+\section{Rezultate experimentale}
 
 \begin{frame}{Instrumente pentru simulare}
 	\begin{columns}[t]

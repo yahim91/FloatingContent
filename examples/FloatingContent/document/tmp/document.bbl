@@ -1,0 +1,134 @@
+\begin{thebibliography}{10}
+
+\bibitem{emarketer}
+Worldwide mobile phone users: H1 2014 forecast and comparative estimates, 2014.
+
+\bibitem{baguena2013vacamobil}
+Miguel B{\'a}guena, Sergio~M Tornell, Alvaro Torres, Carlos~T Calafate,
+  Juan-Carlos Cano, and Pietro Manzoni.
+\newblock Vacamobil: Vanet car mobility manager for omnet++.
+\newblock In {\em Communications Workshops (ICC), 2013 IEEE International
+  Conference on}, pages 1057--1061. IEEE, 2013.
+
+\bibitem{reputation}
+Sonja Buchegger and Jean-Yves~Le Boudec.
+\newblock A robust reputation system for p2p and mobile ad-hoc networks.
+\newblock {\em Analysis}, 2004.
+
+\bibitem{sumo}
+Michael~Behrisch Daniel~Krajzewicz, Jakob~Erdmann and Laura Bieker.
+\newblock Recent development and applications of sumo - simulation of urban
+  mobility.
+\newblock {\em Analysis}, pages 128--138, 2012.
+
+\bibitem{eckhoff2012multi}
+David Eckhoff and Christoph Sommer.
+\newblock A multi-channel ieee 1609.4 and 802.11 p edca model for the veins
+  framework.
+\newblock In {\em Proceedings of 5th ACM/ICST International Conference on
+  Simulation Tools and Techniques for Communications, Networks and Systems: 5th
+  ACM/ICST International Workshop on OMNeT++.(Desenzano, Italy, 19-23 March,
+  2012). OMNeT+}, 2012.
+
+\bibitem{whendoesdatafloats}
+Pasi Lassila† Jussi Kangasharju‡ Jörg~Ott Esa~Hyytiä†,
+  Jorma~Virtamo†.
+\newblock When does content float? characterizing availability of anchored
+  information in opportunistic content sharing.
+\newblock {\em Analysis}, 2011.
+
+\bibitem{openstreetmap}
+Mordechai~(Muki) Haklay and Patrick Weber.
+\newblock Openstreetmap: User-generated street maps.
+\newblock {\em IEEE Pervasive Computing}, 7(4):12--18, oct 2008.
+
+\bibitem{hethcote2000mathematics}
+Herbert~W Hethcote.
+\newblock The mathematics of infectious diseases.
+\newblock {\em SIAM review}, 42(4):599--653, 2000.
+
+\bibitem{bmw_assist}
+Jon~Einar Kolberg.
+\newblock Bmw assist.
+\newblock {\em Online}, 2014.
+
+\bibitem{Kopke}
+A.~Kopke, M.~Swigulski, K.~Wessel, D.~Willkomm, P.~T.~Klein Haneveld, T.~E.~V.
+  Parker, O.~W. Visser, H.~S. Lichte, and S.~Valentin.
+\newblock Simulating wireless and mobile networks in omnet++ the mixim vision.
+\newblock In {\em Proceedings of the 1st International Conference on Simulation
+  Tools and Techniques for Communications, Networks and Systems \& Workshops},
+  Simutools '08, pages 71:1--71:8, ICST, Brussels, Belgium, Belgium, 2008. ICST
+  (Institute for Computer Sciences, Social-Informatics and Telecommunications
+  Engineering).
+
+\bibitem{performance80211}
+Francesca Martelli, Maria~Elena Renda, and Paolo Santi.
+\newblock Measuring ieee 802.11 p performance for active safety applications in
+  cooperative vehicular systems.
+\newblock In {\em Vehicular Technology Conference (VTC Spring), 2011 IEEE
+  73rd}, pages 1--5. IEEE, 2011.
+
+\bibitem{percomfloatingcontent}
+Jorg Ott, Esa Hyytia, Pasi Lassila, Tobias Vaegs, and Jussi Kangasharju.
+\newblock Floating content: Information sharing in urban areas.
+\newblock {\em Simulation}, pages 136--146, 2011.
+
+\bibitem{uniform_distribution}
+Jorg Ott, Esa Hyytia, Pasi Lassila, Tobias Vaegs, and Jussi Kangasharju.
+\newblock Floating content: Information sharing in urban areas.
+\newblock {\em Simulation}, pages 136--146, 2011.
+
+\bibitem{phule2012public}
+Harshad Phule.
+\newblock {\em Public Safety Application for Approaching Emergency Vehicle
+  Alert and Accident Reporting in VANETs Using WAVE}.
+\newblock PhD thesis, Rochester Institute of Technology, 2012.
+
+\bibitem{sommer2011computationally}
+Christoph Sommer, David Eckhoff, Reinhard German, and Falko Dressler.
+\newblock A computationally inexpensive empirical model of ieee 802.11 p radio
+  shadowing in urban environments.
+\newblock In {\em Wireless On-Demand Network Systems and Services (WONS), 2011
+  Eighth International Conference on}, pages 84--90. IEEE, 2011.
+
+\bibitem{veins}
+Christoph Sommer, Reinhard German, and Falko Dressler.
+\newblock {Bidirectionally Coupled Network and Road Traffic Simulation for
+  Improved IVC Analysis}.
+\newblock {\em IEEE Transactions on Mobile Computing}, 10(1):3--15, January
+  2011.
+
+\bibitem{omnetpp}
+Andr\'{a}s Varga and Rudolf Hornig.
+\newblock An overview of the omnet++ simulation environment.
+\newblock In {\em Simutools '08: Proceedings of the 1st international
+  conference on Simulation tools and techniques for communications, networks
+  and systems \& workshops}, pages 1--10, ICST, Brussels, Belgium, Belgium,
+  2008. ICST (Institute for Computer Sciences, Social-Informatics and
+  Telecommunications Engineering).
+
+\bibitem{volvo}
+Volvo.
+\newblock Volvo on call.
+\newblock {\em Online}, 2014.
+
+\bibitem{traci_interface}
+Axel Wegener, Micha\l Pi\'{o}rkowski, Maxim Raya, Horst Hellbruck, Stefan
+  Fischer, and Jean-Pierre Hubaux.
+\newblock Traci: An interface for coupling road traffic and network simulators.
+\newblock In {\em Proceedings of the 11th Communications and Networking
+  Simulation Symposium}, CNS '08, pages 155--163, New York, NY, USA, 2008. ACM.
+
+\bibitem{wikipedia_dtn}
+wikipedia.
+\newblock Delay-tolerant networking {@MISC}, 2011.
+
+\bibitem{yoon2003random}
+Jungkeun Yoon, Mingyan Liu, and Brian Noble.
+\newblock Random waypoint considered harmful.
+\newblock In {\em INFOCOM 2003. twenty-second annual joint conference of the
+  IEEE computer and communications. IEEE societies}, volume~2, pages
+  1312--1321. IEEE, 2003.
+
+\end{thebibliography}

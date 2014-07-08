@@ -1,0 +1,6 @@
+\beamer@endinputifotherversion {3.12pt}
+\select@language {english}
+\beamer@sectionintoc {1}{Stadiul actual si motivatia lucrarii}{3}{0}{1}
+\beamer@sectionintoc {2}{Modelul aplicatiei}{6}{0}{2}
+\beamer@sectionintoc {3}{Criterii propuse de autor pentru evaluarea fezabilitatii}{8}{0}{3}
+\beamer@sectionintoc {4}{Rezultate experimentale}{10}{0}{4}

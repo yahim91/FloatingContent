@@ -1,0 +1,21 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: document.aux
+A level-1 auxiliary file: titlepage_en.aux
+A level-1 auxiliary file: scientific_achievements.aux
+The style file: plain.bst
+Database file #1: bibfile.bib
+Warning--entry type for "emarketer" isn't style-file defined
+--line 231 of file bibfile.bib
+Warning--to sort, need author or key in emarketer
+Too many commas in name 1 of "Esa Hyytiä†, Jorma Virtamo†, Pasi Lassila†, Jussi Kangasharju‡, Jörg Ott" for entry whendoesdatafloats
+while executing---line 1049 of file plain.bst
+Too many commas in name 1 of "Esa Hyytiä†, Jorma Virtamo†, Pasi Lassila†, Jussi Kangasharju‡, Jörg Ott" for entry whendoesdatafloats
+while executing---line 1049 of file plain.bst
+Name 1 in "Daniel Krajzewicz, Jakob Erdmann, Michael Behrisch, and Laura Bieker" has a comma at the end for entry sumo
+while executing---line 1049 of file plain.bst
+Name 1 in "Daniel Krajzewicz, Jakob Erdmann, Michael Behrisch, and Laura Bieker" has a comma at the end for entry sumo
+while executing---line 1090 of file plain.bst
+Too many commas in name 1 of "Esa Hyytiä†, Jorma Virtamo†, Pasi Lassila†, Jussi Kangasharju‡, Jörg Ott" for entry whendoesdatafloats
+while executing---line 1090 of file plain.bst
+Too many commas in name 1 of "Esa Hyytiä†, Jorma Virtamo†, Pasi Lassila†, Jussi Kangasharju‡, Jörg Ott" for entry whendoesdatafloats
+while executing---line 1090 of file plain.bst
+(There were 6 error messages)
